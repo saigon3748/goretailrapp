@@ -5,14 +5,14 @@ import { StackNavigator, DrawerNavigator } from 'react-navigation'
 import Login from '../views/login';
 import Topbar from '../views/topbar';
 import Sidebar from '../views/sidebar';
-import Pos from '../views/pos';
+import Cashier from '../views/cashier';
 import Dashboard from '../views/dashboard';
 
 export default StackNavigator({
   LOGIN: { screen: Login },
   APP: { screen: StackNavigator({
     MAIN: { screen: DrawerNavigator({
-        POS: { screen: Pos },
+        POS: { screen: Cashier },
         DASHBOARD: { screen: Dashboard }
       }, {
         gesturesEnabled: false,

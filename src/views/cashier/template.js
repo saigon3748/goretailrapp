@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
   }  
 });
 
-class Pos extends React.Component {
+class Cashier extends React.Component {
   onPress() {
     alert('press')
   }
@@ -658,7 +658,7 @@ class Pos extends React.Component {
   }
 }
 
-Pos.propTypes = {
+Cashier.propTypes = {
 };
 
-export default Pos;
+export default Cashier;

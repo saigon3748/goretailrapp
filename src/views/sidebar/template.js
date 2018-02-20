@@ -33,30 +33,49 @@ class Sidebar extends React.Component {
   render() {
     return (
       <View style={{flex: 1, flexDirection: 'column', backgroundColor: 'rgb(221, 226, 229)'}}>
-        <View style={{height: 90, marginTop: 30, marginLeft: 10, marginRight: 10}}>
-          <View style={{flex: 1, flexDirection: 'row'}}>
-            <Text style={{flex: 1}}>Subtotal</Text>
-            <Text style={{width: 100, textAlign: 'right'}}>$100.05</Text>
-          </View>
-          <View style={{flex: 1, flexDirection: 'row'}}>
-            <Text style={{flex: 1}}>Discount</Text>
-            <Text style={{width: 100, textAlign: 'right'}}>$0.00</Text>
-          </View>
-          <View style={{flex: 1, flexDirection: 'row'}}>
-            <Text style={{flex: 1}}>Tax</Text>
-            <Text style={{width: 100, textAlign: 'right'}}>$12.08</Text>
-          </View>
-        </View>
+        <List style={{marginTop: 40}}>
+          <ListItem icon>
+            <Left>
+            </Left>
+            <Body>
+              <Text>Dashboard</Text>
+            </Body>
+            <Right>
+            </Right>
+          </ListItem>
+          <ListItem icon>
+            <Left>
+            </Left>
+            <Body>
+              <Text>Cashier</Text>
+            </Body>
+            <Right>
+            </Right>
+          </ListItem>
+          <ListItem icon>
+            <Left>
+            </Left>
+            <Body>
+              <Text>Kitchen</Text>
+            </Body>
+            <Right>
+            </Right>
+          </ListItem>
+          <ListItem icon>
+            <Left>
+            </Left>
+            <Body>
+              <Text>Printer</Text>
+            </Body>
+            <Right>
+            </Right>
+          </ListItem>
+        </List>
 
-        <View style={{height: 40, marginTop: 10, marginLeft: 10, marginRight: 10}}>
-          <View style={{flex: 1, flexDirection: 'row'}}>
-            <Text style={{flex: 1, fontSize: 30, color: 'rgb(70, 70, 70)'}}>Total</Text>
-            <Text style={{width: 150, textAlign: 'right', fontSize: 30, color: 'rgb(70, 70, 70)'}}>$8,952.00</Text>
-          </View>
-        </View>
+        <View style={{flex: 1}}/>
 
         <View style={{marginTop: 20, marginBottom: 20, marginLeft: 10, marginRight: 10}}>
-          <Button full onPress={this.onPress} style={{backgroundColor: '#6c757d'}}><Text> LOGOUT </Text></Button>
+          <Button full onPress={this.onPress} style={{backgroundColor: '#2177b4'}}><Text> LOGOUT </Text></Button>
         </View>
       </View>
     );
