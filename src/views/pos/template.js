@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
   }  
 });
 
-class Cashier extends React.Component {
+class Pos extends React.Component {
   onPress() {
     alert('press')
   }
@@ -38,19 +38,6 @@ class Cashier extends React.Component {
         justifyContent: 'space-between',
         backgroundColor: '#F5F8F9'
       }}>
-        <View style={{
-          height: 70,
-          flex: 1, 
-          flexDirection: 'row',
-          backgroundColor: 'rgb(70, 70, 70)'}}>
-          <Text style={{width: 200, textAlign: 'center', marginTop: 18, color: '#2177b4', fontSize: 35}}>goretailr</Text>
-          <View style={{flex: 1, flexDirection: 'row'}}>
-            <Text style={{marginTop: 30, marginLeft: 30, marginRight: 30, color: '#F5F8F9', fontSize: 20}}>Dashboard</Text>
-            <Text style={{marginTop: 30, marginLeft: 30, marginRight: 30, color: '#F5F8F9', fontSize: 20}}>Cashier</Text>
-          </View>
-          <Text style={{width: 200, textAlign: 'right', marginTop: 30, marginRight: 30, color: '#F5F8F9', fontSize: 20}}>nam</Text>
-        </View>
-
         <View style={{
           flex: 8, 
           flexDirection: 'row',
@@ -568,7 +555,7 @@ class Cashier extends React.Component {
           </View>
           <View style={{flex: 2, flexDirection: 'column', backgroundColor: 'rgb(221, 226, 229)'}}>
             <View style={{width: 270, height: 30, marginTop: 20, marginLeft: 10, marginRight: 10}}>
-              <Text style={{textAlign: 'center'}}>CHECKOUT</Text>
+              <Text style={{textAlign: 'center', fontSize: 20, color: 'rgb(70, 70, 70)'}}>CHECKOUT</Text>
             </View>
 
             <ScrollView style={{flex: 1, flexDirection: 'column'}}>
@@ -602,27 +589,36 @@ class Cashier extends React.Component {
               />
             </ScrollView>
 
-            <View style={{width: 270, height: 100, marginTop: 20, marginBottom: 20, marginLeft: 10, marginRight: 10}}>
+            <View style={{width: 270, height: 90, marginTop: 30, marginLeft: 10, marginRight: 10}}>
               <View style={{flex: 1, flexDirection: 'row'}}>
                 <Text style={{flex: 1}}>Subtotal</Text>
                 <Text style={{width: 100, textAlign: 'right'}}>$100.05</Text>
               </View>
               <View style={{flex: 1, flexDirection: 'row'}}>
+                <Text style={{flex: 1}}>Discount</Text>
+                <Text style={{width: 100, textAlign: 'right'}}>$0.00</Text>
+              </View>
+              <View style={{flex: 1, flexDirection: 'row'}}>
                 <Text style={{flex: 1}}>Tax</Text>
                 <Text style={{width: 100, textAlign: 'right'}}>$12.08</Text>
               </View>
+            </View>
+
+            <View style={{width: 270, height: 40, marginTop: 10, marginLeft: 10, marginRight: 10}}>
               <View style={{flex: 1, flexDirection: 'row'}}>
                 <Text style={{flex: 1, fontSize: 30, color: 'rgb(70, 70, 70)'}}>Total</Text>
                 <Text style={{width: 150, textAlign: 'right', fontSize: 30, color: 'rgb(70, 70, 70)'}}>$8,952.00</Text>
               </View>
             </View>
 
-            <View style={{width: 270, height: 50, marginBottom: 10, marginLeft: 10, marginRight: 10}}>
-              <Button full onPress={this.onPress} style={{backgroundColor: '#2177b4'}}><Text> CONFIRM </Text></Button>
-            </View>
-
-            <View style={{width: 270, height: 50, marginBottom: 10, marginLeft: 10, marginRight: 10}}>
-              <Button full onPress={this.onPress} style={{backgroundColor: '#6c757d'}}><Text> DISCARD </Text></Button>
+            <View style={{flexDirection: 'row', width: 270, marginTop: 20, marginBottom: 20, marginLeft: 10, marginRight: 10}}>
+              <View style={{width: 125}}>
+                <Button full onPress={this.onPress} style={{backgroundColor: '#6c757d'}}><Text> DISCARD </Text></Button>
+              </View>
+              <View style={{flex: 1}} />
+              <View style={{width: 125}}>
+                <Button full onPress={this.onPress} style={{backgroundColor: '#2177b4'}}><Text> CONFIRM </Text></Button>
+              </View>
             </View>
           </View>
         </View>
@@ -662,7 +658,7 @@ class Cashier extends React.Component {
   }
 }
 
-Cashier.propTypes = {
+Pos.propTypes = {
 };
 
-export default Cashier;
+export default Pos;

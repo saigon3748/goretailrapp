@@ -39,19 +39,6 @@ class Dashboard extends React.Component {
         backgroundColor: '#F5F8F9'
       }}>
         <View style={{
-          height: 70,
-          flex: 1, 
-          flexDirection: 'row',
-          backgroundColor: 'rgb(70, 70, 70)'}}>
-          <Text style={{width: 200, textAlign: 'center', marginTop: 18, color: '#2177b4', fontSize: 35}}>goretailr</Text>
-          <View style={{flex: 1, flexDirection: 'row'}}>
-            <Text style={{marginTop: 30, marginLeft: 30, marginRight: 30, color: '#F5F8F9', fontSize: 20}}>Dashboard</Text>
-            <Text style={{marginTop: 30, marginLeft: 30, marginRight: 30, color: '#F5F8F9', fontSize: 20}}>Cashier</Text>
-          </View>
-          <Text style={{width: 200, textAlign: 'right', marginTop: 30, marginRight: 30, color: '#F5F8F9', fontSize: 20}}>nam</Text>
-        </View>
-
-        <View style={{
           flex: 8, 
           flexDirection: 'row',
           justifyContent: 'space-between',

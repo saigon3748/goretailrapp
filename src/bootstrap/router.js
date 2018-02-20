@@ -8,6 +8,12 @@ const router = (state = initialState, action) => {
   let nextState = Navigator.router.getStateForAction(action, state);
 
   switch(action.type) {
+    case "MAIN":
+      nextState = Navigator.router.getStateForAction(
+        NavigationActions.navigate({ routeName: 'MAIN' }),
+        state
+      );
+      break;
     case "DASHBOARD":
       nextState = Navigator.router.getStateForAction(
         NavigationActions.navigate({ routeName: 'DASHBOARD' }),
