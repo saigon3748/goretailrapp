@@ -25,7 +25,7 @@ const user = (navigation) => {
 }
 
 export default ({navigation}) => ({
-  headerStyle: {backgroundColor: 'rgb(70, 70, 70)'},
+  headerStyle: {backgroundColor: '#3F4247'},
   title: 'goretailr',
   headerTintColor: '#F5F8F9',
   gesturesEnabled: false,

@@ -152,15 +152,14 @@ class Cashier extends React.Component {
       <View style={{
         flex: 1,
         flexDirection: 'column',
-        justifyContent: 'space-between',
-        backgroundColor: '#F5F8F9'
+        justifyContent: 'space-between'
       }}>
         <View style={{
           flex: 8, 
           flexDirection: 'row',
           justifyContent: 'space-between',
         }}>
-          <View style={{width: 730}}>
+          <View style={{width: 730, backgroundColor: 'white'}}>
             <ScrollView vertical={true}>
               <View style={{
                 flex: 1,
@@ -186,7 +185,7 @@ class Cashier extends React.Component {
               </View>
             </ScrollView>
           </View>
-          <View style={{flex: 2, flexDirection: 'column', backgroundColor: 'rgb(221, 226, 229)'}}>
+          <View style={{flex: 2, flexDirection: 'column', backgroundColor: '#F5F8F9'}}>
             <View style={{width: 270, height: 30, marginTop: 20, marginLeft: 10, marginRight: 10}}>
               <Text style={{textAlign: 'center', fontSize: 20, color: 'rgb(70, 70, 70)'}}>CHECKOUT</Text>
             </View>
@@ -247,7 +246,7 @@ class Cashier extends React.Component {
           </View>
         </View>
 
-        <View style={{flex: 1, flexDirection: 'row'}}>
+        <View style={{flex: 1, flexDirection: 'row', backgroundColor: '#f2f3f4'}}>
           <View style={{width: 100, height: 60, marginTop: 10, marginLeft: 10}}>
             <Button full large onPress={this.onPress} style={{backgroundColor: '#2177b4'}}><Text> BACK </Text></Button>
           </View>
