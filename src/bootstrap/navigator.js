@@ -2,11 +2,11 @@ import React from 'react'
 import { Text, Animated, Easing } from 'react-native'
 import { StackNavigator, DrawerNavigator } from 'react-navigation'
 
-import Login from '../views/login';
-import Topbar from '../views/topbar';
-import Sidebar from '../views/sidebar';
-import Cashier from '../views/cashier';
-import Dashboard from '../views/dashboard';
+import Login from '../components/login';
+import Topbar from '../components/topbar';
+import Sidebar from '../components/sidebar';
+import Cashier from '../components/cashier';
+import Dashboard from '../components/dashboard';
 
 export default StackNavigator({
   LOGIN: { screen: Login },
