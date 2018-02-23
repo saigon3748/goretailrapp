@@ -34,6 +34,24 @@ class Cashier extends React.Component {
         {_id: 1, name: "Natural Turquoise Brooch", price: 15.05, image: "https://img0.etsystatic.com/210/0/10748667/il_340x270.1353210938_iqg8.jpg"},
         {_id: 2, name: "Winter wedding mittens", price: 6.50, image: "https://img0.etsystatic.com/191/1/7502837/il_340x270.1379665700_jnp8.jpg"},
         {_id: 3, name: "Watch tools diy steampunk", price: 15.00, image: "https://img0.etsystatic.com/189/1/12773570/il_340x270.1256358656_o7ls.jpg"},
+        {_id: 11, name: "Natural Turquoise Brooch", price: 15.05, image: "https://img0.etsystatic.com/210/0/10748667/il_340x270.1353210938_iqg8.jpg"},
+        {_id: 12, name: "Winter wedding mittens", price: 6.50, image: "https://img0.etsystatic.com/191/1/7502837/il_340x270.1379665700_jnp8.jpg"},
+        {_id: 13, name: "Watch tools diy steampunk", price: 15.00, image: "https://img0.etsystatic.com/189/1/12773570/il_340x270.1256358656_o7ls.jpg"},
+        {_id: 21, name: "Natural Turquoise Brooch", price: 15.05, image: "https://img0.etsystatic.com/210/0/10748667/il_340x270.1353210938_iqg8.jpg"},
+        {_id: 22, name: "Winter wedding mittens", price: 6.50, image: "https://img0.etsystatic.com/191/1/7502837/il_340x270.1379665700_jnp8.jpg"},
+        {_id: 23, name: "Watch tools diy steampunk", price: 15.00, image: "https://img0.etsystatic.com/189/1/12773570/il_340x270.1256358656_o7ls.jpg"},
+        {_id: 31, name: "Natural Turquoise Brooch", price: 15.05, image: "https://img0.etsystatic.com/210/0/10748667/il_340x270.1353210938_iqg8.jpg"},
+        {_id: 32, name: "Winter wedding mittens", price: 6.50, image: "https://img0.etsystatic.com/191/1/7502837/il_340x270.1379665700_jnp8.jpg"},
+        {_id: 33, name: "Watch tools diy steampunk", price: 15.00, image: "https://img0.etsystatic.com/189/1/12773570/il_340x270.1256358656_o7ls.jpg"},
+        {_id: 41, name: "Natural Turquoise Brooch", price: 15.05, image: "https://img0.etsystatic.com/210/0/10748667/il_340x270.1353210938_iqg8.jpg"},
+        {_id: 42, name: "Winter wedding mittens", price: 6.50, image: "https://img0.etsystatic.com/191/1/7502837/il_340x270.1379665700_jnp8.jpg"},
+        {_id: 43, name: "Watch tools diy steampunk", price: 15.00, image: "https://img0.etsystatic.com/189/1/12773570/il_340x270.1256358656_o7ls.jpg"},
+        {_id: 51, name: "Natural Turquoise Brooch", price: 15.05, image: "https://img0.etsystatic.com/210/0/10748667/il_340x270.1353210938_iqg8.jpg"},
+        {_id: 52, name: "Winter wedding mittens", price: 6.50, image: "https://img0.etsystatic.com/191/1/7502837/il_340x270.1379665700_jnp8.jpg"},
+        {_id: 53, name: "Watch tools diy steampunk", price: 15.00, image: "https://img0.etsystatic.com/189/1/12773570/il_340x270.1256358656_o7ls.jpg"},
+        {_id: 61, name: "Natural Turquoise Brooch", price: 15.05, image: "https://img0.etsystatic.com/210/0/10748667/il_340x270.1353210938_iqg8.jpg"},
+        {_id: 62, name: "Winter wedding mittens", price: 6.50, image: "https://img0.etsystatic.com/191/1/7502837/il_340x270.1379665700_jnp8.jpg"},
+        {_id: 63, name: "Watch tools diy steampunk", price: 15.00, image: "https://img0.etsystatic.com/189/1/12773570/il_340x270.1256358656_o7ls.jpg"},
       ],
       tags: [
         {name: "noodle", children: [
@@ -177,7 +195,7 @@ class Cashier extends React.Component {
                           {menuItem.name}
                         </Text>
                         <Text style={{backgroundColor: 'rgba(221, 226, 229, 0.8)'}}>
-                          $ {menuItem.price}
+                          ${menuItem.price}
                         </Text>
                       </ImageBackground>
                     </View>
@@ -186,7 +204,7 @@ class Cashier extends React.Component {
               </View>
             </ScrollView>
           </View>
-          <View style={{flex: 2, flexDirection: 'column', backgroundColor: '#F5F8F9', marginTop: 10, marginBottom: 10}}>
+          <View style={{flex: 2, flexDirection: 'column', backgroundColor: '#f2f3f4', marginTop: 10, marginBottom: 10}}>
             <View style={{width: 270, height: 30, marginTop: 20, marginLeft: 10, marginRight: 10}}>
               <Text style={{textAlign: 'center', fontSize: 20, color: 'rgb(70, 70, 70)'}}>CHECKOUT</Text>
             </View>
@@ -204,7 +222,7 @@ class Cashier extends React.Component {
                     <View style={{flex: 1, flexDirection: 'row', marginTop: 10}}>
                       <Button full small style={{backgroundColor: '#2177b4'}} onPress={() => {this.onAddItem(item._id)}}><Text> + </Text></Button>
                       <Button full small style={{backgroundColor: '#6c757d'}} onPress={() => {this.onRemoveItem(item._id)}}><Text> - </Text></Button>
-                      <Button full small style={{backgroundColor: '#93c4b9'}}><Text> E </Text></Button>
+                      <Button full small style={{backgroundColor: '#7BBFB7'}}><Text> E </Text></Button>
                       <View style={{flex: 1}}/>
                       <Text style={{width: 70, textAlign: 'right'}}>x{item.quantity}</Text>
                     </View>
@@ -247,7 +265,7 @@ class Cashier extends React.Component {
           </View>
         </View>
 
-        <View style={{flex: 1, flexDirection: 'row', backgroundColor: '#f5f8f9'}}>
+        <View style={{flex: 1, flexDirection: 'row', backgroundColor: '#f2f3f4'}}>
           <View style={{width: 100, height: 60, marginTop: 10, marginLeft: 10}}>
             <Button full large onPress={this.onPress} style={{backgroundColor: '#2177b4'}}><Text> BACK </Text></Button>
           </View>
