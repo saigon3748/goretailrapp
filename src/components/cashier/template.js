@@ -178,7 +178,7 @@ class Cashier extends React.Component {
           flexDirection: 'row',
           justifyContent: 'space-between',
         }}>
-          <View style={{width: 730}}>
+          <View style={{width: 730, marginBottom: 10}}>
             <ScrollView vertical={true}>
               <View style={{
                 flex: 1,
