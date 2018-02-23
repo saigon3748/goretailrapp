@@ -35,15 +35,15 @@ class Login extends React.Component {
       <View style={{
         flex: 1,
         flexDirection: 'row',
-        backgroundColor: '#F5F8F9'
+        backgroundColor: '#fff'
       }}>
         <View style={{flex: 1}}></View>
         <View style={{width: 270}}>
           <Text style={{marginTop: 180, textAlign: 'center', fontSize: 35, color: 'rgb(70, 70, 70)'}}>goretailr</Text>
           <Text style={{marginTop: 30, color: 'rgb(70, 70, 70)'}}>Login ID</Text>
-          <TextInput autoCapitalize='none' style={{marginTop: 10, height: 35, borderColor: '#93c4b9', borderWidth: 2}}/>          
+          <TextInput autoCapitalize='none' style={{marginTop: 10, height: 35, borderColor: '#93c4b9', borderWidth: 1}}/>          
           <Text style={{marginTop: 20, color: 'rgb(70, 70, 70)'}}>Password</Text>
-          <TextInput secureTextEntry style={{marginTop: 10, height: 35, borderColor: '#93c4b9', borderWidth: 2}}/>          
+          <TextInput secureTextEntry style={{marginTop: 10, height: 35, borderColor: '#93c4b9', borderWidth: 1}}/>          
           <Button style={{marginTop: 30, backgroundColor: '#2177b4'}} full onPress={this.props.login} disabled={this.props.loading}><Text> LOGIN </Text></Button>
         </View>
         <View style={{flex: 1}}></View>        

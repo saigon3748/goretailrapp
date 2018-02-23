@@ -32,7 +32,7 @@ class Sidebar extends React.Component {
 
   render() {
     return (
-      <View style={{flex: 1, flexDirection: 'column', backgroundColor: 'rgb(221, 226, 229)'}}>
+      <View style={{flex: 1, flexDirection: 'column', backgroundColor: '#F5F8F9'}}>
         <List style={{marginTop: 40}}>
           <ListItem icon>
             <Left>
