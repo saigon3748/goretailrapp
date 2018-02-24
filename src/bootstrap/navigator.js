@@ -5,15 +5,19 @@ import { StackNavigator, DrawerNavigator } from 'react-navigation'
 import Login from '../components/login';
 import Topbar from '../components/topbar';
 import Sidebar from '../components/sidebar';
-import Cashier from '../components/cashier';
 import Dashboard from '../components/dashboard';
+import Cashier from '../components/cashier';
+import Kitchen from '../components/kitchen';
+import Settings from '../components/settings';
 
 export default StackNavigator({
   LOGIN: { screen: Login },
   APP: { screen: StackNavigator({
     MAIN: { screen: DrawerNavigator({
-        POS: { screen: Cashier },
-        DASHBOARD: { screen: Dashboard }
+        DASHBOARD: { screen: Dashboard },
+        CASHIER: { screen: Cashier },
+        KITCHEN: { screen: Kitchen },
+        SETTINGS: { screen: Settings }
       }, {
         gesturesEnabled: false,
         contentComponent: Sidebar

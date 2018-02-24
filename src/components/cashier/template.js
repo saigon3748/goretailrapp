@@ -2,6 +2,7 @@ import _ from 'lodash';
 import React from 'react';
 import { ScrollView, View, TouchableOpacity, TouchableHighlight, StyleSheet, Image, ImageBackground, TextInput, FlatList } from 'react-native';
 import { Container, Content, Card, CardItem, Form, Item, Header, Left, Body, Right, Button, Icon, Title, List, ListItem, Text, Thumbnail, Input, InputGroup, Label } from 'native-base';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const styles = StyleSheet.create({
   container: {
@@ -178,7 +179,7 @@ class Cashier extends React.Component {
           flexDirection: 'row',
           justifyContent: 'space-between',
         }}>
-          <View style={{width: 730, marginBottom: 10}}>
+          <View style={{width: 650, marginBottom: 10}}>
             <ScrollView vertical={true}>
               <View style={{
                 flex: 1,
@@ -187,9 +188,9 @@ class Cashier extends React.Component {
               }}>
                 {this.state.menu.map(menuItem => (
                   <TouchableOpacity key={menuItem._id} activeOpacity={1.0} onPress={() => this.onAddItem(menuItem._id)}>
-                    <View style={{width: 170, height: 170, marginTop: 10, marginLeft: 10}}>
+                    <View style={{width: 150, height: 150, marginTop: 10, marginLeft: 10}}>
                       <ImageBackground
-                        style={{width: 170, height: 170}}
+                        style={{width: 150, height: 150}}
                         source={{uri: menuItem.image}}>
                         <Text style={{backgroundColor: 'rgba(221, 226, 229, 0.8)'}}>
                           {menuItem.name}
@@ -204,8 +205,8 @@ class Cashier extends React.Component {
               </View>
             </ScrollView>
           </View>
-          <View style={{flex: 2, flexDirection: 'column', backgroundColor: '#f2f3f4', marginTop: 10, marginBottom: 10}}>
-            <View style={{width: 270, height: 30, marginTop: 20, marginLeft: 10, marginRight: 10}}>
+          <View style={{flex: 1, flexDirection: 'column', backgroundColor: '#f2f3f4', marginTop: 10, marginBottom: 10}}>
+            <View style={{height: 30, marginTop: 20, marginLeft: 10, marginRight: 10}}>
               <Text style={{textAlign: 'center', fontSize: 20, color: 'rgb(70, 70, 70)'}}>CHECKOUT</Text>
             </View>
 
@@ -214,8 +215,8 @@ class Cashier extends React.Component {
                 data={this.state.order.lineItems}
                 keyExtractor={(item) => item._id}
                 renderItem={({item, separators}) => (
-                  <View>
-                    <View style={{flex: 1, flexDirection: 'row', marginTop: 10}}>
+                  <View style={{marginTop: 20}}>
+                    <View style={{flex: 1, flexDirection: 'row'}}>
                       <Text style={{flex: 1}}>{item.name}</Text>
                       <Text style={{width: 70, textAlign: 'right'}}>${item.price}</Text>
                     </View>
@@ -231,7 +232,7 @@ class Cashier extends React.Component {
               />
             </ScrollView>
 
-            <View style={{width: 270, height: 90, marginTop: 30, marginLeft: 10, marginRight: 10}}>
+            <View style={{height: 90, marginTop: 30, marginLeft: 10, marginRight: 10}}>
               <View style={{flex: 1, flexDirection: 'row'}}>
                 <Text style={{flex: 1}}>Subtotal</Text>
                 <Text style={{width: 100, textAlign: 'right'}}>${this.state.order.subtotal}</Text>
@@ -246,19 +247,19 @@ class Cashier extends React.Component {
               </View>
             </View>
 
-            <View style={{width: 270, height: 40, marginTop: 10, marginLeft: 10, marginRight: 10}}>
+            <View style={{height: 40, marginTop: 10, marginLeft: 10, marginRight: 10}}>
               <View style={{flex: 1, flexDirection: 'row'}}>
                 <Text style={{flex: 1, fontSize: 30, color: 'rgb(70, 70, 70)'}}>Total</Text>
                 <Text style={{width: 150, textAlign: 'right', fontSize: 30, color: 'rgb(70, 70, 70)'}}>${this.state.order.total}</Text>
               </View>
             </View>
 
-            <View style={{flexDirection: 'row', width: 270, marginTop: 20, marginBottom: 10, marginLeft: 10, marginRight: 10}}>
-              <View style={{width: 125}}>
+            <View style={{flexDirection: 'row', marginTop: 20, marginBottom: 10, marginLeft: 10, marginRight: 10}}>
+              <View style={{width: 170}}>
                 <Button full onPress={() => this.onDiscard()} style={{backgroundColor: '#6c757d'}}><Text> DISCARD </Text></Button>
               </View>
               <View style={{flex: 1}} />
-              <View style={{width: 125}}>
+              <View style={{width: 170}}>
                 <Button full onPress={() => this.onConfirm()} style={{backgroundColor: '#2177b4'}}><Text> CONFIRM </Text></Button>
               </View>
             </View>
@@ -266,20 +267,20 @@ class Cashier extends React.Component {
         </View>
 
         <View style={{flex: 1, flexDirection: 'row', backgroundColor: '#f2f3f4'}}>
-          <View style={{width: 100, height: 60, marginTop: 10, marginLeft: 10}}>
+          <View style={{width: 150, height: 60, marginTop: 10, marginLeft: 10}}>
             <Button full large onPress={this.onPress} style={{backgroundColor: '#2177b4'}}><Text> BACK </Text></Button>
           </View>
           <View style={{flex: 1}}>
             <ScrollView horizontal={true} style={{flex: 1, flexDirection: 'row'}}>
               {this.state.tags.map(tag => (
-                <View key={tag.name} style={{width: 170, height: 170, marginTop: 10, marginLeft: 10}}>
+                <View key={tag.name} style={{width: 150, height: 60, marginTop: 10, marginLeft: 10}}>
                   <Button full large success onPress={this.onPress} style={{backgroundColor: '#7BBFB7'}}><Text> {tag.name} </Text></Button>
                 </View>
               ))}
             </ScrollView>
           </View>   
         </View>
-      </View>      
+      </View>
     );
   }
 }

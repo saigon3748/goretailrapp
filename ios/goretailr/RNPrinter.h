@@ -10,7 +10,7 @@
 #import "ePOS2.h"
 #import "ePOSEasySelect.h"
 
-@interface Printer : NSObject <RCTBridgeModule>
+@interface RNPrinter : NSObject <RCTBridgeModule>
 {
   Epos2Printer *printer_;
 }

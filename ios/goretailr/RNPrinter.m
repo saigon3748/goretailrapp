@@ -6,7 +6,7 @@
 //  Copyright © 2018 Facebook. All rights reserved.
 //
 
-#import "Printer.h"
+#import "RNPrinter.h"
 #import "React/RCTLog.h"
 #import <AVFoundation/AVFoundation.h>
 
@@ -20,15 +20,15 @@
 #define BARCODE_WIDTH_POS   110
 
 
-@implementation Printer
+@implementation RNPrinter
 
 // This RCT (React) "macro" exposes the current module to JavaScript
 RCT_EXPORT_MODULE();
 
 // We must explicitly expose methods otherwise JavaScript can't access anything
-RCT_REMAP_METHOD(get,
-                 resolver:(RCTPromiseResolveBlock)resolve
-                 rejecter:(RCTPromiseRejectBlock)reject)
+RCT_EXPORT_METHOD(print:(NSDictionary *) data
+                  resolver:(RCTPromiseResolveBlock)resolve
+                  rejecter:(RCTPromiseRejectBlock)reject)
 {
   //float volume = [AVAudioSession sharedInstance].outputVolume;
   //NSString* volumeString = [NSString stringWithFormat:@"%f", volume];
@@ -74,7 +74,7 @@ RCT_REMAP_METHOD(get,
   //  }
   
   
-  if (![self runPrintReceiptSequence]) {
+  if (![self runPrintReceiptSequence:data]) {
     resolve(@"error");
   } else {
     resolve(@"success");
@@ -82,18 +82,18 @@ RCT_REMAP_METHOD(get,
 }
 
 
-- (BOOL)runPrintReceiptSequence
+- (BOOL)runPrintReceiptSequence:(NSDictionary *) data
 {
   if (![self initializeObject]) {
     return NO;
   }
   
-  if (![self createReceiptData]) {
+  if (![self createReceiptData:data]) {
     [self finalizeObject];
     return NO;
   }
   
-  if (![self printData]) {
+  if (![self printData:data[@"printer"]]) {
     [self finalizeObject];
     return NO;
   }
@@ -127,7 +127,7 @@ RCT_REMAP_METHOD(get,
   printer_ = nil;
 }
 
--(BOOL)connectPrinter
+-(BOOL)connectPrinter:(NSString *) ip
 {
   int result = EPOS2_SUCCESS;
   
@@ -135,7 +135,7 @@ RCT_REMAP_METHOD(get,
     return NO;
   }
   
-  result = [printer_ connect:@"TCP:F8:D0:27:2B:0F:93" timeout:EPOS2_PARAM_DEFAULT];
+  result = [printer_ connect:ip timeout:EPOS2_PARAM_DEFAULT];
   if (result != EPOS2_SUCCESS) {
     return NO;
   }
@@ -174,7 +174,7 @@ RCT_REMAP_METHOD(get,
   [self finalizeObject];
 }
 
-- (BOOL)createReceiptData
+- (BOOL)createReceiptData:(NSDictionary *) data
 {
     int result = EPOS2_SUCCESS;
   
@@ -215,42 +215,38 @@ RCT_REMAP_METHOD(get,
     if (result != EPOS2_SUCCESS) {
       return NO;
     }
-    [textData appendString:@"THE STORE 123 (555) 555 – 5555\n"];
-    [textData appendString:@"STORE DIRECTOR – John Smith\n"];
+  
+    [textData appendString:[data[@"company"] stringByAppendingString:@"\n"]];
+    [textData appendString:[data[@"company1"] stringByAppendingString:@"\n"]];
+    [textData appendString:[data[@"company2"] stringByAppendingString:@"\n"]];
+    [textData appendString:[data[@"company3"] stringByAppendingString:@"\n"]];
+    [textData appendString:[data[@"company4"] stringByAppendingString:@"\n"]];
     [textData appendString:@"\n"];
-    [textData appendString:@"7/01/07 16:58 6153 05 0191 134\n"];
-    [textData appendString:@"ST# 21 OP# 001 TE# 01 TR# 747\n"];
+    [textData appendString:[data[@"header"] stringByAppendingString:@"\n"]];
+    [textData appendString:[data[@"timestamp"] stringByAppendingString:@"\n"]];
     [textData appendString:@"------------------------------\n"];
     result = [printer_ addText:textData];
     if (result != EPOS2_SUCCESS) {
       return NO;
     }
     [textData setString:@""];
-  
-    // Section 2 : Purchaced items
-    [textData appendString:@"400 OHEIDA 3PK SPRINGF  9.99 R\n"];
-    [textData appendString:@"410 3 CUP BLK TEAPOT    9.99 R\n"];
-    [textData appendString:@"445 EMERIL GRIDDLE/PAN 17.99 R\n"];
-    [textData appendString:@"438 CANDYMAKER ASSORT   4.99 R\n"];
-    [textData appendString:@"474 TRIPOD              8.99 R\n"];
-    [textData appendString:@"433 BLK LOGO PRNTED ZO  7.99 R\n"];
-    [textData appendString:@"458 AQUA MICROTERRY SC  6.99 R\n"];
-    [textData appendString:@"493 30L BLK FF DRESS   16.99 R\n"];
-    [textData appendString:@"407 LEVITATING DESKTOP  7.99 R\n"];
-    [textData appendString:@"441 **Blue Overprint P  2.99 R\n"];
-    [textData appendString:@"476 REPOSE 4PCPM CHOC   5.49 R\n"];
-    [textData appendString:@"461 WESTGATE BLACK 25  59.99 R\n"];
+
+    for (int i = 0; i < [data[@"items"] count]; i++)
+    {
+      NSString *name = [data[@"items"] objectAtIndex:i][@"name"];
+      NSString *total = [data[@"items"] objectAtIndex:i][@"total"];
+      [textData appendString:[[name stringByAppendingString:total] stringByAppendingString:@"\n"]];
+    }
     [textData appendString:@"------------------------------\n"];
-  
     result = [printer_ addText:textData];
     if (result != EPOS2_SUCCESS) {
       return NO;
     }
     [textData setString:@""];
-  
-    // Section 3 : Payment infomation
-    [textData appendString:@"SUBTOTAL                160.38\n"];
-    [textData appendString:@"TAX                      14.43\n"];
+
+    [textData appendString:[[@"SUBTOTAL" stringByAppendingString:data[@"subtotal"]] stringByAppendingString:@"\n"]];
+    [textData appendString:[[@"DISCOUNT" stringByAppendingString:data[@"discount"]] stringByAppendingString:@"\n"]];
+    [textData appendString:[[@"TAX" stringByAppendingString:data[@"tax"]] stringByAppendingString:@"\n"]];
     result = [printer_ addText:textData];
     if (result != EPOS2_SUCCESS) {
       return NO;
@@ -262,44 +258,12 @@ RCT_REMAP_METHOD(get,
       return NO;
     }
   
-    result = [printer_ addText:@"TOTAL    174.81\n"];
-    if (result != EPOS2_SUCCESS) {
-      return NO;
-    }
-  
-    result = [printer_ addTextSize:1 height:1];
-    if (result != EPOS2_SUCCESS) {
-      return NO;
-    }
-  
-    result = [printer_ addFeedLine:1];
-    if (result != EPOS2_SUCCESS) {
-      return NO;
-    }
-  
-    [textData appendString:@"CASH                    200.00\n"];
-    [textData appendString:@"CHANGE                   25.19\n"];
-    [textData appendString:@"------------------------------\n"];
+    [textData appendString:[[@"TOTAL" stringByAppendingString:data[@"total"]] stringByAppendingString:@"\n\n\n"]];
     result = [printer_ addText:textData];
     if (result != EPOS2_SUCCESS) {
       return NO;
     }
     [textData setString:@""];
-  
-    // Section 4 : Advertisement
-    [textData appendString:@"Purchased item total number\n"];
-    [textData appendString:@"Sign Up and Save !\n"];
-    [textData appendString:@"With Preferred Saving Card\n"];
-    result = [printer_ addText:textData];
-    if (result != EPOS2_SUCCESS) {
-      return NO;
-    }
-    [textData setString:@""];
-  
-    result = [printer_ addFeedLine:2];
-    if (result != EPOS2_SUCCESS) {
-      return NO;
-    }
 
 //    result = [printer_ addBarcode:@"01209457"
 //                             type:EPOS2_BARCODE_CODE39
@@ -319,7 +283,7 @@ RCT_REMAP_METHOD(get,
     return YES;
 }
 
-- (BOOL)printData
+- (BOOL)printData:(NSString *) ip
 {
   int result = EPOS2_SUCCESS;
   
@@ -329,7 +293,7 @@ RCT_REMAP_METHOD(get,
     return NO;
   }
   
-  if (![self connectPrinter]) {
+  if (![self connectPrinter:ip]) {
     return NO;
   }
   

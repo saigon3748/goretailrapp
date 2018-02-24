@@ -1,11 +1,12 @@
 import React from 'react'
-import { Text, Animated, Easing } from 'react-native'
-import { Button } from 'native-base'
+import { Animated, Easing } from 'react-native'
+import { Container, Content, Card, CardItem, Form, Item, Header, Left, Body, Right, Button, Icon, Title, List, ListItem, Text, Thumbnail, Input, InputGroup, Label } from 'native-base';
 import { StackNavigator, DrawerNavigator } from 'react-navigation'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const menu = (navigation) => {
   return (
-    <Button transparent style={{padding: 20}} onPress={() => {
+    <Button transparent style={{padding: 10}} onPress={() => {
         if (navigation.state.index === 0) {
           navigation.navigate('DrawerOpen')
         } else {
@@ -13,14 +14,14 @@ const menu = (navigation) => {
         }
       }
     }>
-      <Text style={{fontSize: 16, color: '#F5F8F9'}}>Menu</Text>
+      <MaterialIcons name='menu' size={20} color={"#F5F8F9"} />
     </Button>
   )
 }
 
-const user = (navigation) => {
+const order = (navigation) => {
   return (
-    <Text style={{padding: 20, fontSize: 16, color: '#F5F8F9'}}>nam</Text>
+    <Text style={{color: '#F5F8F9', marginRight: 10}}>NOODLE HOUSE</Text>
   )
 }
 
@@ -30,5 +31,5 @@ export default ({navigation}) => ({
   headerTintColor: '#F5F8F9',
   gesturesEnabled: false,
   headerLeft: menu(navigation),
-  headerRight: user(navigation)
+  headerRight: order(navigation)
 })

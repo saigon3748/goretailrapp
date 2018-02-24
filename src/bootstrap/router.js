@@ -26,10 +26,41 @@ const router = (state = initialState, action) => {
         state
       );
       break;
+    case "KITCHEN":
+      nextState = Navigator.router.getStateForAction(
+        NavigationActions.navigate({ routeName: 'KITCHEN' }),
+        state
+      );
+      break;
+    case "SETTINGS":
+      nextState = Navigator.router.getStateForAction(
+        NavigationActions.navigate({ routeName: 'SETTINGS' }),
+        state
+      );
+      break;
     case "PRINT":
-      alert('print');
-      const Printer = NativeModules.Printer;  
-      Printer.get().then(volume => alert(volume));      
+      let data = {
+        printer: "TCP:F8:D0:27:2B:0F:93",
+        company: "NOODLE HOUSE",
+        company1: "The Original Noodle",
+        company2: "30 Elizabeth",
+        company3: "Phone 123",
+        company4: "ABN 456",
+        header: "TAX INVOICE  #0052",
+        timestamp: "7/01/07 16:58",
+        items: [
+          {name: "Hokkien Mee", total: "$12.80"},
+          {name: "Prawn Cracker", total: "$2.50"},
+        ],
+        subtotal: "$20.50",
+        discount: "$2.00",
+        tax: "$3.00",
+        total: "$27.50"
+      }
+
+      NativeModules.RNPrinter.print(data).catch((error) => {        
+        throw new Error(error.message);      
+      });
       break;
   }
 

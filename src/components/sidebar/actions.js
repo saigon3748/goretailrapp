@@ -1,14 +1,24 @@
 
 export default (dispatch) => {
   return {
+    gotoDashboard: id => {
+      dispatch({
+        type: "DASHBOARD"
+      })
+    },
     gotoCashier: id => {
       dispatch({
         type: "CASHIER"
       })
     },
-    print: id => {
+    gotoKitchen: id => {
       dispatch({
-        type: "PRINT"
+        type: "KITCHEN"
+      })
+    },
+    gotoSettings: id => {
+      dispatch({
+        type: "SETTINGS"
       })
     }
   }  
