@@ -194,6 +194,10 @@ class Kitchen extends React.Component {
         <View style={{height: 65, flexDirection: 'row', backgroundColor: '#f2f3f4'}}>
           <View style={{flex: 1}}></View>
           <View style={{width: 180}}>
+            <Button full style={{marginTop: 10, backgroundColor: '#6c757d'}} onPress={() => this.onCancel()}><Text> REFRESH </Text></Button>
+          </View>
+          <View style={{width: 50}}></View>
+          <View style={{width: 180}}>
             <Button style={{marginTop: 10, backgroundColor: '#2177b4'}} full><Text> COMPLETE ALL </Text></Button>
           </View>
           <View style={{flex: 1}}></View>

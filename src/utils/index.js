@@ -1,5 +1,7 @@
 import pipeline from './pipeline';
+import Helper from './helper';
 
-export default {
-  pipeline
+export {
+  pipeline,
+  Helper
 }

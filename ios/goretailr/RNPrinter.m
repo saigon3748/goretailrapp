@@ -216,14 +216,58 @@ RCT_EXPORT_METHOD(print:(NSDictionary *) data
       return NO;
     }
   
-    [textData appendString:[data[@"company"] stringByAppendingString:@"\n"]];
-    [textData appendString:[data[@"company1"] stringByAppendingString:@"\n"]];
-    [textData appendString:[data[@"company2"] stringByAppendingString:@"\n"]];
-    [textData appendString:[data[@"company3"] stringByAppendingString:@"\n"]];
-    [textData appendString:[data[@"company4"] stringByAppendingString:@"\n"]];
+    if (data[@"header1"]) {
+      [textData appendString:[data[@"header1"] stringByAppendingString:@"\n"]];
+    }
+    result = [printer_ addText:textData];
+    if (result != EPOS2_SUCCESS) {
+      return NO;
+    }
+    [textData setString:@""];
+
+    result = [printer_ addTextSize:1 height:1];
+    if (result != EPOS2_SUCCESS) {
+      return NO;
+    }
+
+    if (data[@"header2"]) {
+      [textData appendString:[data[@"header2"] stringByAppendingString:@"\n"]];
+    }
+    if (data[@"header3"]) {
+      [textData appendString:[data[@"header3"] stringByAppendingString:@"\n"]];
+    }
+    if (data[@"header4"]) {
+      [textData appendString:[data[@"header4"] stringByAppendingString:@"\n"]];
+    }
+    if (data[@"header5"]) {
+      [textData appendString:[data[@"header5"] stringByAppendingString:@"\n"]];
+    }
+
     [textData appendString:@"\n"];
-    [textData appendString:[data[@"header"] stringByAppendingString:@"\n"]];
-    [textData appendString:[data[@"timestamp"] stringByAppendingString:@"\n"]];
+    result = [printer_ addText:textData];
+    if (result != EPOS2_SUCCESS) {
+      return NO;
+    }
+    [textData setString:@""];
+
+    result = [printer_ addTextSize:2 height:2];
+    if (result != EPOS2_SUCCESS) {
+      return NO;
+    }
+
+    [textData appendString:[data[@"name"] stringByAppendingString:@"\n"]];
+    result = [printer_ addText:textData];
+    if (result != EPOS2_SUCCESS) {
+      return NO;
+    }
+    [textData setString:@""];
+
+    result = [printer_ addTextSize:1 height:1];
+    if (result != EPOS2_SUCCESS) {
+      return NO;
+    }
+
+    [textData appendString:[data[@"order"] stringByAppendingString:@"\n"]];
     [textData appendString:@"------------------------------\n"];
     result = [printer_ addText:textData];
     if (result != EPOS2_SUCCESS) {
@@ -233,9 +277,7 @@ RCT_EXPORT_METHOD(print:(NSDictionary *) data
 
     for (int i = 0; i < [data[@"items"] count]; i++)
     {
-      NSString *name = [data[@"items"] objectAtIndex:i][@"name"];
-      NSString *total = [data[@"items"] objectAtIndex:i][@"total"];
-      [textData appendString:[[name stringByAppendingString:total] stringByAppendingString:@"\n"]];
+      [textData appendString:[[data[@"items"] objectAtIndex:i] stringByAppendingString:@"\n"]];
     }
     [textData appendString:@"------------------------------\n"];
     result = [printer_ addText:textData];
@@ -244,9 +286,9 @@ RCT_EXPORT_METHOD(print:(NSDictionary *) data
     }
     [textData setString:@""];
 
-    [textData appendString:[[@"SUBTOTAL" stringByAppendingString:data[@"subtotal"]] stringByAppendingString:@"\n"]];
-    [textData appendString:[[@"DISCOUNT" stringByAppendingString:data[@"discount"]] stringByAppendingString:@"\n"]];
-    [textData appendString:[[@"TAX" stringByAppendingString:data[@"tax"]] stringByAppendingString:@"\n"]];
+    [textData appendString:[data[@"subtotal"] stringByAppendingString:@"\n"]];
+    [textData appendString:[data[@"discount"] stringByAppendingString:@"\n"]];
+    [textData appendString:[data[@"tax"] stringByAppendingString:@"\n"]];
     result = [printer_ addText:textData];
     if (result != EPOS2_SUCCESS) {
       return NO;
@@ -258,7 +300,29 @@ RCT_EXPORT_METHOD(print:(NSDictionary *) data
       return NO;
     }
   
-    [textData appendString:[[@"TOTAL" stringByAppendingString:data[@"total"]] stringByAppendingString:@"\n\n\n"]];
+    [textData appendString:[data[@"total"] stringByAppendingString:@"\n"]];
+    result = [printer_ addText:textData];
+    if (result != EPOS2_SUCCESS) {
+      return NO;
+    }
+    [textData setString:@""];
+  
+    result = [printer_ addTextSize:1 height:1];
+    if (result != EPOS2_SUCCESS) {
+     return NO;
+    }
+
+    [textData appendString:@"\n"];
+    if (data[@"footer1"]) {
+      [textData appendString:[data[@"footer1"] stringByAppendingString:@"\n"]];
+    }
+    if (data[@"footer2"]) {
+      [textData appendString:[data[@"footer2"] stringByAppendingString:@"\n"]];
+    }
+    if (data[@"footer3"]) {
+      [textData appendString:[data[@"footer3"] stringByAppendingString:@"\n"]];
+    }
+    [textData appendString:@"\n"];
     result = [printer_ addText:textData];
     if (result != EPOS2_SUCCESS) {
       return NO;

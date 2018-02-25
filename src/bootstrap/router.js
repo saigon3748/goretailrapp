@@ -1,6 +1,7 @@
 import { NativeModules } from 'react-native';
 import { NavigationActions } from 'react-navigation';
 import Navigator from './navigator';
+import { Helper } from '../utils';
 
 const initialState = Navigator.router.getStateForAction(Navigator.router.getActionForPathAndParams('LOGIN'));
 
@@ -39,25 +40,32 @@ const router = (state = initialState, action) => {
       );
       break;
     case "PRINT":
-      let data = {
-        printer: "TCP:F8:D0:27:2B:0F:93",
-        company: "NOODLE HOUSE",
-        company1: "The Original Noodle",
-        company2: "30 Elizabeth",
-        company3: "Phone 123",
-        company4: "ABN 456",
-        header: "TAX INVOICE  #0052",
-        timestamp: "7/01/07 16:58",
-        items: [
-          {name: "Hokkien Mee", total: "$12.80"},
-          {name: "Prawn Cracker", total: "$2.50"},
-        ],
-        subtotal: "$20.50",
-        discount: "$2.00",
-        tax: "$3.00",
-        total: "$27.50"
+      let setting = {
+        name: "TAX INVOICE",
+        receiptPrinter: "TCP:F8:D0:27:2B:0F:93",
+        header1: "NOODLE HOUSE",
+        // header2: "The Original Noodle",
+        header3: "30 Elizabeth",
+        header4: "Phone 123",
+        header5: "ABN 456",
+        footer1: "Thank you!"
       }
 
+      let order = {
+        code: "0052",
+        createdAt: new Date(),
+        items: [
+          {name: "Hokkien Mee", quantity: 1, subtotal: 12.00},
+          {name: "Natural Turquoise", quantity: 5, subtotal: 28.50},
+          {name: "Prawn Cracker", quantity: 2, subtotal: 2.50},
+        ],
+        subtotal: 20.50,
+        discount: 2.00,
+        tax: 3.00,
+        total: 27.50
+      }
+
+      let data = Helper.getReceiptPrint(setting, order);
       NativeModules.RNPrinter.print(data).catch((error) => {        
         throw new Error(error.message);      
       });
