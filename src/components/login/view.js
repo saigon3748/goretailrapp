@@ -38,7 +38,7 @@ class Login extends React.Component {
         backgroundColor: '#fff'
       }}>
         <View style={{flex: 1}}></View>
-        <View style={{width: 270}}>
+        <View style={{width: 280}}>
           <Text style={{marginTop: 180, textAlign: 'center', fontSize: 35, color: 'rgb(70, 70, 70)'}}>goretailr</Text>
           <Text style={{marginTop: 30}}>Login ID</Text>
           <TextInput autoCapitalize='none' style={{marginTop: 10, height: 35, borderColor: '#d2d3d4', borderWidth: 1}}/>          
@@ -47,7 +47,7 @@ class Login extends React.Component {
           <Button style={{marginTop: 30, backgroundColor: '#2177b4'}} full onPress={this.props.login} disabled={this.props.loading}><Text> LOGIN </Text></Button>
         </View>
         <View style={{flex: 1}}></View>        
-      </View>      
+      </View>
     );
   }
 }

@@ -34,7 +34,7 @@ class Kitchen extends React.Component {
       items: [
         {_id: 1, code: "0015", time: "08:45", name: "Natural Turquoise Brooch", price: 15.05, quantity: 1, note: "https://img0.etsystatic.com/210/0/10748667/il_340x270.1353210938_iqg8.jpg"},
         {_id: 2, code: "0015", time: "08:45", name: "Winter wedding mittens", price: 6.50, quantity: 2, note: "https://img0.etsystatic.com/191/1/7502837/il_340x270.1379665700_jnp8.jpg"},
-        {_id: 3, code: "0015", time: "08:45", name: "Watch tools diy steampunk", price: 15.00, quantity: 3, note: "https://img0.etsystatic.com/189/1/12773570/il_340x270.1256358656_o7ls.jpg"},
+        {_id: 3, code: "0015", time: "08:45", name: "Watch tools diy steampunk", price: 15.00, quantity: 3, note: ""},
         {_id: 11, code: "0031", time: "11:32", name: "Natural Turquoise Brooch", price: 15.05, quantity: 1, note: "https://img0.etsystatic.com/210/0/10748667/il_340x270.1353210938_iqg8.jpg"},
         {_id: 12, code: "0031", time: "11:32", name: "Winter wedding mittens", price: 6.50, quantity: 2, note: "https://img0.etsystatic.com/191/1/7502837/il_340x270.1379665700_jnp8.jpg"},
         {_id: 13, code: "0052", time: "15:48", name: "Watch tools diy steampunk", price: 15.00, quantity: 3, note: "https://img0.etsystatic.com/189/1/12773570/il_340x270.1256358656_o7ls.jpg"},
@@ -156,7 +156,7 @@ class Kitchen extends React.Component {
               <Text>Today</Text>
             </Body>
             <Right>
-              <Text style={{color: '#FF7B01', fontSize: 25}}>In Queue: {this.state.items.length}</Text>
+              <Text style={{color: '#FF7B01', fontSize: 25, marginRight: 50}}>Queuing: {this.state.items.length}</Text>
             </Right>
           </ListItem>
         </List>
@@ -165,16 +165,23 @@ class Kitchen extends React.Component {
           <ScrollView style={{flex: 1, flexDirection: 'column', marginLeft: 30, marginRight: 10}}>
             <List>
               {this.state.items.map(item => (
-                <ListItem key={item._id}>
+                <ListItem key={item._id} style={{height: 80}}>
                   <Body>
                     <View style={{flexDirection: "row"}}>
-                      <Text style={{width: 60}}>#{item.code}</Text>
-                      <Text style={{width: 250}}>{item.name}</Text>
-                      <Text style={{width: 50}}>{item.quantity}</Text>
+                      <Text style={{width: 50}}>#{item.code}</Text>
+                      <Text style={{width: 50, textAlign: 'right'}}>{item.quantity}</Text>
+                      <Text style={{width: 200}}>{item.name}</Text>
                       <Text style={{flex: 1}}>{item.note}</Text>
-                      <Text style={{width: 60}}>{item.time}</Text>
-                      <View style={{width: 120, alignItems: 'center'}}>
-                        <Button full small style={{backgroundColor: '#2177b4'}} onPress={() => {this.onComplete(item)}}><Text> COMPLETE </Text></Button>                      
+                      <Text style={{width: 50}}>{item.time}</Text>
+                      <View style={{width: 100, alignItems: 'center'}}>
+                        <View style={{width: 80, alignItems: 'center'}}>
+                          <Button full small style={{backgroundColor: '#6c757d'}} onPress={() => {this.onComplete(item)}}><Text> NOTE </Text></Button>                      
+                        </View>
+                      </View>
+                      <View style={{width: 100, alignItems: 'center'}}>
+                        <View style={{width: 80, alignItems: 'center'}}>
+                          <Button full small style={{backgroundColor: '#2177b4'}} onPress={() => {this.onComplete(item)}}><Text> DONE </Text></Button>                      
+                        </View>
                       </View>
                     </View>
                   </Body>
@@ -184,9 +191,9 @@ class Kitchen extends React.Component {
           </ScrollView>
         </View>
 
-        <View style={{height: 70, flexDirection: 'row', backgroundColor: '#f2f3f4'}}>
+        <View style={{height: 65, flexDirection: 'row', backgroundColor: '#f2f3f4'}}>
           <View style={{flex: 1}}></View>
-          <View style={{width: 170}}>
+          <View style={{width: 180}}>
             <Button style={{marginTop: 10, backgroundColor: '#2177b4'}} full><Text> COMPLETE ALL </Text></Button>
           </View>
           <View style={{flex: 1}}></View>

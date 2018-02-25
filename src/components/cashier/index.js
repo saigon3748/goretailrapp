@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 import State from './state';
 import Actions from './actions';
-import Template from './template';
+import View from './view';
 
-export default connect(State, Actions)(Template);
+export default connect(State, Actions)(View);
