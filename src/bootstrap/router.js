@@ -44,7 +44,7 @@ const router = (state = initialState, action) => {
         name: "TAX INVOICE",
         receiptPrinter: "TCP:F8:D0:27:2B:0F:93",
         header1: "NOODLE HOUSE",
-        // header2: "The Original Noodle",
+        header2: "The Original Noodle",
         header3: "30 Elizabeth",
         header4: "Phone 123",
         header5: "ABN 456",
@@ -62,13 +62,19 @@ const router = (state = initialState, action) => {
         subtotal: 20.50,
         discount: 2.00,
         tax: 3.00,
-        total: 27.50
+        total: 27.50,
+        cash: 30.00,
+        change: 2.50
       }
 
-      let data = Helper.getReceiptPrint(setting, order);
-      NativeModules.RNPrinter.print(data).catch((error) => {        
-        throw new Error(error.message);      
-      });
+      let receipt = Helper.getReceiptPrint(setting, order);
+      NativeModules.RNPrinter.print(receipt)
+
+      setTimeout(() => {
+        let kitchen = Helper.getKitchenPrint(setting, order);
+        NativeModules.RNPrinter.print(kitchen)
+      }, 2000)
+
       break;
   }
 

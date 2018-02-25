@@ -30,50 +30,6 @@ RCT_EXPORT_METHOD(print:(NSDictionary *) data
                   resolver:(RCTPromiseResolveBlock)resolve
                   rejecter:(RCTPromiseRejectBlock)reject)
 {
-  //float volume = [AVAudioSession sharedInstance].outputVolume;
-  //NSString* volumeString = [NSString stringWithFormat:@"%f", volume];
-  
-  //if (volumeString) {
-  //  resolve(volumeString);
-  //} else {
-  //  reject(@"get_error", @"Error getting system volume", nil);
-  //}
-  
-  //  Epos2Printer *printer = nil;
-  //  printer = [[Epos2Printer alloc] initWithPrinterSeries:EPOS2_TM_T82 lang:EPOS2_MODEL_ANK];
-  //  if (printer == nil) {
-  //    //Displays error messages
-  //    resolve(@"error");
-  //  }
-  //
-  //  //resolve(@"success");
-  //  int result = EPOS2_SUCCESS;
-  //  result = [printer addTextAlign:EPOS2_ALIGN_CENTER]; result = [printer addText:@"Hello World"];
-  //  if (result != EPOS2_SUCCESS) {
-  //    //Displays error messages
-  //    resolve(@"error");
-  //  }
-  //  //resolve(@"success");
-  //
-  //  int result1 = EPOS2_SUCCESS;
-  //  result1 = [printer connect:@"TCP:192:168.192.168", timeout:EPOS2_PARAM_DEFAULT];
-  //  result1 = [printer beginTransaction];
-  //  if (result1 != EPOS2_SUCCESS) {
-  //    //Displays error messages
-  //    //resolve(@"error");
-  //  }
-  //  //resolve(@"success");
-  //
-  //  Epos2PrinterStatusInfo *status = nil;
-  //  status = [printer getStatus];
-  //  if (status.getConnection && status.getOnline) {
-  //    result = [printer sendData:EPOS2_PARAM_DEFAULT];
-  //  }else{
-  //    //Displays error messages
-  //    //Abort process
-  //  }
-  
-  
   if (![self runPrintReceiptSequence:data]) {
     resolve(@"error");
   } else {
@@ -218,55 +174,47 @@ RCT_EXPORT_METHOD(print:(NSDictionary *) data
   
     if (data[@"header1"]) {
       [textData appendString:[data[@"header1"] stringByAppendingString:@"\n"]];
-    }
-    result = [printer_ addText:textData];
-    if (result != EPOS2_SUCCESS) {
-      return NO;
-    }
-    [textData setString:@""];
-
-    result = [printer_ addTextSize:1 height:1];
-    if (result != EPOS2_SUCCESS) {
-      return NO;
-    }
-
-    if (data[@"header2"]) {
-      [textData appendString:[data[@"header2"] stringByAppendingString:@"\n"]];
-    }
-    if (data[@"header3"]) {
-      [textData appendString:[data[@"header3"] stringByAppendingString:@"\n"]];
-    }
-    if (data[@"header4"]) {
-      [textData appendString:[data[@"header4"] stringByAppendingString:@"\n"]];
-    }
-    if (data[@"header5"]) {
-      [textData appendString:[data[@"header5"] stringByAppendingString:@"\n"]];
+      
+      if (data[@"header2"]) {
+        [textData appendString:[data[@"header2"] stringByAppendingString:@"\n"]];
+      }
+      if (data[@"header3"]) {
+        [textData appendString:[data[@"header3"] stringByAppendingString:@"\n"]];
+      }
+      if (data[@"header4"]) {
+        [textData appendString:[data[@"header4"] stringByAppendingString:@"\n"]];
+      }
+      if (data[@"header5"]) {
+        [textData appendString:[data[@"header5"] stringByAppendingString:@"\n"]];
+      }
+      
+      [textData appendString:@"\n"];
+      result = [printer_ addText:textData];
+      if (result != EPOS2_SUCCESS) {
+        return NO;
+      }
+      [textData setString:@""];
     }
 
-    [textData appendString:@"\n"];
-    result = [printer_ addText:textData];
-    if (result != EPOS2_SUCCESS) {
-      return NO;
-    }
-    [textData setString:@""];
+    if (data[@"name"]) {
+      result = [printer_ addTextSize:2 height:2];
+      if (result != EPOS2_SUCCESS) {
+        return NO;
+      }
 
-    result = [printer_ addTextSize:2 height:2];
-    if (result != EPOS2_SUCCESS) {
-      return NO;
-    }
+      [textData appendString:[data[@"name"] stringByAppendingString:@"\n"]];
+      result = [printer_ addText:textData];
+      if (result != EPOS2_SUCCESS) {
+        return NO;
+      }
+      [textData setString:@""];
 
-    [textData appendString:[data[@"name"] stringByAppendingString:@"\n"]];
-    result = [printer_ addText:textData];
-    if (result != EPOS2_SUCCESS) {
-      return NO;
+      result = [printer_ addTextSize:1 height:1];
+      if (result != EPOS2_SUCCESS) {
+        return NO;
+      }
     }
-    [textData setString:@""];
-
-    result = [printer_ addTextSize:1 height:1];
-    if (result != EPOS2_SUCCESS) {
-      return NO;
-    }
-
+  
     [textData appendString:[data[@"order"] stringByAppendingString:@"\n"]];
     [textData appendString:@"------------------------------\n"];
     result = [printer_ addText:textData];
@@ -286,42 +234,61 @@ RCT_EXPORT_METHOD(print:(NSDictionary *) data
     }
     [textData setString:@""];
 
-    [textData appendString:[data[@"subtotal"] stringByAppendingString:@"\n"]];
-    [textData appendString:[data[@"discount"] stringByAppendingString:@"\n"]];
-    [textData appendString:[data[@"tax"] stringByAppendingString:@"\n"]];
-    result = [printer_ addText:textData];
-    if (result != EPOS2_SUCCESS) {
-      return NO;
+    if (data[@"total"]) {
+      [textData appendString:[data[@"subtotal"] stringByAppendingString:@"\n"]];
+      [textData appendString:[data[@"discount"] stringByAppendingString:@"\n"]];
+      [textData appendString:[data[@"tax"] stringByAppendingString:@"\n"]];
+      result = [printer_ addText:textData];
+      if (result != EPOS2_SUCCESS) {
+        return NO;
+      }
+      [textData setString:@""];
+    
+      result = [printer_ addTextSize:2 height:2];
+      if (result != EPOS2_SUCCESS) {
+        return NO;
+      }
+    
+      [textData appendString:[data[@"total"] stringByAppendingString:@"\n"]];
+      result = [printer_ addText:textData];
+      if (result != EPOS2_SUCCESS) {
+        return NO;
+      }
+      [textData setString:@""];
+    
+      result = [printer_ addTextSize:1 height:1];
+      if (result != EPOS2_SUCCESS) {
+       return NO;
+      }
     }
-    [textData setString:@""];
   
-    result = [printer_ addTextSize:2 height:2];
-    if (result != EPOS2_SUCCESS) {
-      return NO;
+    if (data[@"cash"]) {
+      [textData appendString:@"\n"];
+      [textData appendString:[data[@"cash"] stringByAppendingString:@"\n"]];
+      
+      if (data[@"change"]) {
+        [textData appendString:[data[@"change"] stringByAppendingString:@"\n"]];
+      }
+
+      result = [printer_ addText:textData];
+      if (result != EPOS2_SUCCESS) {
+        return NO;
+      }
+      [textData setString:@""];
     }
   
-    [textData appendString:[data[@"total"] stringByAppendingString:@"\n"]];
-    result = [printer_ addText:textData];
-    if (result != EPOS2_SUCCESS) {
-      return NO;
-    }
-    [textData setString:@""];
-  
-    result = [printer_ addTextSize:1 height:1];
-    if (result != EPOS2_SUCCESS) {
-     return NO;
+    if (data[@"footer1"]) {
+      [textData appendString:@"\n"];
+      [textData appendString:[data[@"footer1"] stringByAppendingString:@"\n"]];
+
+      if (data[@"footer2"]) {
+        [textData appendString:[data[@"footer2"] stringByAppendingString:@"\n"]];
+      }
+      if (data[@"footer3"]) {
+        [textData appendString:[data[@"footer3"] stringByAppendingString:@"\n"]];
+      }
     }
 
-    [textData appendString:@"\n"];
-    if (data[@"footer1"]) {
-      [textData appendString:[data[@"footer1"] stringByAppendingString:@"\n"]];
-    }
-    if (data[@"footer2"]) {
-      [textData appendString:[data[@"footer2"] stringByAppendingString:@"\n"]];
-    }
-    if (data[@"footer3"]) {
-      [textData appendString:[data[@"footer3"] stringByAppendingString:@"\n"]];
-    }
     [textData appendString:@"\n"];
     result = [printer_ addText:textData];
     if (result != EPOS2_SUCCESS) {

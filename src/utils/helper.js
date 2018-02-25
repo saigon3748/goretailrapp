@@ -40,7 +40,7 @@ function getReceiptPrint(setting, order) {
   let time = moment(order.createdAt).format('HH:mm');
   let timestamp = `DATE  ${date} ${time}`;
   let code = `#${order.code}`;
-  let receipt = { 
+  let data = { 
     name: setting.name,
     printer: setting.receiptPrinter,
     header1: setting.header1,
@@ -56,6 +56,8 @@ function getReceiptPrint(setting, order) {
     discount: padLine("DISCOUNT", formatCurrency(order.discount)),
     tax: padLine("TAX", formatCurrency(order.tax)),
     total: padLine("TOTAL", formatCurrency(order.total), 15),
+    cash: padLine("CASH", formatCurrency(order.cash)),
+    change: padLine("CHANGE", formatCurrency(order.change)),
     items: [] 
   };
 
@@ -67,12 +69,38 @@ function getReceiptPrint(setting, order) {
     let temp = `${quantity} ${item.name}`;
     temp = padLine(temp, formatCurrency(item.subtotal));
 
-    receipt.items.push(temp);
+    data.items.push(temp);
   })
 
-  return receipt;
+  return data;
+}
+
+function getKitchenPrint(setting, order) {
+  let date = moment(order.createdAt).format('L');
+  let time = moment(order.createdAt).format('HH:mm');
+  let timestamp = `DATE  ${date} ${time}`;
+  let code = `#${order.code}`;
+  let data = { 
+    name: "ORDER",
+    printer: setting.receiptPrinter,
+    order: padLine(timestamp, code),
+    items: [] 
+  };
+
+  order.items.forEach(item => {
+    let quantity = "";
+    if (item.quantity < 10) quantity = `0${item.quantity}`
+    else quantity = `${item.quantity}`
+
+    let temp = padLine(item.name, quantity);
+
+    data.items.push(temp);
+  })
+
+  return data;
 }
 
 export default {
-  getReceiptPrint
+  getReceiptPrint,
+  getKitchenPrint
 }
