@@ -37,7 +37,7 @@ class Sidebar extends React.Component {
         <List style={{marginTop: 40}}>
           <ListItem icon>
             <Left>
-              <MaterialIcons name='dashboard' color={'#6c757d'} size={20} />            
+              <MaterialIcons name='dashboard' color={'#2177b4'} size={20} />            
             </Left>
             <Body>
               <TouchableOpacity onPress={this.props.gotoDashboard}>
@@ -49,7 +49,7 @@ class Sidebar extends React.Component {
           </ListItem>
           <ListItem icon>
             <Left>
-              <MaterialIcons name='assignment' color={'#6c757d'} size={20} />
+              <MaterialIcons name='assignment' color={'#2177b4'} size={20} />
             </Left>
             <Body>
               <TouchableOpacity onPress={this.props.gotoCashier}>
@@ -61,7 +61,7 @@ class Sidebar extends React.Component {
           </ListItem>
           <ListItem icon>
             <Left>
-              <MaterialIcons name='restaurant-menu' color={'#6c757d'} size={20} />
+              <MaterialIcons name='restaurant-menu' color={'#2177b4'} size={20} />
             </Left>
             <Body>
               <TouchableOpacity onPress={this.props.gotoKitchen}>
@@ -76,7 +76,7 @@ class Sidebar extends React.Component {
         <List style={{marginTop: 40}}>
           <ListItem icon>
             <Left>
-              <MaterialIcons name='settings' color={'#6c757d'} size={20} />
+              <MaterialIcons name='settings' color={'#2177b4'} size={20} />
             </Left>
             <Body>
               <TouchableOpacity onPress={this.props.gotoSettings}>

@@ -225,7 +225,7 @@ class Dashboard extends React.Component {
         <List style={{marginTop: 40}}>
           <ListItem icon>
             <Left>
-              <MaterialIcons name='assignment' color={'#6c757d'} size={20} />            
+              <MaterialIcons name='assignment' color={'#2177b4'} size={20} />            
             </Left>
             <Body>
               <Text>Today</Text>
@@ -297,22 +297,22 @@ class Dashboard extends React.Component {
 
                   <View style={{height: 90, marginTop: 30, marginLeft: 10, marginRight: 10}}>
                     <View style={{flex: 1, flexDirection: 'row'}}>
-                      <Text style={{flex: 1}}>Subtotal</Text>
+                      <Text style={{flex: 1}}>SUBTOTAL</Text>
                       <Text style={{width: 100, textAlign: 'right'}}>${this.state.selectedOrder.subtotal}</Text>
                     </View>
                     <View style={{flex: 1, flexDirection: 'row'}}>
-                      <Text style={{flex: 1}}>Discount</Text>
+                      <Text style={{flex: 1}}>DISCOUNT</Text>
                       <Text style={{width: 100, textAlign: 'right'}}>${this.state.selectedOrder.discount}</Text>
                     </View>
                     <View style={{flex: 1, flexDirection: 'row'}}>
-                      <Text style={{flex: 1}}>Tax</Text>
+                      <Text style={{flex: 1}}>TAX</Text>
                       <Text style={{width: 100, textAlign: 'right'}}>${this.state.selectedOrder.tax}</Text>
                     </View>
                   </View>
 
                   <View style={{height: 40, marginTop: 10, marginLeft: 10, marginRight: 10}}>
                     <View style={{flex: 1, flexDirection: 'row'}}>
-                      <Text style={{flex: 1, fontSize: 30, color: 'rgb(70, 70, 70)'}}>Total</Text>
+                      <Text style={{flex: 1, fontSize: 30, color: 'rgb(70, 70, 70)'}}>TOTAL</Text>
                       <Text style={{width: 150, textAlign: 'right', fontSize: 30, color: 'rgb(70, 70, 70)'}}>${this.state.selectedOrder.total}</Text>
                     </View>
                   </View>

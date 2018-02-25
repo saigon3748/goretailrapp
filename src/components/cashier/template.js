@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
 import { ScrollView, View, TouchableOpacity, TouchableHighlight, StyleSheet, Image, ImageBackground, TextInput, FlatList } from 'react-native';
-import { Container, Content, Card, CardItem, Form, Item, Header, Left, Body, Right, Button, Icon, Title, List, ListItem, Text, Thumbnail, Input, InputGroup, Label } from 'native-base';
+import { Container, Content, Card, CardItem, Form, Item, Header, Left, Body, Right, Button, Icon, Title, List, ListItem, Text, Thumbnail, Input, InputGroup, Label, Toast } from 'native-base';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 const styles = StyleSheet.create({
@@ -31,6 +31,7 @@ class Cashier extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      step: "",
       menu: [
         {_id: 1, name: "Natural Turquoise Brooch", price: 15.05, image: "https://img0.etsystatic.com/210/0/10748667/il_340x270.1353210938_iqg8.jpg"},
         {_id: 2, name: "Winter wedding mittens", price: 6.50, image: "https://img0.etsystatic.com/191/1/7502837/il_340x270.1379665700_jnp8.jpg"},
@@ -111,6 +112,18 @@ class Cashier extends React.Component {
     alert('press')
   }
 
+  onNext() {
+    this.setState({
+      step: "CONFIRM"
+    })
+  }
+
+  onBack() {
+    this.setState({
+      step: ""
+    })
+  }
+
   onAddItem(id) {
     let order = {...this.state.order};
     let item = _.find(order.lineItems, item => {
@@ -166,6 +179,30 @@ class Cashier extends React.Component {
     });
   }
 
+  onDiscountChanged(text){
+    try {
+      let discount = parseInt(text);
+
+      let order = {...this.state.order};
+      order.discount = discount;
+
+      this.setState({
+        order: order
+      });
+
+    }
+    catch(err) {}
+  }
+
+  onNoteChanged(text){
+    let order = {...this.state.order};
+    order.note = text;
+
+    this.setState({
+      order: order
+    });
+  }
+
   render() {
     return (
       <View style={{
@@ -205,65 +242,120 @@ class Cashier extends React.Component {
               </View>
             </ScrollView>
           </View>
-          <View style={{flex: 1, flexDirection: 'column', backgroundColor: '#f2f3f4', marginTop: 10, marginBottom: 10}}>
-            <View style={{height: 30, marginTop: 20, marginLeft: 10, marginRight: 10}}>
-              <Text style={{textAlign: 'center', fontSize: 20, color: 'rgb(70, 70, 70)'}}>CHECKOUT</Text>
-            </View>
+          {(() => {
+            if (this.state.step === "CONFIRM") {
+              return (
+                <View style={{flex: 1, flexDirection: 'column', backgroundColor: '#f2f3f4', marginTop: 10, marginBottom: 10}}>
+                  <View style={{height: 30, marginTop: 20, marginLeft: 10, marginRight: 10}}>
+                    <Text style={{textAlign: 'center', fontSize: 20, color: 'rgb(70, 70, 70)'}}>CHECKOUT</Text>
+                  </View>
 
-            <ScrollView style={{flex: 1, flexDirection: 'column'}}>
-              <FlatList style={{marginLeft: 10, marginRight: 10}}
-                data={this.state.order.lineItems}
-                keyExtractor={(item) => item._id}
-                renderItem={({item, separators}) => (
-                  <View style={{marginTop: 20}}>
+                  <View style={{marginTop: 30, marginLeft: 10, marginRight: 10}}>
+                    <Text>Discount</Text>
+                    <TextInput value={this.state.order.discount.toString()} onChangeText={(text) => this.onDiscountChanged(text)} style={{marginTop: 10, fontSize: 20, height: 35, borderColor: '#d2d3d4', borderWidth: 1}}/>          
+                    <Text style={{marginTop: 20}}>Note</Text>
+                    <TextInput value={this.state.order.note} onChangeText={(text) => this.onNoteChanged(text)} multiline = {true} style={{marginTop: 10, fontSize: 20, height: 105, borderColor: '#d2d3d4', borderWidth: 1}}/>          
+                  </View>
+                  
+                  <View style={{flex: 1}}/>
+
+                  <View style={{height: 90, marginTop: 30, marginLeft: 10, marginRight: 10}}>
                     <View style={{flex: 1, flexDirection: 'row'}}>
-                      <Text style={{flex: 1}}>{item.name}</Text>
-                      <Text style={{width: 70, textAlign: 'right'}}>${item.price}</Text>
+                      <Text style={{flex: 1}}>SUBTOTAL</Text>
+                      <Text style={{width: 100, textAlign: 'right'}}>${this.state.order.subtotal}</Text>
                     </View>
-                    <View style={{flex: 1, flexDirection: 'row', marginTop: 10}}>
-                      <Button full small style={{backgroundColor: '#2177b4'}} onPress={() => {this.onAddItem(item._id)}}><Text> + </Text></Button>
-                      <Button full small style={{backgroundColor: '#6c757d'}} onPress={() => {this.onRemoveItem(item._id)}}><Text> - </Text></Button>
-                      <Button full small style={{backgroundColor: '#7BBFB7'}}><Text> E </Text></Button>
-                      <View style={{flex: 1}}/>
-                      <Text style={{width: 70, textAlign: 'right'}}>x{item.quantity}</Text>
+                    <View style={{flex: 1, flexDirection: 'row'}}>
+                      <Text style={{flex: 1}}>DISCOUNT</Text>
+                      <Text style={{width: 100, textAlign: 'right'}}>${this.state.order.discount}</Text>
+                    </View>
+                    <View style={{flex: 1, flexDirection: 'row'}}>
+                      <Text style={{flex: 1}}>TAX</Text>
+                      <Text style={{width: 100, textAlign: 'right'}}>${this.state.order.tax}</Text>
                     </View>
                   </View>
-                )}
-              />
-            </ScrollView>
 
-            <View style={{height: 90, marginTop: 30, marginLeft: 10, marginRight: 10}}>
-              <View style={{flex: 1, flexDirection: 'row'}}>
-                <Text style={{flex: 1}}>Subtotal</Text>
-                <Text style={{width: 100, textAlign: 'right'}}>${this.state.order.subtotal}</Text>
-              </View>
-              <View style={{flex: 1, flexDirection: 'row'}}>
-                <Text style={{flex: 1}}>Discount</Text>
-                <Text style={{width: 100, textAlign: 'right'}}>${this.state.order.discount}</Text>
-              </View>
-              <View style={{flex: 1, flexDirection: 'row'}}>
-                <Text style={{flex: 1}}>Tax</Text>
-                <Text style={{width: 100, textAlign: 'right'}}>${this.state.order.tax}</Text>
-              </View>
-            </View>
+                  <View style={{height: 40, marginTop: 10, marginLeft: 10, marginRight: 10}}>
+                    <View style={{flex: 1, flexDirection: 'row'}}>
+                      <Text style={{flex: 1, fontSize: 30, color: 'rgb(70, 70, 70)'}}>TOTAL</Text>
+                      <Text style={{width: 150, textAlign: 'right', fontSize: 30, color: 'rgb(70, 70, 70)'}}>${this.state.order.total}</Text>
+                    </View>
+                  </View>
 
-            <View style={{height: 40, marginTop: 10, marginLeft: 10, marginRight: 10}}>
-              <View style={{flex: 1, flexDirection: 'row'}}>
-                <Text style={{flex: 1, fontSize: 30, color: 'rgb(70, 70, 70)'}}>Total</Text>
-                <Text style={{width: 150, textAlign: 'right', fontSize: 30, color: 'rgb(70, 70, 70)'}}>${this.state.order.total}</Text>
-              </View>
-            </View>
+                  <View style={{flexDirection: 'row', marginTop: 20, marginBottom: 10, marginLeft: 10, marginRight: 10}}>
+                    <View style={{width: 170}}>
+                      <Button full onPress={() => this.onBack()} style={{backgroundColor: '#6c757d'}}><Text> BACK </Text></Button>
+                    </View>
+                    <View style={{flex: 1}} />
+                    <View style={{width: 170}}>
+                      <Button full onPress={() => this.onConfirm()} style={{backgroundColor: '#2177b4'}}><Text> CONFIRM </Text></Button>
+                    </View>
+                  </View>
+                </View>
+              )
+            } else {
+              return (
+                <View style={{flex: 1, flexDirection: 'column', backgroundColor: '#f2f3f4', marginTop: 10, marginBottom: 10}}>
+                  <View style={{height: 30, marginTop: 20, marginLeft: 10, marginRight: 10}}>
+                    <Text style={{textAlign: 'center', fontSize: 20, color: 'rgb(70, 70, 70)'}}>CHECKOUT</Text>
+                  </View>
 
-            <View style={{flexDirection: 'row', marginTop: 20, marginBottom: 10, marginLeft: 10, marginRight: 10}}>
-              <View style={{width: 170}}>
-                <Button full onPress={() => this.onDiscard()} style={{backgroundColor: '#6c757d'}}><Text> DISCARD </Text></Button>
-              </View>
-              <View style={{flex: 1}} />
-              <View style={{width: 170}}>
-                <Button full onPress={() => this.onConfirm()} style={{backgroundColor: '#2177b4'}}><Text> CONFIRM </Text></Button>
-              </View>
-            </View>
-          </View>
+                  <ScrollView style={{flex: 1, flexDirection: 'column'}}>
+                    <FlatList style={{marginLeft: 10, marginRight: 10}}
+                      data={this.state.order.lineItems}
+                      keyExtractor={(item) => item._id}
+                      renderItem={({item, separators}) => (
+                        <View style={{marginTop: 20}}>
+                          <View style={{flex: 1, flexDirection: 'row'}}>
+                            <Text style={{flex: 1}}>{item.name}</Text>
+                            <Text style={{width: 70, textAlign: 'right'}}>${item.price}</Text>
+                          </View>
+                          <View style={{flex: 1, flexDirection: 'row', marginTop: 10}}>
+                            <Button full small style={{backgroundColor: '#2177b4'}} onPress={() => {this.onAddItem(item._id)}}><Text> + </Text></Button>
+                            <Button full small style={{backgroundColor: '#6c757d'}} onPress={() => {this.onRemoveItem(item._id)}}><Text> - </Text></Button>
+                            <Button full small style={{backgroundColor: '#7BBFB7'}}><Text> E </Text></Button>
+                            <View style={{flex: 1}}/>
+                            <Text style={{width: 70, textAlign: 'right'}}>x{item.quantity}</Text>
+                          </View>
+                        </View>
+                      )}
+                    />
+                  </ScrollView>
+
+                  <View style={{height: 90, marginTop: 30, marginLeft: 10, marginRight: 10}}>
+                    <View style={{flex: 1, flexDirection: 'row'}}>
+                      <Text style={{flex: 1}}>SUBTOTAL</Text>
+                      <Text style={{width: 100, textAlign: 'right'}}>${this.state.order.subtotal}</Text>
+                    </View>
+                    <View style={{flex: 1, flexDirection: 'row'}}>
+                      <Text style={{flex: 1}}>DISCOUNT</Text>
+                      <Text style={{width: 100, textAlign: 'right'}}>${this.state.order.discount}</Text>
+                    </View>
+                    <View style={{flex: 1, flexDirection: 'row'}}>
+                      <Text style={{flex: 1}}>TAX</Text>
+                      <Text style={{width: 100, textAlign: 'right'}}>${this.state.order.tax}</Text>
+                    </View>
+                  </View>
+
+                  <View style={{height: 40, marginTop: 10, marginLeft: 10, marginRight: 10}}>
+                    <View style={{flex: 1, flexDirection: 'row'}}>
+                      <Text style={{flex: 1, fontSize: 30, color: 'rgb(70, 70, 70)'}}>TOTAL</Text>
+                      <Text style={{width: 150, textAlign: 'right', fontSize: 30, color: 'rgb(70, 70, 70)'}}>${this.state.order.total}</Text>
+                    </View>
+                  </View>
+
+                  <View style={{flexDirection: 'row', marginTop: 20, marginBottom: 10, marginLeft: 10, marginRight: 10}}>
+                    <View style={{width: 170}}>
+                      <Button full onPress={() => this.onDiscard()} style={{backgroundColor: '#6c757d'}}><Text> DISCARD </Text></Button>
+                    </View>
+                    <View style={{flex: 1}} />
+                    <View style={{width: 170}}>
+                      <Button full onPress={() => this.onNext()} style={{backgroundColor: '#2177b4'}}><Text> NEXT </Text></Button>
+                    </View>
+                  </View>
+                </View>
+              )
+            } 
+          })()}
         </View>
 
         <View style={{flex: 1, flexDirection: 'row', backgroundColor: '#f2f3f4'}}>

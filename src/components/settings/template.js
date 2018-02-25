@@ -42,7 +42,7 @@ class Dashboard extends React.Component {
         <List style={{marginTop: 40}}>
           <ListItem icon>
             <Left>
-              <MaterialIcons name='settings' color={'#6c757d'} size={20} />            
+              <MaterialIcons name='settings' color={'#2177b4'} size={20} />            
             </Left>
             <Body>
               <Text>General</Text>
@@ -61,36 +61,14 @@ class Dashboard extends React.Component {
             </Right>
           </ListItem>
         </List>
-         <List style={{marginTop: 40}}>
-          <ListItem icon>
-            <Left>
-              <MaterialIcons name='print' color={'#6c757d'} size={20} />            
-            </Left>
-            <Body>
-              <Text>Invoice Printer</Text>
-            </Body>
-            <Right>
-            </Right>
-          </ListItem>
-          <ListItem icon>
-            <Left>
-            </Left>
-            <Body style={{marginLeft: 20}}>
-              <Text>12::23::45::89</Text>
-            </Body>
-            <Right>
-              <Switch value={true} />
-            </Right>
-          </ListItem>
-        </List>
 
         <List style={{marginTop: 40}}>
           <ListItem icon>
             <Left>
-              <MaterialIcons name='print' color={'#6c757d'} size={20} />            
+              <MaterialIcons name='print' color={'#2177b4'} size={20} />            
             </Left>
             <Body>
-              <Text>Kitchen Printer</Text>
+              <Text>Printing</Text>
             </Body>
             <Right>
             </Right>
@@ -99,15 +77,87 @@ class Dashboard extends React.Component {
             <Left>
             </Left>
             <Body style={{marginLeft: 20}}>
-              <Text>12::23::45::89</Text>
+              <Text>Invoice Printer</Text>
             </Body>
             <Right>
-              <Switch value={false} />
+              <TextInput value="TCP:F8:D0:27:2B:0F:93" style={{width: 400, height: 35, borderColor: '#d2d3d4', borderWidth: 1}}/>
             </Right>
-          </ListItem>          
+          </ListItem>
+          <ListItem icon>
+            <Left>
+            </Left>
+            <Body style={{marginLeft: 20}}>
+              <Text>Kitchen Printer</Text>
+            </Body>
+            <Right>
+              <TextInput value="TCP:F8:D0:27:2B:0F:93" style={{width: 400, height: 35, borderColor: '#d2d3d4', borderWidth: 1}}/>
+            </Right>
+          </ListItem>
+          <ListItem icon>
+            <Left>
+            </Left>
+            <Body style={{marginLeft: 20}}>
+              <Text>Line 1</Text>
+            </Body>
+            <Right>
+              <TextInput value="NOODLE HOUSE" style={{width: 400, height: 35, borderColor: '#d2d3d4', borderWidth: 1}}/>
+            </Right>
+          </ListItem>
+          <ListItem icon>
+            <Left>
+            </Left>
+            <Body style={{marginLeft: 20}}>
+              <Text>Line 2</Text>
+            </Body>
+            <Right>
+              <TextInput value="The Original Noodle" style={{width: 400, height: 35, borderColor: '#d2d3d4', borderWidth: 1}}/>
+            </Right>
+          </ListItem>
+          <ListItem icon>
+            <Left>
+            </Left>
+            <Body style={{marginLeft: 20}}>
+              <Text>Line 3</Text>
+            </Body>
+            <Right>
+              <TextInput value="350 Elizabeth" style={{width: 400, height: 35, borderColor: '#d2d3d4', borderWidth: 1}}/>
+            </Right>
+          </ListItem>
+          <ListItem icon>
+            <Left>
+            </Left>
+            <Body style={{marginLeft: 20}}>
+              <Text>Line 4</Text>
+            </Body>
+            <Right>
+              <TextInput value="Phone 123" style={{width: 400, height: 35, borderColor: '#d2d3d4', borderWidth: 1}}/>
+            </Right>
+          </ListItem>
+          <ListItem icon>
+            <Left>
+            </Left>
+            <Body style={{marginLeft: 20}}>
+              <Text>Line 5</Text>
+            </Body>
+            <Right>
+              <TextInput value="ABN 456" style={{width: 400, height: 35, borderColor: '#d2d3d4', borderWidth: 1}}/>
+            </Right>
+          </ListItem>
         </List>
 
-        <View style={{flex: 1}}/>
+        <View style={{flex: 1}} />
+
+        <View style={{height: 70, flexDirection: 'row', backgroundColor: '#f2f3f4'}}>
+          <View style={{flex: 1}}></View>
+          <View style={{width: 170}}>
+            <Button style={{marginTop: 10, backgroundColor: '#6c757d'}} full><Text> CANCEL </Text></Button>
+          </View>
+          <View style={{width: 50}}></View>
+          <View style={{width: 170}}>
+            <Button style={{marginTop: 10, backgroundColor: '#2177b4'}} full><Text> SAVE </Text></Button>
+          </View>
+          <View style={{flex: 1}}></View>
+        </View>
       </View>      
     );
   }

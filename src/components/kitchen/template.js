@@ -150,13 +150,13 @@ class Kitchen extends React.Component {
         <List style={{marginTop: 40}}>
           <ListItem icon>
             <Left>
-              <MaterialIcons name='assignment' color={'#6c757d'} size={20} />            
+              <MaterialIcons name='assignment' color={'#2177b4'} size={20} />            
             </Left>
             <Body>
               <Text>Today</Text>
             </Body>
             <Right>
-              <Text style={{color: '#FF7B01', fontSize: 25}}>Total: {this.state.items.length}</Text>
+              <Text style={{color: '#FF7B01', fontSize: 25}}>In Queue: {this.state.items.length}</Text>
             </Right>
           </ListItem>
         </List>
@@ -182,6 +182,14 @@ class Kitchen extends React.Component {
               ))}
             </List>
           </ScrollView>
+        </View>
+
+        <View style={{height: 70, flexDirection: 'row', backgroundColor: '#f2f3f4'}}>
+          <View style={{flex: 1}}></View>
+          <View style={{width: 170}}>
+            <Button style={{marginTop: 10, backgroundColor: '#2177b4'}} full><Text> COMPLETE ALL </Text></Button>
+          </View>
+          <View style={{flex: 1}}></View>
         </View>
       </View>      
     );
