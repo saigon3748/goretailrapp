@@ -68,7 +68,7 @@ class Dashboard extends React.Component {
           <List style={{marginTop: 40}}>
             <ListItem icon>
               <Left>
-                <MaterialIcons name='print' color={'#2177b4'} size={20} />            
+                <MaterialIcons name='print' color={'#6c757d'} size={20} />            
               </Left>
               <Body>
                 <Text>Print</Text>

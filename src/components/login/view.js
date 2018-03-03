@@ -45,7 +45,7 @@ class Login extends React.Component {
         <View style={{flex: 1}}></View>
         <View style={{width: 280}}>
           <Text style={{marginTop: 180, textAlign: 'center', fontSize: 35, color: 'rgb(70, 70, 70)'}}>goretailr</Text>
-          <Text style={{marginTop: 30}}>Login ID</Text>
+          <Text style={{marginTop: 30}}>Username</Text>
           <TextInput autoCapitalize='none' style={{marginTop: 10, height: 35, borderColor: '#d2d3d4', borderWidth: 1}} onChangeText={username => this.setState({ username })}/>          
           <Text style={{marginTop: 20}}>Password</Text>
           <TextInput secureTextEntry style={{marginTop: 10, height: 35, borderColor: '#d2d3d4', borderWidth: 1}} onChangeText={password => this.setState({ password })}/>          

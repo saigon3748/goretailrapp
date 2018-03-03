@@ -225,13 +225,12 @@ class Dashboard extends React.Component {
         <List style={{marginTop: 40}}>
           <ListItem icon>
             <Left>
-              <MaterialIcons name='assignment' color={'#2177b4'} size={20} />            
+              <MaterialIcons name='assignment' color={'#6c757d'} size={20} />            
             </Left>
             <Body>
               <Text>Today</Text>
             </Body>
             <Right>
-              <Text style={{color: '#FF7B01', fontSize: 25}}>Good day, admin!</Text>
             </Right>
           </ListItem>
         </List>
