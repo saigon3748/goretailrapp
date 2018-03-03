@@ -33,12 +33,14 @@ const styles = StyleSheet.create({
 class Cashier extends React.Component {
   constructor(props) {
     super(props);
+    this.menu = [];
+    this.categories = [];
+    this.categoryStack = [];
+
     this.state = {
       isEdittingNote: false,
-      menu: [],
-      categories: [],
-      selectedCategories: [],
-      subs: [],
+      filteredMenu: [],
+      filteredCategories: [],
       order: {
         subtotal: 0.00,
         discount: 0.00,
@@ -54,16 +56,17 @@ class Cashier extends React.Component {
   componentDidMount() {
     MenuApi.getMenuList()
       .then(result => {
+        this.menu = result;
         this.setState({
-          menu: result
+          filteredMenu: this.filterMenu()
         });
       })
 
     MenuApi.getCategoryList()
       .then(result => {
+        this.categories = result;
         this.setState({
-          categories: result,
-          subs: this.getSubs(result)
+          filteredCategories: this.filterCategories()
         });
       })
   }
@@ -71,42 +74,73 @@ class Cashier extends React.Component {
   componentWillUnmount() {
   }
 
-  getSubs(categories, selectedCategory) {
-    categories = categories || this.state.categories;
-    return _.filter(categories, category => {
-      return (!selectedCategory && !category.parent)
-        || (selectedCategory && category.parent === selectedCategory._id);
+  filterMenu() {
+    let menu = this.menu || [];
+
+    if (this.categoryStack.length === 0) {
+      return menu;
+    }
+
+    let category = this.categoryStack[this.categoryStack.length - 1];
+
+    return _.filter(menu, item => {
+      return item.category._id === category._id
+        || category.path.includes(item.category._id)
+    })    
+  }
+
+  filterCategories() {
+    let categories = this.categories || [];
+
+    if (this.categoryStack.length === 0) {
+      return _.filter(categories, item => {
+        return !item.parent;
+      })
+    }
+
+    let category = this.categoryStack[this.categoryStack.length - 1];
+    
+    return _.filter(categories, item => {
+      return item.parent === category._id;
     })
   }
 
   onSelectCategory(category) {
-    let selectedCategories = [...this.state.selectedCategories];
-    selectedCategories.push(category);
+    this.categoryStack = this.categoryStack || [];
+    if (category.subs.length > 0) {
+      this.categoryStack.push(category);
+    }
     
     this.setState({
-      selectedCategories: selectedCategories,
-      subs: this.getSubs(category)
+      filteredMenu: this.filterMenu(),
+      filteredCategories: this.filterCategories()
     });
   }
 
   onBackCategory() {
-
+    this.categoryStack = this.categoryStack || [];
+    if (this.categoryStack.length > 0) {
+      this.categoryStack = this.categoryStack.slice(0, this.categoryStack.length - 1)
+    }
+    
+    this.setState({
+      filteredMenu: this.filterMenu(),
+      filteredCategories: this.filterCategories()
+    });
   }
 
   onDiscard() {
-    let order = {
-      subtotal: 0.00,
-      discount: 0.00,
-      tax: 0.00,
-      total: 0.00,
-      cash: 0.00,
-      change: 0.00,
-      items: []
-    }
-
     this.setState({
       isEdittingNote: false,
-      order: order
+      order: {
+        subtotal: 0.00,
+        discount: 0.00,
+        tax: 0.00,
+        total: 0.00,
+        cash: 0.00,
+        change: 0.00,
+        items: []        
+      }
     })
   }
 
@@ -133,7 +167,7 @@ class Cashier extends React.Component {
 
     order.items.forEach(item => {
       if (item._id === id) {
-        item.isEdittingNote = ! item.isEdittingNote;
+        item.isEdittingNote = !item.isEdittingNote;
       } else {
         item.isEdittingNote = false;
       }
@@ -168,7 +202,7 @@ class Cashier extends React.Component {
     if (item) {
       item.quantity++;
     } else {
-      item = _.find(this.state.menu, item => {
+      item = _.find(this.menu, item => {
         return item._id === id;
       });
       item = {...item, quantity: 1};
@@ -300,40 +334,40 @@ class Cashier extends React.Component {
                 flexDirection: 'row', 
                 flexWrap: 'wrap'
               }}>
-                {this.state.menu.map(menuItem => {
-                  if (menuItem.image) {
-                    return (
-                      <TouchableOpacity key={menuItem._id} activeOpacity={1.0} onPress={() => this.onAddItem(menuItem._id)}>
-                        <View style={{width: 150, height: 150, marginTop: 10, marginLeft: 10}}>
-                          <ImageBackground
-                            style={{width: 150, height: 150}}
-                            source={{uri: menuItem.image}}>
-                            <Text style={{backgroundColor: 'rgba(221, 226, 229, 0.8)'}}>
-                              {menuItem.name}
-                            </Text>
-                            <Text style={{backgroundColor: 'rgba(221, 226, 229, 0.8)'}}>
-                              {(() => { return Helper.formatCurrency(menuItem.unitPrice) })()}
-                            </Text>
-                          </ImageBackground>
-                        </View>
-                      </TouchableOpacity>
-                    )
-                  } else {
-                    return (
-                      <TouchableOpacity key={menuItem._id} activeOpacity={1.0} onPress={() => this.onAddItem(menuItem._id)}>
-                        <View style={{width: 150, height: 150, marginTop: 10, marginLeft: 10, backgroundColor: '#2FA495'}}>
-                          <View style={{backgroundColor: 'rgba(221, 226, 229, 0.7)'}}>
-                            <Text style={{marginTop: 3, marginLeft: 3, marginRight: 3}}>
-                              {menuItem.name}
-                            </Text>
-                            <Text style={{marginTop: 3, marginLeft: 3, marginRight: 3, marginBottom: 3}}>
-                              {(() => { return Helper.formatCurrency(menuItem.unitPrice) })()}
-                            </Text>
-                          </View>
-                        </View>
-                      </TouchableOpacity>
-                    )
-                  }
+                {this.state.filteredMenu.map(menuItem => {
+                  return (
+                    <TouchableOpacity key={menuItem._id} activeOpacity={1.0} onPress={() => this.onAddItem(menuItem._id)}>
+                      <View style={{width: 150, height: 150, marginTop: 10, marginLeft: 10, backgroundColor: '#2FA495'}}>
+                        {(() => { 
+                          if (menuItem.image) {
+                            return (
+                              <ImageBackground
+                                style={{width: 150, height: 150}}
+                                source={{uri: menuItem.image}}>
+                                <Text style={{backgroundColor: 'rgba(221, 226, 229, 0.8)'}}>
+                                  {menuItem.name}
+                                </Text>
+                                <Text style={{backgroundColor: 'rgba(221, 226, 229, 0.8)'}}>
+                                  {(() => { return Helper.formatCurrency(menuItem.unitPrice) })()}
+                                </Text>
+                              </ImageBackground>
+                            )
+                          } else {
+                            return (
+                              <View style={{backgroundColor: 'rgba(221, 226, 229, 0.7)'}}>
+                                <Text style={{marginTop: 3, marginLeft: 3, marginRight: 3}}>
+                                  {menuItem.name}
+                                </Text>
+                                <Text style={{marginTop: 3, marginLeft: 3, marginRight: 3, marginBottom: 3}}>
+                                  {(() => { return Helper.formatCurrency(menuItem.unitPrice) })()}
+                                </Text>
+                              </View>
+                            )                            
+                          }
+                        })()}
+                      </View>
+                    </TouchableOpacity>
+                  )
                 })}
               </View>
             </ScrollView>
@@ -343,7 +377,7 @@ class Cashier extends React.Component {
               <Text style={{textAlign: 'center', fontSize: 25, color: 'rgb(70, 70, 70)'}}>CHECKOUT</Text>
               <View style={{flex: 1}}/>
               <View style={{width: 50}}>
-                <Button full small onPress={() => this.onEditNote()} style={{backgroundColor: '#6c757d' }}>
+                <Button full small onPress={() => this.onEditNote()} style={{backgroundColor: '#2FA495' }}>
                   {(() => {
                     if (this.state.isEdittingNote) {
                       return (
@@ -370,7 +404,7 @@ class Cashier extends React.Component {
                     <TextInputMask type={'money'} options={{unit: '$', separator: '.', delimiter: ','}} selectTextOnFocus value={(() => { return Helper.formatCurrency(this.state.order.cash) })()} onChangeText={(text) => this.onCashChanged(text)} style={{marginTop: 10, fontSize: 20, height: 35, backgroundColor: '#fff', borderColor: '#d2d3d4', borderWidth: 1, textAlign: 'right'}}/>          
                     <View style={{flexDirection: 'row', marginTop: 20}}>
                       <Text style={{flex: 1}}>CHANGE</Text>
-                      <Text style={{width: 150, textAlign: 'right', color: 'red'}}>
+                      <Text style={{width: 200, textAlign: 'right', color: 'red'}}>
                         {(() => { return Helper.formatCurrency(this.state.order.change) })()}
                       </Text>
                     </View>
@@ -432,19 +466,19 @@ class Cashier extends React.Component {
             <View style={{height: 90, marginTop: 30, marginLeft: 10, marginRight: 10}}>
               <View style={{flex: 1, flexDirection: 'row'}}>
                 <Text style={{flex: 1}}>SUBTOTAL</Text>
-                <Text style={{width: 100, textAlign: 'right'}}>
+                <Text style={{width: 200, textAlign: 'right'}}>
                   {(() => { return Helper.formatCurrency(this.state.order.subtotal) })()}
                 </Text>
               </View>
               <View style={{flex: 1, flexDirection: 'row'}}>
                 <Text style={{flex: 1}}>DISCOUNT</Text>
-                <Text style={{width: 100, textAlign: 'right'}}>
+                <Text style={{width: 200, textAlign: 'right'}}>
                   {(() => { return Helper.formatCurrency(this.state.order.discount) })()}
                 </Text>
               </View>
               <View style={{flex: 1, flexDirection: 'row'}}>
                 <Text style={{flex: 1}}>TAX</Text>
-                <Text style={{width: 100, textAlign: 'right'}}>
+                <Text style={{width: 200, textAlign: 'right'}}>
                   {(() => { return Helper.formatCurrency(this.state.order.tax) })()}
                 </Text>
               </View>
@@ -453,7 +487,7 @@ class Cashier extends React.Component {
             <View style={{height: 40, marginTop: 10, marginLeft: 10, marginRight: 10}}>
               <View style={{flex: 1, flexDirection: 'row'}}>
                 <Text style={{flex: 1, fontSize: 30, color: 'rgb(70, 70, 70)'}}>TOTAL</Text>
-                <Text style={{width: 150, textAlign: 'right', fontSize: 30, color: 'rgb(70, 70, 70)'}}>
+                <Text style={{width: 200, textAlign: 'right', fontSize: 30, color: 'rgb(70, 70, 70)'}}>
                   {(() => { return Helper.formatCurrency(this.state.order.total) })()}
                 </Text>
               </View>
@@ -474,12 +508,12 @@ class Cashier extends React.Component {
         <View style={{flex: 1, flexDirection: 'row', backgroundColor: '#f2f3f4'}}>
           <View style={{width: 150, height: 60, marginTop: 10, marginLeft: 10}}>
             <Button full large onPress={() => this.onBackCategory()} style={{backgroundColor: '#2177b4'}}>
-              <MaterialIcons name='arrow-upward' color={'#fff'} size={20} />              
+              <MaterialIcons name='subdirectory-arrow-left' color={'#fff'} size={20} />              
             </Button>
           </View>
           <View style={{flex: 1}}>
             <ScrollView horizontal={true} style={{flex: 1, flexDirection: 'row'}}>
-              {this.state.subs.map(category => (
+              {this.state.filteredCategories.map(category => (
                 <View key={category._id} style={{width: 150, height: 60, marginTop: 10, marginLeft: 10}}>
                   <Button full large success onPress={() => this.onSelectCategory(category)} style={{backgroundColor: '#2FA495'}}><Text> {category.name} </Text></Button>
                 </View>
