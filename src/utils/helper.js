@@ -101,6 +101,7 @@ function getKitchenPrint(setting, order) {
 }
 
 export default {
+  formatCurrency,
   getReceiptPrint,
   getKitchenPrint
 }

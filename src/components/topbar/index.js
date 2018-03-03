@@ -26,7 +26,7 @@ const order = (navigation) => {
 }
 
 export default ({navigation}) => ({
-  headerStyle: {backgroundColor: '#3F4247'},
+  headerStyle: {backgroundColor: '#13699A'},
   title: 'goretailr',
   headerTintColor: '#F5F8F9',
   gesturesEnabled: false,

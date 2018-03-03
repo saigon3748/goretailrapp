@@ -146,6 +146,13 @@
 			remoteGlobalIDString = ADD01A681E09402E00F6D226;
 			remoteInfo = "RCTBlob-tvOS";
 		};
+		3D0B2EEE204AB9C200859110 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 4AE89325CE5A4564B2C01BD1 /* RNTextInputMask.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 00278A001F2F25CE0023E794;
+			remoteInfo = RNTextInputMask;
+		};
 		3D77D2ED2041716100B82160 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 7FDA5A7F13F9408CB65FF074 /* RNVectorIcons.xcodeproj */;
@@ -336,6 +343,7 @@
 		2D02E47B1E0B4A5D006451C7 /* goretailr-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "goretailr-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* goretailr-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "goretailr-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D16E6891FA4F8E400B85C8A /* libReact.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; path = libReact.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		3D0B2EF0204ABA2B00859110 /* InputMask.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = InputMask.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3DA7C85B203C089100D92A63 /* libepos2.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libepos2.a; path = libs/libepos2.a; sourceTree = "<group>"; };
 		3DA7C85D203C089500D92A63 /* libeposeasyselect.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libeposeasyselect.a; path = libs/libeposeasyselect.a; sourceTree = "<group>"; };
 		3DA7C85F203C08BA00D92A63 /* ePOSEasySelect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ePOSEasySelect.h; path = libs/ePOSEasySelect.h; sourceTree = "<group>"; };
@@ -346,6 +354,7 @@
 		3DA7C872203C098A00D92A63 /* ExternalAccessory.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ExternalAccessory.framework; path = System/Library/Frameworks/ExternalAccessory.framework; sourceTree = SDKROOT; };
 		3E357722E0EA4DBD8F384038 /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
 		415FD8E4B81D41D083316D39 /* Feather.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Feather.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Feather.ttf"; sourceTree = "<group>"; };
+		4AE89325CE5A4564B2C01BD1 /* RNTextInputMask.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNTextInputMask.xcodeproj; path = "../node_modules/react-native-text-input-mask/ios/RNTextInputMask/RNTextInputMask.xcodeproj"; sourceTree = "<group>"; };
 		521ABE6EFB8746ECAC6AFA54 /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Foundation.ttf"; sourceTree = "<group>"; };
 		5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTAnimation.xcodeproj; path = "../node_modules/react-native/Libraries/NativeAnimation/RCTAnimation.xcodeproj"; sourceTree = "<group>"; };
 		5EFB5861767446A7B63223A1 /* libRNVectorIcons.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRNVectorIcons.a; sourceTree = "<group>"; };
@@ -556,6 +565,14 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		3D0B2EEB204AB9C200859110 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3D0B2EEF204AB9C200859110 /* libRNTextInputMask.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		3D77D2CA2041715F00B82160 /* Recovered References */ = {
 			isa = PBXGroup;
 			children = (
@@ -606,6 +623,7 @@
 				00C302DF1ABCB9EE00DB3ED1 /* RCTVibration.xcodeproj */,
 				139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */,
 				7FDA5A7F13F9408CB65FF074 /* RNVectorIcons.xcodeproj */,
+				4AE89325CE5A4564B2C01BD1 /* RNTextInputMask.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -622,6 +640,7 @@
 		83CBB9F61A601CBA00E9B192 = {
 			isa = PBXGroup;
 			children = (
+				3D0B2EF0204ABA2B00859110 /* InputMask.framework */,
 				13B07FAE1A68108700A75B9A /* goretailr */,
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				00E356EF1AD99517003FC87E /* goretailrTests */,
@@ -848,6 +867,10 @@
 					ProjectRef = 146833FF1AC3E56700842450 /* React.xcodeproj */;
 				},
 				{
+					ProductGroup = 3D0B2EEB204AB9C200859110 /* Products */;
+					ProjectRef = 4AE89325CE5A4564B2C01BD1 /* RNTextInputMask.xcodeproj */;
+				},
+				{
 					ProductGroup = 3D77D2EA2041716100B82160 /* Products */;
 					ProjectRef = 7FDA5A7F13F9408CB65FF074 /* RNVectorIcons.xcodeproj */;
 				},
@@ -924,6 +947,13 @@
 			fileType = archive.ar;
 			path = "libRCTBlob-tvOS.a";
 			remoteRef = 2D16E6711FA4F8DC00B85C8A /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		3D0B2EEF204AB9C200859110 /* libRNTextInputMask.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libRNTextInputMask.a;
+			remoteRef = 3D0B2EEE204AB9C200859110 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		3D77D2EE2041716100B82160 /* libRNVectorIcons.a */ = {
@@ -1252,12 +1282,14 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
+					"$(SRCROOT)/../node_modules/react-native-text-input-mask/ios/RNTextInputMask/RNTextInputMask/**",
 				);
 				INFOPLIST_FILE = goretailrTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
@@ -1277,12 +1309,14 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
+					"$(SRCROOT)/../node_modules/react-native-text-input-mask/ios/RNTextInputMask/RNTextInputMask/**",
 				);
 				INFOPLIST_FILE = goretailrTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
@@ -1304,6 +1338,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
+					"$(SRCROOT)/../node_modules/react-native-text-input-mask/ios/RNTextInputMask/RNTextInputMask/**",
 				);
 				INFOPLIST_FILE = goretailr/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1332,6 +1367,7 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
+					"$(SRCROOT)/../node_modules/react-native-text-input-mask/ios/RNTextInputMask/RNTextInputMask/**",
 				);
 				INFOPLIST_FILE = goretailr/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1366,11 +1402,13 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
+					"$(SRCROOT)/../node_modules/react-native-text-input-mask/ios/RNTextInputMask/RNTextInputMask/**",
 				);
 				INFOPLIST_FILE = "goretailr-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
@@ -1400,11 +1438,13 @@
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(SRCROOT)/../node_modules/react-native-vector-icons/RNVectorIconsManager",
+					"$(SRCROOT)/../node_modules/react-native-text-input-mask/ios/RNTextInputMask/RNTextInputMask/**",
 				);
 				INFOPLIST_FILE = "goretailr-tvOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				OTHER_LDFLAGS = (
@@ -1435,6 +1475,7 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.goretailr-tvOSTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1459,6 +1500,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.facebook.REACT.goretailr-tvOSTests";
