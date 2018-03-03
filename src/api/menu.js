@@ -1,9 +1,10 @@
 import { AsyncStorage } from 'react-native';
+import Config from '../config';
 
 const getMenuList = () => {
   return new Promise((resolve, reject) => {
     AsyncStorage.getItem('token', (err, token) => {
-      fetch('http://localhost:8080/api/menus', {
+      fetch(Config.API + '/menus', {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
@@ -25,7 +26,7 @@ const getMenuList = () => {
 const getCategoryList = () => {
   return new Promise((resolve, reject) => {
     AsyncStorage.getItem('token', (err, token) => {
-      fetch('http://localhost:8080/api/menus/tags', {
+      fetch(Config.API + '/categories', {
         method: 'GET',
         headers: {
           'Accept': 'application/json',

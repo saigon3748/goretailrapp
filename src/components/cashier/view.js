@@ -3,6 +3,7 @@ import React from 'react';
 import { ScrollView, View, TouchableOpacity, TouchableHighlight, StyleSheet, Image, ImageBackground, TextInput, FlatList } from 'react-native';
 import { Container, Content, Card, CardItem, Form, Item, Header, Left, Body, Right, Button, Icon, Title, List, ListItem, Text, Thumbnail, Input, InputGroup, Label, Toast } from 'native-base';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { MenuApi } from '../../api';
 
 const styles = StyleSheet.create({
   container: {
@@ -32,48 +33,60 @@ class Cashier extends React.Component {
     super(props);
     this.state = {
       step: "",
-      menu: [
-        {_id: 1, name: "Natural Turquoise Brooch", price: 15.05, image: "https://img0.etsystatic.com/210/0/10748667/il_340x270.1353210938_iqg8.jpg"},
-        {_id: 2, name: "Winter wedding mittens", price: 6.50, image: "https://img0.etsystatic.com/191/1/7502837/il_340x270.1379665700_jnp8.jpg"},
-        {_id: 3, name: "Watch tools diy steampunk", price: 15.00, image: "https://img0.etsystatic.com/189/1/12773570/il_340x270.1256358656_o7ls.jpg"},
-        {_id: 11, name: "Natural Turquoise Brooch", price: 15.05, image: "https://img0.etsystatic.com/210/0/10748667/il_340x270.1353210938_iqg8.jpg"},
-        {_id: 12, name: "Winter wedding mittens", price: 6.50, image: "https://img0.etsystatic.com/191/1/7502837/il_340x270.1379665700_jnp8.jpg"},
-        {_id: 13, name: "Watch tools diy steampunk", price: 15.00, image: "https://img0.etsystatic.com/189/1/12773570/il_340x270.1256358656_o7ls.jpg"},
-        {_id: 21, name: "Natural Turquoise Brooch", price: 15.05, image: "https://img0.etsystatic.com/210/0/10748667/il_340x270.1353210938_iqg8.jpg"},
-        {_id: 22, name: "Winter wedding mittens", price: 6.50, image: "https://img0.etsystatic.com/191/1/7502837/il_340x270.1379665700_jnp8.jpg"},
-        {_id: 23, name: "Watch tools diy steampunk", price: 15.00, image: "https://img0.etsystatic.com/189/1/12773570/il_340x270.1256358656_o7ls.jpg"},
-        {_id: 31, name: "Natural Turquoise Brooch", price: 15.05, image: "https://img0.etsystatic.com/210/0/10748667/il_340x270.1353210938_iqg8.jpg"},
-        {_id: 32, name: "Winter wedding mittens", price: 6.50, image: "https://img0.etsystatic.com/191/1/7502837/il_340x270.1379665700_jnp8.jpg"},
-        {_id: 33, name: "Watch tools diy steampunk", price: 15.00, image: "https://img0.etsystatic.com/189/1/12773570/il_340x270.1256358656_o7ls.jpg"},
-        {_id: 41, name: "Natural Turquoise Brooch", price: 15.05, image: "https://img0.etsystatic.com/210/0/10748667/il_340x270.1353210938_iqg8.jpg"},
-        {_id: 42, name: "Winter wedding mittens", price: 6.50, image: "https://img0.etsystatic.com/191/1/7502837/il_340x270.1379665700_jnp8.jpg"},
-        {_id: 43, name: "Watch tools diy steampunk", price: 15.00, image: "https://img0.etsystatic.com/189/1/12773570/il_340x270.1256358656_o7ls.jpg"},
-        {_id: 51, name: "Natural Turquoise Brooch", price: 15.05, image: "https://img0.etsystatic.com/210/0/10748667/il_340x270.1353210938_iqg8.jpg"},
-        {_id: 52, name: "Winter wedding mittens", price: 6.50, image: "https://img0.etsystatic.com/191/1/7502837/il_340x270.1379665700_jnp8.jpg"},
-        {_id: 53, name: "Watch tools diy steampunk", price: 15.00, image: "https://img0.etsystatic.com/189/1/12773570/il_340x270.1256358656_o7ls.jpg"},
-        {_id: 61, name: "Natural Turquoise Brooch", price: 15.05, image: "https://img0.etsystatic.com/210/0/10748667/il_340x270.1353210938_iqg8.jpg"},
-        {_id: 62, name: "Winter wedding mittens", price: 6.50, image: "https://img0.etsystatic.com/191/1/7502837/il_340x270.1379665700_jnp8.jpg"},
-        {_id: 63, name: "Watch tools diy steampunk", price: 15.00, image: "https://img0.etsystatic.com/189/1/12773570/il_340x270.1256358656_o7ls.jpg"},
-      ],
-      tags: [
-        {name: "noodle", children: [
-          {name: "pork", children: []},
-          {name: "beef", children: []},
-        ]},
-        {name: "drink", children: [
-          {name: "pepsi", children: []},
-          {name: "coca", children: []},
-          {name: "fruit", children: []},
-        ]}
-      ],
+      menu: [],
+      categories: [],
+      selectedCategories: [],
+      subs: [],
       order: {
         subtotal: 0.00,
         discount: 0.00,
         tax: 0.00,
         total: 0.00,
-        lineItems: []
+        items: []
       }
     }
+  }
+
+  componentDidMount() {
+    MenuApi.getMenuList()
+      .then(result => {
+        this.setState({
+          menu: result
+        });
+      })
+
+    MenuApi.getCategoryList()
+      .then(result => {
+        this.setState({
+          categories: result,
+          subs: this.getSubs(result)
+        });
+      })
+  }
+
+  componentWillUnmount() {
+  }
+
+  getSubs(categories, selectedCategory) {
+    categories = categories || this.state.categories;
+    return _.filter(categories, category => {
+      return (!selectedCategory && !category.parent)
+        || (selectedCategory && category.parent === selectedCategory._id);
+    })
+  }
+
+  onSelectCategory(category) {
+    let selectedCategories = [...this.state.selectedCategories];
+    selectedCategories.push(category);
+    
+    this.setState({
+      selectedCategories: selectedCategories,
+      subs: this.getSubs(category)
+    });
+  }
+
+  onBackCategory() {
+
   }
 
   onDiscard() {
@@ -82,7 +95,7 @@ class Cashier extends React.Component {
       discount: 0.00,
       tax: 0.00,
       total: 0.00,
-      lineItems: []
+      items: []
     }
 
     this.setState({
@@ -96,7 +109,7 @@ class Cashier extends React.Component {
       discount: 0.00,
       tax: 0.00,
       total: 0.00,
-      lineItems: []
+      items: []
     }
 
     this.setState({
@@ -126,7 +139,7 @@ class Cashier extends React.Component {
 
   onAddItem(id) {
     let order = {...this.state.order};
-    let item = _.find(order.lineItems, item => {
+    let item = _.find(order.items, item => {
       return item._id === id;
     });
 
@@ -137,12 +150,12 @@ class Cashier extends React.Component {
         return item._id === id;
       });
       item = {...item, quantity: 1};
-      order.lineItems.push(item);
+      order.items.push(item);
     }
 
     order.subtotal = 0;
-    order.lineItems.forEach(item => {
-      order.subtotal += _.round(item.price * item.quantity, 2);
+    order.items.forEach(item => {
+      order.subtotal += _.round(item.unitPrice * item.quantity, 2);
     });
     order.discount = 3.00;
     order.tax = _.round(order.subtotal * 0.11, 2);
@@ -155,20 +168,20 @@ class Cashier extends React.Component {
 
   onRemoveItem(id) {
     let order = {...this.state.order};
-    let item = _.find(order.lineItems, item => {
+    let item = _.find(order.items, item => {
       return item._id === id;
     });
 
     item.quantity--;
     if (item.quantity === 0) {
-      order.lineItems = _.filter(order.lineItems, item => {
+      order.items = _.filter(order.items, item => {
         return item._id != id;
       });
     }
 
     order.subtotal = 0;
-    order.lineItems.forEach(item => {
-      order.subtotal += _.round(item.price * item.quantity, 2);
+    order.items.forEach(item => {
+      order.subtotal += _.round(item.unitPrice * item.quantity, 2);
     });
     order.discount = 3.00;
     order.tax = _.round(order.subtotal * 0.11, 2);
@@ -223,22 +236,39 @@ class Cashier extends React.Component {
                 flexDirection: 'row', 
                 flexWrap: 'wrap'
               }}>
-                {this.state.menu.map(menuItem => (
-                  <TouchableOpacity key={menuItem._id} activeOpacity={1.0} onPress={() => this.onAddItem(menuItem._id)}>
-                    <View style={{width: 150, height: 150, marginTop: 10, marginLeft: 10}}>
-                      <ImageBackground
-                        style={{width: 150, height: 150}}
-                        source={{uri: menuItem.image}}>
-                        <Text style={{backgroundColor: 'rgba(221, 226, 229, 0.8)'}}>
-                          {menuItem.name}
-                        </Text>
-                        <Text style={{backgroundColor: 'rgba(221, 226, 229, 0.8)'}}>
-                          ${menuItem.price}
-                        </Text>
-                      </ImageBackground>
-                    </View>
-                  </TouchableOpacity>
-                ))}
+                {this.state.menu.map(menuItem => {
+                  if (menuItem.image) {
+                    return (
+                      <TouchableOpacity key={menuItem._id} activeOpacity={1.0} onPress={() => this.onAddItem(menuItem._id)}>
+                        <View style={{width: 150, height: 150, marginTop: 10, marginLeft: 10}}>
+                          <ImageBackground
+                            style={{width: 150, height: 150}}
+                            source={{uri: menuItem.image}}>
+                            <Text style={{backgroundColor: 'rgba(221, 226, 229, 0.8)'}}>
+                              {menuItem.name}
+                            </Text>
+                            <Text style={{backgroundColor: 'rgba(221, 226, 229, 0.8)'}}>
+                              ${menuItem.unitPrice}
+                            </Text>
+                          </ImageBackground>
+                        </View>
+                      </TouchableOpacity>
+                    )
+                  } else {
+                    return (
+                      <TouchableOpacity key={menuItem._id} activeOpacity={1.0} onPress={() => this.onAddItem(menuItem._id)}>
+                        <View style={{width: 150, height: 150, marginTop: 10, marginLeft: 10, backgroundColor: '#f2f3f4'}}>
+                          <Text style={{backgroundColor: 'rgba(221, 226, 229, 0.8)'}}>
+                            {menuItem.name}
+                          </Text>
+                          <Text style={{backgroundColor: 'rgba(221, 226, 229, 0.8)'}}>
+                            ${menuItem.unitPrice}
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                    )
+                  }
+                })}
               </View>
             </ScrollView>
           </View>
@@ -301,13 +331,13 @@ class Cashier extends React.Component {
 
                   <ScrollView style={{flex: 1, flexDirection: 'column'}}>
                     <FlatList style={{marginLeft: 10, marginRight: 10}}
-                      data={this.state.order.lineItems}
+                      data={this.state.order.items}
                       keyExtractor={(item) => item._id}
                       renderItem={({item, separators}) => (
                         <View style={{marginTop: 20}}>
                           <View style={{flex: 1, flexDirection: 'row'}}>
                             <Text style={{flex: 1}}>{item.name}</Text>
-                            <Text style={{width: 70, textAlign: 'right'}}>${item.price}</Text>
+                            <Text style={{width: 70, textAlign: 'right'}}>${item.unitPrice}</Text>
                           </View>
                           <View style={{flex: 1, flexDirection: 'row', marginTop: 10}}>
                             <Button full small style={{backgroundColor: '#2177b4'}} onPress={() => {this.onAddItem(item._id)}}><Text> + </Text></Button>
@@ -360,13 +390,13 @@ class Cashier extends React.Component {
 
         <View style={{flex: 1, flexDirection: 'row', backgroundColor: '#f2f3f4'}}>
           <View style={{width: 150, height: 60, marginTop: 10, marginLeft: 10}}>
-            <Button full large onPress={this.onPress} style={{backgroundColor: '#2177b4'}}><Text> BACK </Text></Button>
+            <Button full large onPress={() => this.onBackCategory()} style={{backgroundColor: '#2177b4'}}><Text> BACK </Text></Button>
           </View>
           <View style={{flex: 1}}>
             <ScrollView horizontal={true} style={{flex: 1, flexDirection: 'row'}}>
-              {this.state.tags.map(tag => (
-                <View key={tag.name} style={{width: 150, height: 60, marginTop: 10, marginLeft: 10}}>
-                  <Button full large success onPress={this.onPress} style={{backgroundColor: '#7BBFB7'}}><Text> {tag.name} </Text></Button>
+              {this.state.subs.map(category => (
+                <View key={category._id} style={{width: 150, height: 60, marginTop: 10, marginLeft: 10}}>
+                  <Button full large success onPress={() => this.onSelectCategory(category)} style={{backgroundColor: '#7BBFB7'}}><Text> {category.name} </Text></Button>
                 </View>
               ))}
             </ScrollView>
