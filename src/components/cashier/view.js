@@ -36,6 +36,7 @@ class Cashier extends React.Component {
     this.menu = [];
     this.categories = [];
     this.categoryStack = [];
+    this.selectedCategory = null;
 
     this.state = {
       isEdittingNote: false,
@@ -44,6 +45,7 @@ class Cashier extends React.Component {
       order: {
         subtotal: 0.00,
         discount: 0.00,
+        discountAmt: 0.00,
         tax: 0.00,
         total: 0.00,
         cash: 0.00,
@@ -81,12 +83,34 @@ class Cashier extends React.Component {
       return menu;
     }
 
+    if (this.selectedCategory) {
+      return _.filter(menu, item => {
+        return item.category._id === this.selectedCategory._id;
+      })
+    } 
+
     let category = this.categoryStack[this.categoryStack.length - 1];
 
     return _.filter(menu, item => {
-      return item.category._id === category._id
-        || category.path.includes(item.category._id)
-    })    
+      return this.includesMenuItem(category, item);
+    })
+  }
+
+  includesMenuItem(category, item) {
+    if (item.category._id === category._id) {
+      return true;
+    }
+
+    let result = false;
+    if (category.subs && category.subs.length > 0) {
+      category.subs.forEach(sub => {
+        if (!result) {
+          result = this.includesMenuItem(sub, item)
+        }
+      })
+    }
+
+    return result;
   }
 
   filterCategories() {
@@ -99,16 +123,25 @@ class Cashier extends React.Component {
     }
 
     let category = this.categoryStack[this.categoryStack.length - 1];
-    
-    return _.filter(categories, item => {
-      return item.parent === category._id;
-    })
+    if (category.subs && category.subs.length > 0) {
+      return _.filter(categories, item => {
+        return item.parent === category._id;
+      })
+    }
+
+    return this.state.filteredCategories;
   }
 
   onSelectCategory(category) {
     this.categoryStack = this.categoryStack || [];
     if (category.subs.length > 0) {
       this.categoryStack.push(category);
+    } else {
+      if (this.selectedCategory && this.selectedCategory._id === category._id) {
+        this.selectedCategory = null;
+      } else {
+        this.selectedCategory = category;
+      }
     }
     
     this.setState({
@@ -130,16 +163,22 @@ class Cashier extends React.Component {
   }
 
   onDiscard() {
+    this.categoryStack = [];
+    this.selectedCategory = null;
+
     this.setState({
       isEdittingNote: false,
+      filteredMenu: this.filterMenu(),
+      filteredCategories: this.filterCategories(),      
       order: {
         subtotal: 0.00,
         discount: 0.00,
+        discountAmt: 0.00,
         tax: 0.00,
         total: 0.00,
         cash: 0.00,
         change: 0.00,
-        items: []        
+        items: []
       }
     })
   }
@@ -211,6 +250,7 @@ class Cashier extends React.Component {
 
     order.subtotal = 0.00;
     order.discount = 0.00;
+    order.discountAmt = 0.00;
     order.items.forEach(item => {
       let subtotal = _.round(item.unitPrice * item.quantity, 2);
       let discount = 0.00;
@@ -225,9 +265,10 @@ class Cashier extends React.Component {
 
       order.subtotal += subtotal;
       order.discount += discount;
+      order.discountAmt += discount;
     });
-    order.tax = _.round(order.subtotal * 0.11, 2);
-    order.total = _.round(order.subtotal + order.tax - order.discount, 2);
+    order.tax = _.round((order.subtotal - order.discountAmt) * 0.11, 2);
+    order.total = _.round(order.subtotal - order.discountAmt + order.tax, 2);
 
     this.setState({
       order: order
@@ -249,6 +290,7 @@ class Cashier extends React.Component {
 
     order.subtotal = 0.00;
     order.discount = 0.00;
+    order.discountAmt = 0.00;
     order.items.forEach(item => {
       let subtotal = _.round(item.unitPrice * item.quantity, 2);
       let discount = 0.00;
@@ -263,9 +305,10 @@ class Cashier extends React.Component {
 
       order.subtotal += subtotal;
       order.discount += discount;
+      order.discountAmt += discount;
     });
-    order.tax = _.round(order.subtotal - order.discount * 0.11, 2);
-    order.total = _.round(order.subtotal - order.discount + order.tax, 2);
+    order.tax = _.round((order.subtotal - order.discountAmt) * 0.11, 2);
+    order.total = _.round(order.subtotal - order.discountAmt + order.tax, 2);
 
     this.setState({
       order: order
@@ -277,9 +320,9 @@ class Cashier extends React.Component {
       let discount = Number(text.replace(/[^0-9\.-]+/g,""));
 
       let order = {...this.state.order};
-      order.discount = _.round(discount, 2);
-      order.tax = _.round(order.subtotal - order.discount * 0.11, 2);
-      order.total = _.round(order.subtotal - order.discount + order.tax, 2);
+      order.discountAmt = _.round(discount, 2);
+      order.tax = _.round((order.subtotal - order.discountAmt) * 0.11, 2);
+      order.total = _.round(order.subtotal - order.discountAmt + order.tax, 2);
 
       this.setState({
         order: order
@@ -399,7 +442,7 @@ class Cashier extends React.Component {
                     <Text style={{marginTop: 20}}>NOTE</Text>
                     <TextInput value={this.state.order.isEdittingNote} onChangeText={(text) => this.onNoteChanged(text)} multiline = {true} style={{marginTop: 10, fontSize: 20, height: 85, backgroundColor: '#fff', borderColor: '#d2d3d4', borderWidth: 1}}/>          
                     <Text style={{marginTop: 10}}>DISCOUNT</Text>
-                    <TextInputMask type={'money'} options={{unit: '$', separator: '.', delimiter: ','}} selectTextOnFocus value={(() => { return Helper.formatCurrency(this.state.order.discount) })()} onChangeText={(text) => this.onDiscountChanged(text)} style={{marginTop: 10, fontSize: 20, height: 35, backgroundColor: '#fff', borderColor: '#d2d3d4', borderWidth: 1, textAlign: 'right'}}/>          
+                    <TextInputMask type={'money'} options={{unit: '$', separator: '.', delimiter: ','}} selectTextOnFocus value={(() => { return Helper.formatCurrency(this.state.order.discountAmt) })()} onChangeText={(text) => this.onDiscountChanged(text)} style={{marginTop: 10, fontSize: 20, height: 35, backgroundColor: '#fff', borderColor: '#d2d3d4', borderWidth: 1, textAlign: 'right'}}/>          
                     <Text style={{marginTop: 10}}>CASH</Text>
                     <TextInputMask type={'money'} options={{unit: '$', separator: '.', delimiter: ','}} selectTextOnFocus value={(() => { return Helper.formatCurrency(this.state.order.cash) })()} onChangeText={(text) => this.onCashChanged(text)} style={{marginTop: 10, fontSize: 20, height: 35, backgroundColor: '#fff', borderColor: '#d2d3d4', borderWidth: 1, textAlign: 'right'}}/>          
                     <View style={{flexDirection: 'row', marginTop: 20}}>
@@ -473,7 +516,7 @@ class Cashier extends React.Component {
               <View style={{flex: 1, flexDirection: 'row'}}>
                 <Text style={{flex: 1}}>DISCOUNT</Text>
                 <Text style={{width: 200, textAlign: 'right'}}>
-                  {(() => { return Helper.formatCurrency(this.state.order.discount) })()}
+                  {(() => { return Helper.formatCurrency(this.state.order.discountAmt) })()}
                 </Text>
               </View>
               <View style={{flex: 1, flexDirection: 'row'}}>
@@ -515,7 +558,17 @@ class Cashier extends React.Component {
             <ScrollView horizontal={true} style={{flex: 1, flexDirection: 'row'}}>
               {this.state.filteredCategories.map(category => (
                 <View key={category._id} style={{width: 150, height: 60, marginTop: 10, marginLeft: 10}}>
-                  <Button full large success onPress={() => this.onSelectCategory(category)} style={{backgroundColor: '#2FA495'}}><Text> {category.name} </Text></Button>
+                  {(() => {
+                    if (this.selectedCategory && this.selectedCategory._id === category._id) {
+                      return (
+                        <Button full large success onPress={() => this.onSelectCategory(category)} style={{backgroundColor: '#6c757d'}}><Text> {category.name} </Text></Button>
+                      )
+                    } else {
+                      return (
+                        <Button full large success onPress={() => this.onSelectCategory(category)} style={{backgroundColor: '#2FA495'}}><Text> {category.name} </Text></Button>
+                      )                      
+                    }
+                  })()}
                 </View>
               ))}
             </ScrollView>

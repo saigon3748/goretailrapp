@@ -14,8 +14,8 @@ export default StackNavigator({
   LOGIN: { screen: Login },
   APP: { screen: StackNavigator({
     MAIN: { screen: DrawerNavigator({
-        DASHBOARD: { screen: Dashboard },
         CASHIER: { screen: Cashier },
+        DASHBOARD: { screen: Dashboard },
         KITCHEN: { screen: Kitchen },
         SETTINGS: { screen: Settings }
       }, {
