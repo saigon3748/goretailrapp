@@ -1,10 +1,10 @@
 import { AsyncStorage } from 'react-native';
 import Config from '../config';
 
-const getById = (id) => {
+const getToday = () => {
   return new Promise((resolve, reject) => {
     AsyncStorage.getItem('token', (err, token) => {
-      fetch(Config.API + `/tenants/${id}`, {
+      fetch(Config.API + '/kitchens/today', {
         method: 'GET',
         headers: {
           'Accept': 'application/json',
@@ -17,33 +17,36 @@ const getById = (id) => {
         resolve(result);
       })
       .catch(error => {
-        reject('Received company failed');
+        reject('Retrieved orders failed');
       });
     });
   });
 }
 
-const updateById = (id, data) => {
+const markCompleted = (id) => {
   return new Promise((resolve, reject) => {
     AsyncStorage.getItem('token', (err, token) => {
-      fetch(Config.API + `/tenants/updateById/${id}`, {
+      fetch(Config.API + `/kitchens/updateById/${id}`, {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
           'Authorization': 'JWT ' + token
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify({isCompleted: true})
       })
-      .then(result => resolve(result))
+      .then(response => response.json())
+      .then(result => {
+        resolve(result);
+      })
       .catch(error => {
-        reject('Updated company failed');
+        reject('Marked completed failed');
       });
     });
   });
 }
 
 export default {
-  getById,
-  updateById
+  getToday,
+  markCompleted
 }

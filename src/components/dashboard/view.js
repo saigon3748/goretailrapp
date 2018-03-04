@@ -1,156 +1,46 @@
 import _ from 'lodash';
+import moment from "moment";
 import React from 'react';
-import { ScrollView, View, TouchableOpacity, TouchableHighlight, StyleSheet, Image, ImageBackground, TextInput, FlatList } from 'react-native';
-import { Container, Content, Card, CardItem, Form, Item, Header, Left, Body, Right, Button, Icon, Title, List, ListItem, Text, Thumbnail, Input, InputGroup, Label } from 'native-base';
+import { NativeModules, AsyncStorage, Alert, ScrollView, View, TouchableOpacity, TouchableHighlight, StyleSheet, Image, ImageBackground, TextInput, FlatList } from 'react-native';
+import { Container, Content, Card, CardItem, Form, Item, Header, Left, Body, Right, Button, Icon, Title, List, ListItem, Text, Thumbnail, Input, InputGroup, Label, Toast } from 'native-base';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-
-const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    padding: 30, 
-    margin: 10
-  },
-
-  logo: {
-    alignSelf: 'center',
-    color: 'black',
-    fontSize: 50
-  },
-
-  background: {
-    flex: 1,
-    width: null,
-    height: null,
-    resizeMode: 'cover',
-    backgroundColor: "#fff",
-    justifyContent: 'space-between'
-  }  
-});
+import { MenuApi, OrderApi, TenantApi } from '../../api';
+import { Helper } from '../../utils';
 
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
+      isSignedIn: false,
       selectedOrder: null,
-      orders: [
-        {
-          _id: 1,
-          code: "0015",
-          time: "08:45",
-          subtotal: 12.00,
-          discount: 2.50,
-          tax: 1.50,
-          total: 16.00,
-          items: [
-            {_id: 1, name: "Natural Turquoise Brooch", price: 15.05, quantity: 1, image: "https://img0.etsystatic.com/210/0/10748667/il_340x270.1353210938_iqg8.jpg"},
-            {_id: 2, name: "Winter wedding mittens", price: 6.50, quantity: 2, image: "https://img0.etsystatic.com/191/1/7502837/il_340x270.1379665700_jnp8.jpg"},
-            {_id: 3, name: "Watch tools diy steampunk", price: 15.00, quantity: 3, image: "https://img0.etsystatic.com/189/1/12773570/il_340x270.1256358656_o7ls.jpg"},
-          ]
-        },
-        {
-          _id: 2,
-          code: "0031",
-          time: "11:32",
-          subtotal: 12.00,
-          discount: 2.50,
-          tax: 1.50,
-          total: 16.00,
-          items: [
-            {_id: 1, name: "Natural Turquoise Brooch", price: 15.05, quantity: 1, image: "https://img0.etsystatic.com/210/0/10748667/il_340x270.1353210938_iqg8.jpg"},
-          ]
-        },
-        {
-          _id: 3,
-          code: "0052",
-          time: "15:48",          
-          subtotal: 12.00,
-          discount: 2.50,
-          tax: 1.50,
-          total: 16.00,
-          items: [
-            {_id: 1, name: "Natural Turquoise Brooch", price: 15.05, quantity: 1, image: "https://img0.etsystatic.com/210/0/10748667/il_340x270.1353210938_iqg8.jpg"},
-            {_id: 3, name: "Watch tools diy steampunk", price: 15.00, quantity: 3, image: "https://img0.etsystatic.com/189/1/12773570/il_340x270.1256358656_o7ls.jpg"},
-          ]
-        },
-      ],
-      menu: [
-        {_id: 1, name: "Natural Turquoise Brooch", price: 15.05, image: "https://img0.etsystatic.com/210/0/10748667/il_340x270.1353210938_iqg8.jpg"},
-        {_id: 2, name: "Winter wedding mittens", price: 6.50, image: "https://img0.etsystatic.com/191/1/7502837/il_340x270.1379665700_jnp8.jpg"},
-        {_id: 3, name: "Watch tools diy steampunk", price: 15.00, image: "https://img0.etsystatic.com/189/1/12773570/il_340x270.1256358656_o7ls.jpg"},
-        {_id: 11, name: "Natural Turquoise Brooch", price: 15.05, image: "https://img0.etsystatic.com/210/0/10748667/il_340x270.1353210938_iqg8.jpg"},
-        {_id: 12, name: "Winter wedding mittens", price: 6.50, image: "https://img0.etsystatic.com/191/1/7502837/il_340x270.1379665700_jnp8.jpg"},
-        {_id: 13, name: "Watch tools diy steampunk", price: 15.00, image: "https://img0.etsystatic.com/189/1/12773570/il_340x270.1256358656_o7ls.jpg"},
-        {_id: 21, name: "Natural Turquoise Brooch", price: 15.05, image: "https://img0.etsystatic.com/210/0/10748667/il_340x270.1353210938_iqg8.jpg"},
-        {_id: 22, name: "Winter wedding mittens", price: 6.50, image: "https://img0.etsystatic.com/191/1/7502837/il_340x270.1379665700_jnp8.jpg"},
-        {_id: 23, name: "Watch tools diy steampunk", price: 15.00, image: "https://img0.etsystatic.com/189/1/12773570/il_340x270.1256358656_o7ls.jpg"},
-        {_id: 31, name: "Natural Turquoise Brooch", price: 15.05, image: "https://img0.etsystatic.com/210/0/10748667/il_340x270.1353210938_iqg8.jpg"},
-        {_id: 32, name: "Winter wedding mittens", price: 6.50, image: "https://img0.etsystatic.com/191/1/7502837/il_340x270.1379665700_jnp8.jpg"},
-        {_id: 33, name: "Watch tools diy steampunk", price: 15.00, image: "https://img0.etsystatic.com/189/1/12773570/il_340x270.1256358656_o7ls.jpg"},
-        {_id: 41, name: "Natural Turquoise Brooch", price: 15.05, image: "https://img0.etsystatic.com/210/0/10748667/il_340x270.1353210938_iqg8.jpg"},
-        {_id: 42, name: "Winter wedding mittens", price: 6.50, image: "https://img0.etsystatic.com/191/1/7502837/il_340x270.1379665700_jnp8.jpg"},
-        {_id: 43, name: "Watch tools diy steampunk", price: 15.00, image: "https://img0.etsystatic.com/189/1/12773570/il_340x270.1256358656_o7ls.jpg"},
-        {_id: 51, name: "Natural Turquoise Brooch", price: 15.05, image: "https://img0.etsystatic.com/210/0/10748667/il_340x270.1353210938_iqg8.jpg"},
-        {_id: 52, name: "Winter wedding mittens", price: 6.50, image: "https://img0.etsystatic.com/191/1/7502837/il_340x270.1379665700_jnp8.jpg"},
-        {_id: 53, name: "Watch tools diy steampunk", price: 15.00, image: "https://img0.etsystatic.com/189/1/12773570/il_340x270.1256358656_o7ls.jpg"},
-        {_id: 61, name: "Natural Turquoise Brooch", price: 15.05, image: "https://img0.etsystatic.com/210/0/10748667/il_340x270.1353210938_iqg8.jpg"},
-        {_id: 62, name: "Winter wedding mittens", price: 6.50, image: "https://img0.etsystatic.com/191/1/7502837/il_340x270.1379665700_jnp8.jpg"},
-        {_id: 63, name: "Watch tools diy steampunk", price: 15.00, image: "https://img0.etsystatic.com/189/1/12773570/il_340x270.1256358656_o7ls.jpg"},
-      ],
-      tags: [
-        {name: "noodle", children: [
-          {name: "pork", children: []},
-          {name: "beef", children: []},
-        ]},
-        {name: "drink", children: [
-          {name: "pepsi", children: []},
-          {name: "coca", children: []},
-          {name: "fruit", children: []},
-        ]}
-      ],
-      order: {
-        subtotal: 0.00,
-        discount: 0.00,
-        tax: 0.00,
-        total: 0.00,
-        lineItems: []
-      }
+      orders: []
     }
   }
 
-  onDiscard() {
-    let order = {
-      subtotal: 0.00,
-      discount: 0.00,
-      tax: 0.00,
-      total: 0.00,
-      lineItems: []
-    }
+  componentWillMount() {
+    AsyncStorage.getItem('payload', (err, payload) => {
+      if (!payload) return;
+      payload = JSON.parse(payload);
 
-    this.setState({
-      order: order
-    })
+      this.setState({
+        isSignedIn: true
+      });
+
+      TenantApi.getById(payload.tenant._id)
+        .then(result => {
+          this.tenant = result;
+        })      
+    });
   }
 
-  onConfirm() {
-    let order = {
-      subtotal: 0.00,
-      discount: 0.00,
-      tax: 0.00,
-      total: 0.00,
-      lineItems: []
-    }
-
-    this.setState({
-      order: order
-    })
-  }
-
-  onPrint() {
-    this.props.print();
-  }
-
-  onPress() {
-    alert('press')
+  componentDidMount() {
+    OrderApi.getToday()
+      .then(result => {
+        this.setState({
+          orders: result
+        });
+      })
   }
 
   onSelectOrder(order) {
@@ -159,62 +49,89 @@ class Dashboard extends React.Component {
     })    
   }
 
-  onAddItem(id) {
-    let order = {...this.state.order};
-    let item = _.find(order.lineItems, item => {
-      return item._id === id;
-    });
+  onDelete(order) {
+    Alert.alert(
+      `#${order.ref}`, 
+      'Do you want to delete?',
+      [ { text: 'Cancel' }, 
+        { text: 'OK', onPress: () => {
+          OrderApi.markDeleted(order._id)
+            .then(result => {
+              let orders = {...this.state.orders};
+              orders = _.filter(orders, item => {
+                return item._id != order._id;
+              });
 
-    if (item) {
-      item.quantity++;
-    } else {
-      item = _.find(this.state.menu, item => {
-        return item._id === id;
-      });
-      item = {...item, quantity: 1};
-      order.lineItems.push(item);
-    }
-
-    order.subtotal = 0;
-    order.lineItems.forEach(item => {
-      order.subtotal += _.round(item.price * item.quantity, 2);
-    });
-    order.discount = 3.00;
-    order.tax = _.round(order.subtotal * 0.11, 2);
-    order.total = _.round(order.subtotal + order.tax - order.discount, 2);
-
-    this.setState({
-      order: order
-    })
+              this.setState({
+                selectedOrder: null,
+                orders: orders
+              });                  
+            })
+        }} ]
+    );    
   }
 
-  onRemoveItem(id) {
-    let order = {...this.state.order};
-    let item = _.find(order.lineItems, item => {
-      return item._id === id;
-    });
+  onPrint(order) {
+    Alert.alert(
+      `#${order.ref}`, 
+      'Do you want to print?',
+      [ { text: 'Cancel' }, 
+        { text: 'OK', onPress: () => {
+          this.print(order)
+        }} ]
+    );    
+  }
 
-    item.quantity--;
-    if (item.quantity === 0) {
-      order.lineItems = _.filter(order.lineItems, item => {
-        return item._id != id;
-      });
+  print(order) {
+    if (!this.tenant || !this.tenant.settings || !this.tenant.settings.receiptTemplate) {
+      alert('No setting found')
+      return;
     }
 
-    order.subtotal = 0;
-    order.lineItems.forEach(item => {
-      order.subtotal += _.round(item.price * item.quantity, 2);
-    });
-    order.discount = 3.00;
-    order.tax = _.round(order.subtotal * 0.11, 2);
-    order.total = _.round(order.subtotal + order.tax - order.discount, 2);
+    if (!this.tenant.settings.receiptPrinter || this.tenant.settings.receiptPrinter.trim() === "") {
+      alert('No setting found for receipt printer')
+      return;
+    }
 
-    this.setState({
-      order: order
-    });
+    let setting = {
+      name: this.tenant.settings.receiptTemplate.receiptName,
+      receiptPrinter: this.tenant.settings.receiptPrinter,
+      header1: this.tenant.settings.receiptTemplate.header1,
+      header2: this.tenant.settings.receiptTemplate.header2,
+      header3: this.tenant.settings.receiptTemplate.header3,
+      header4: this.tenant.settings.receiptTemplate.header4,
+      header5: this.tenant.settings.receiptTemplate.header5,
+      footer1: this.tenant.settings.receiptTemplate.footer1,
+      footer2: this.tenant.settings.receiptTemplate.footer2,
+      footer3: this.tenant.settings.receiptTemplate.footer3
+    }
+
+    let data = {
+      code: order.ref,
+      createdAt: order.createdAt,
+      subtotal: order.subtotal,
+      discount: order.discountAmt,
+      tax: order.tax,
+      total: order.total,
+      cash: order.cash,
+      change: order.change,
+      items: order.items
+    };
+
+    let receipt = Helper.getReceiptPrint(setting, data);
+    NativeModules.RNPrinter.print(receipt)
+
+    if (this.tenant.settings.kitchenPrinter && this.tenant.settings.kitchenPrinter.trim() != "") {
+      setTimeout(() => {
+        let kitchen = Helper.getKitchenPrint(setting, data);
+        NativeModules.RNPrinter.print(kitchen)
+      }, 2000)
+    }    
   }
 
   render() {
+    if (!this.state.isSignedIn) return null;
+
     return (
       <View style={{
         flex: 1,
@@ -244,16 +161,19 @@ class Dashboard extends React.Component {
             <ScrollView style={{flex: 1, flexDirection: 'column', marginLeft: 35, marginRight: 10}}>
               <List>
                 {this.state.orders.map(item => (
-                  <ListItem key={item._id} onPress={() => this.onSelectOrder(item)}>
-                    <Left>
-                      <Text>#{item.code}</Text>
-                    </Left>
+                  <ListItem key={item._id} style={{height: 50}} onPress={() => this.onSelectOrder(item)}>
                     <Body>
-                      <Text>${item.total}</Text>
+                      <View style={{flexDirection: "row"}}>
+                        <Text style={{width: 60}}>#{item.ref}</Text>
+                        <Text style={{width: 100, textAlign: 'right'}}>
+                          {(() => { return Helper.formatCurrency(item.total) })()}
+                        </Text>
+                        <Text style={{flex: 1}}>{item.note}</Text>
+                        <Text style={{width: 60}}>
+                          {(() => { return moment(item.createdAt).format("HH:mm") })()}
+                        </Text>
+                      </View>
                     </Body>
-                    <Right>
-                      <Text>{item.time}</Text>
-                    </Right>
                   </ListItem>
                 ))}
               </List>
@@ -272,7 +192,7 @@ class Dashboard extends React.Component {
               return (
                 <View style={{flex: 1, flexDirection: 'column', backgroundColor: '#f2f3f4', marginTop: 10, marginBottom: 10}}>
                   <View style={{height: 30, marginTop: 20, marginLeft: 10, marginRight: 10}}>
-                    <Text style={{textAlign: 'center', fontSize: 20, color: 'rgb(70, 70, 70)'}}>ORDER  #{this.state.selectedOrder.code}</Text>
+                    <Text style={{textAlign: 'center', fontSize: 20, color: 'rgb(70, 70, 70)'}}>ORDER  #{this.state.selectedOrder.ref}</Text>
                   </View>
 
                   <ScrollView style={{flex: 1, flexDirection: 'column'}}>
@@ -283,11 +203,13 @@ class Dashboard extends React.Component {
                         <View style={{marginTop: 20}}>
                           <View style={{flex: 1, flexDirection: 'row'}}>
                             <Text style={{flex: 1}}>{item.name}</Text>
-                            <Text style={{width: 70, textAlign: 'right'}}>${item.price}</Text>
+                            <Text style={{width: 70, textAlign: 'right'}}>
+                              {(() => { return Helper.formatCurrency(item.unitPrice) })()}
+                            </Text>
                           </View>
                           <View style={{flex: 1, flexDirection: 'row', marginTop: 10}}>
                             <View style={{flex: 1}}/>
-                            <Text style={{width: 70, textAlign: 'right'}}>x{item.quantity}</Text>
+                            <Text style={{width: 70, textAlign: 'right', color: '#EE2738'}}>x{item.quantity}</Text>
                           </View>
                         </View>
                       )}
@@ -297,32 +219,32 @@ class Dashboard extends React.Component {
                   <View style={{height: 90, marginTop: 30, marginLeft: 10, marginRight: 10}}>
                     <View style={{flex: 1, flexDirection: 'row'}}>
                       <Text style={{flex: 1}}>SUBTOTAL</Text>
-                      <Text style={{width: 100, textAlign: 'right'}}>${this.state.selectedOrder.subtotal}</Text>
+                      <Text style={{width: 200, textAlign: 'right'}}>${this.state.selectedOrder.subtotal}</Text>
                     </View>
                     <View style={{flex: 1, flexDirection: 'row'}}>
                       <Text style={{flex: 1}}>DISCOUNT</Text>
-                      <Text style={{width: 100, textAlign: 'right'}}>${this.state.selectedOrder.discount}</Text>
+                      <Text style={{width: 200, textAlign: 'right'}}>${this.state.selectedOrder.discountAmt}</Text>
                     </View>
                     <View style={{flex: 1, flexDirection: 'row'}}>
                       <Text style={{flex: 1}}>TAX</Text>
-                      <Text style={{width: 100, textAlign: 'right'}}>${this.state.selectedOrder.tax}</Text>
+                      <Text style={{width: 200, textAlign: 'right'}}>${this.state.selectedOrder.tax}</Text>
                     </View>
                   </View>
 
                   <View style={{height: 40, marginTop: 10, marginLeft: 10, marginRight: 10}}>
                     <View style={{flex: 1, flexDirection: 'row'}}>
                       <Text style={{flex: 1, fontSize: 30, color: 'rgb(70, 70, 70)'}}>TOTAL</Text>
-                      <Text style={{width: 150, textAlign: 'right', fontSize: 30, color: 'rgb(70, 70, 70)'}}>${this.state.selectedOrder.total}</Text>
+                      <Text style={{width: 200, textAlign: 'right', fontSize: 30, color: '#EE2738'}}>${this.state.selectedOrder.total}</Text>
                     </View>
                   </View>
 
                   <View style={{flexDirection: 'row', marginTop: 20, marginBottom: 10, marginLeft: 10, marginRight: 10}}>
                     <View style={{width: 170}}>
-                      <Button full onPress={() => this.onDiscard()} style={{backgroundColor: '#6c757d'}}><Text> DELETE </Text></Button>
+                      <Button full onPress={() => this.onDelete(this.state.selectedOrder)} style={{backgroundColor: '#6c757d'}}><Text> DELETE </Text></Button>
                     </View>
                     <View style={{flex: 1}} />
                     <View style={{width: 170}}>
-                      <Button full onPress={() => this.onPrint()} style={{backgroundColor: '#2177b4'}}><Text> PRINT </Text></Button>
+                      <Button full onPress={() => this.onPrint(this.state.selectedOrder)} style={{backgroundColor: '#2177b4'}}><Text> PRINT </Text></Button>
                     </View>
                   </View>
                 </View>
@@ -333,7 +255,7 @@ class Dashboard extends React.Component {
 
         <View style={{flex: 1}}>
         </View>
-      </View>      
+      </View>
     );
   }
 }

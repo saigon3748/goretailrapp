@@ -190,7 +190,7 @@ class Cashier extends React.Component {
 
         Alert.alert(
           `#${result.ref}`, 
-          'Do you want to print receipt?',
+          'Do you want to print?',
           [ { text: 'Cancel', onPress: () => this.reset() }, 
             { text: 'OK', onPress: () => {
               this.print(result);
@@ -405,7 +405,7 @@ class Cashier extends React.Component {
 
   onNoteChanged(text){
     let order = {...this.state.order};
-    order.isEdittingNote = text;
+    order.note = text;
 
     this.setState({
       order: order
@@ -497,7 +497,7 @@ class Cashier extends React.Component {
                 return (
                   <View style={{flex: 1, flexDirection: 'column', backgroundColor: '#f2f3f4', marginTop: 10, marginBottom: 10, marginLeft: 10, marginRight: 10}}>
                     <Text style={{marginTop: 20}}>NOTE</Text>
-                    <TextInput value={this.state.order.isEdittingNote} onChangeText={(text) => this.onNoteChanged(text)} multiline = {true} style={{marginTop: 10, fontSize: 20, height: 85, backgroundColor: '#fff', borderColor: '#d2d3d4', borderWidth: 1}}/>          
+                    <TextInput defaultValue={this.state.order.note} onChangeText={(text) => this.onNoteChanged(text)} multiline = {true} style={{marginTop: 10, fontSize: 20, height: 85, backgroundColor: '#fff', borderColor: '#d2d3d4', borderWidth: 1}}/>
                     <Text style={{marginTop: 10}}>DISCOUNT</Text>
                     <TextInputMask type={'money'} options={{unit: '$', separator: '.', delimiter: ','}} selectTextOnFocus value={(() => { return Helper.formatCurrency(this.state.order.discountAmt) })()} onChangeText={(text) => this.onDiscountChanged(text)} style={{marginTop: 10, fontSize: 20, height: 35, backgroundColor: '#fff', borderColor: '#d2d3d4', borderWidth: 1, textAlign: 'right'}}/>          
                     <Text style={{marginTop: 10}}>CASH</Text>
