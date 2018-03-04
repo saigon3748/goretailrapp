@@ -97,8 +97,12 @@ function getKitchenPrint(setting, order) {
     else quantity = `${item.quantity}`
 
     let temp = padLine(item.name, quantity);
-
     data.items.push(temp);
+
+    // if (item.note) {
+    //   temp = padLine("note - ", item.note);
+    //   data.items.push(temp);      
+    // }    
   })
 
   return data;
