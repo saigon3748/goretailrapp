@@ -12,18 +12,18 @@ const login = (username, password) => {
       }
     })
     .then(response => response.json())
-    .then(payload => {
-      let user = payload.token.split('.')[1];
-      user = user.replace('-', '+').replace('_', '/');
-      user = JSON.parse(base64.decode(user));
+    .then(result => {
+      let payload = result.token.split('.')[1];
+      payload = payload.replace('-', '+').replace('_', '/');
+      payload = JSON.parse(base64.decode(payload));
 
       resolve({
-        token: payload.token,
-        user: user
+        token: result.token,
+        payload: payload
       });
     })
     .catch(error => {
-      reject('Incorrect login ID or password');
+      reject('Incorrect username or password');
     });    
   });
 }

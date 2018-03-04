@@ -49,7 +49,7 @@ class Login extends React.Component {
           <TextInput autoCapitalize='none' style={{marginTop: 10, height: 35, borderColor: '#d2d3d4', borderWidth: 1}} onChangeText={username => this.setState({ username })}/>          
           <Text style={{marginTop: 20}}>Password</Text>
           <TextInput secureTextEntry style={{marginTop: 10, height: 35, borderColor: '#d2d3d4', borderWidth: 1}} onChangeText={password => this.setState({ password })}/>          
-          <Button full style={{marginTop: 30, backgroundColor: '#2177b4'}} onPress={() => this.props.login(this.state.username, this.state.password)}><Text> LOGIN </Text></Button>
+          <Button full style={{marginTop: 30, backgroundColor: '#2177b4'}} onPress={() => this.props.login(this.state.username, this.state.password)}><Text> SIGN IN </Text></Button>
         </View>
         <View style={{flex: 1}}></View>        
       </View>

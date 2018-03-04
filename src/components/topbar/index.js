@@ -21,7 +21,7 @@ const menu = (navigation) => {
 
 const order = (navigation) => {
   return (
-    <Text style={{color: '#F5F8F9', marginRight: 10}}>NOODLE HOUSE</Text>
+    <Text style={{color: '#F5F8F9', marginRight: 10}}>123</Text>
   )
 }
 

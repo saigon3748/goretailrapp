@@ -9,6 +9,12 @@ const router = (state = initialState, action) => {
   let nextState = Navigator.router.getStateForAction(action, state);
 
   switch(action.type) {
+    case "LOGIN":
+      nextState = Navigator.router.getStateForAction(
+        NavigationActions.navigate({ routeName: 'LOGIN' }),
+        state
+      );
+      break;
     case "MAIN":
       nextState = Navigator.router.getStateForAction(
         NavigationActions.navigate({ routeName: 'MAIN' }),

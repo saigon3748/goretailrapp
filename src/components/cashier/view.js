@@ -117,19 +117,19 @@ class Cashier extends React.Component {
     let categories = this.categories || [];
 
     if (this.categoryStack.length === 0) {
-      return _.filter(categories, item => {
+      return _.sortBy(_.filter(categories, item => {
         return !item.parent;
-      })
+      }), ['displayIndex'])
     }
 
     let category = this.categoryStack[this.categoryStack.length - 1];
     if (category.subs && category.subs.length > 0) {
-      return _.filter(categories, item => {
+      return _.sortBy(_.filter(categories, item => {
         return item.parent === category._id;
-      })
+      }), ['displayIndex'])
     }
 
-    return this.state.filteredCategories;
+    return _.sortBy(this.state.filteredCategories, ['displayIndex']);
   }
 
   onSelectCategory(category) {
@@ -447,7 +447,7 @@ class Cashier extends React.Component {
                     <TextInputMask type={'money'} options={{unit: '$', separator: '.', delimiter: ','}} selectTextOnFocus value={(() => { return Helper.formatCurrency(this.state.order.cash) })()} onChangeText={(text) => this.onCashChanged(text)} style={{marginTop: 10, fontSize: 20, height: 35, backgroundColor: '#fff', borderColor: '#d2d3d4', borderWidth: 1, textAlign: 'right'}}/>          
                     <View style={{flexDirection: 'row', marginTop: 20}}>
                       <Text style={{flex: 1}}>CHANGE</Text>
-                      <Text style={{width: 200, textAlign: 'right', color: 'red'}}>
+                      <Text style={{width: 200, textAlign: 'right', color: '#EE2738'}}>
                         {(() => { return Helper.formatCurrency(this.state.order.change) })()}
                       </Text>
                     </View>
@@ -485,7 +485,7 @@ class Cashier extends React.Component {
                               </Button>
                             </View>
                             <View style={{flex: 1}}/>
-                            <Text style={{width: 70, textAlign: 'right', color: 'red'}}>x{item.quantity}</Text>
+                            <Text style={{width: 70, textAlign: 'right', color: '#EE2738'}}>x{item.quantity}</Text>
                           </View>
                           {(() => {
                             if (item.isEdittingNote) {
@@ -530,7 +530,7 @@ class Cashier extends React.Component {
             <View style={{height: 40, marginTop: 10, marginLeft: 10, marginRight: 10}}>
               <View style={{flex: 1, flexDirection: 'row'}}>
                 <Text style={{flex: 1, fontSize: 30, color: 'rgb(70, 70, 70)'}}>TOTAL</Text>
-                <Text style={{width: 200, textAlign: 'right', fontSize: 30, color: 'rgb(70, 70, 70)'}}>
+                <Text style={{width: 200, textAlign: 'right', fontSize: 30, color: '#EE2738'}}>
                   {(() => { return Helper.formatCurrency(this.state.order.total) })()}
                 </Text>
               </View>
@@ -561,7 +561,7 @@ class Cashier extends React.Component {
                   {(() => {
                     if (this.selectedCategory && this.selectedCategory._id === category._id) {
                       return (
-                        <Button full large success onPress={() => this.onSelectCategory(category)} style={{backgroundColor: '#6c757d'}}><Text> {category.name} </Text></Button>
+                        <Button full large success onPress={() => this.onSelectCategory(category)} style={{backgroundColor: '#EE2738'}}><Text> {category.name} </Text></Button>
                       )
                     } else {
                       return (

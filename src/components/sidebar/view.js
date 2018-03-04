@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, View, TouchableOpacity, TouchableHighlight, StyleSheet, Image, ImageBackground, TextInput, FlatList } from 'react-native';
+import { AsyncStorage, ScrollView, View, TouchableOpacity, TouchableHighlight, StyleSheet, Image, ImageBackground, TextInput, FlatList } from 'react-native';
 import { Container, Content, Card, CardItem, Form, Item, Header, Left, Body, Right, Button, Icon, Title, List, ListItem, Text, Thumbnail, Input, InputGroup, Label } from 'native-base';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
@@ -27,11 +27,27 @@ const styles = StyleSheet.create({
 });
 
 class Sidebar extends React.Component {
-  onPress() {
-    alert('press')
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      isSignedIn: false
+    };
+  }
+
+  componentWillMount() {
+    AsyncStorage.getItem('payload', (err, payload) => {
+      if (!payload) return;
+      this.setState({
+        isSignedIn: true,
+        payload: JSON.parse(payload)
+      });
+    });
   }
 
   render() {
+    if (!this.state.isSignedIn) return null;
+
     return (
       <View style={{flex: 1, flexDirection: 'column', backgroundColor: '#f2f3f4'}}>
         <List style={{marginTop: 40}}>
@@ -92,8 +108,10 @@ class Sidebar extends React.Component {
 
         <View style={{marginTop: 20, marginBottom: 20, marginLeft: 10, marginRight: 10}}>
           <MaterialIcons name='account-circle' color={'#6c757d'} size={60} style={{textAlign: 'center', marginBottom: 20}} />
-          <Text style={{textAlign: 'center', marginBottom: 40}}>admin</Text>
-          <Button full onPress={this.onPress} style={{backgroundColor: '#2177b4'}}><Text> LOGOUT </Text></Button>
+          <Text style={{textAlign: 'center', marginBottom: 40}}>
+            {(() => { return this.state.payload.name })()}
+          </Text>
+          <Button full onPress={this.props.logout} style={{backgroundColor: '#2177b4'}}><Text> SIGN OUT </Text></Button>
         </View>
       </View>
     );
