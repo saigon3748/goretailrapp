@@ -9,7 +9,8 @@ export default (dispatch) => {
           AsyncStorage.setItem('token', result.token, () => {
             AsyncStorage.setItem('payload', JSON.stringify(result.payload), () => {
               dispatch({
-                type: "MAIN"
+                type: "MAIN",
+                payload: result.payload
               })
             });
           });

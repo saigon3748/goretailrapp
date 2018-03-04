@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React from 'react';
-import { ScrollView, View, TouchableOpacity, TouchableHighlight, StyleSheet, Image, ImageBackground, TextInput, FlatList } from 'react-native';
+import { AsyncStorage, ScrollView, View, TouchableOpacity, TouchableHighlight, StyleSheet, Image, ImageBackground, TextInput, FlatList } from 'react-native';
 import { Container, Content, Card, CardItem, Form, Item, Header, Left, Body, Right, Button, Icon, Title, List, ListItem, Text, Thumbnail, Input, InputGroup, Label, Toast } from 'native-base';
 import { TextInputMask } from 'react-native-masked-text'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -39,6 +39,7 @@ class Cashier extends React.Component {
     this.selectedCategory = null;
 
     this.state = {
+      isSignedIn: false,
       isEdittingNote: false,
       filteredMenu: [],
       filteredCategories: [],
@@ -53,6 +54,16 @@ class Cashier extends React.Component {
         items: []
       }
     }
+  }
+
+  componentWillMount() {
+    AsyncStorage.getItem('payload', (err, payload) => {
+      if (!payload) return;
+      this.setState({
+        isSignedIn: true,
+        payload: JSON.parse(payload)
+      });
+    });
   }
 
   componentDidMount() {
@@ -71,9 +82,6 @@ class Cashier extends React.Component {
           filteredCategories: this.filterCategories()
         });
       })
-  }
-
-  componentWillUnmount() {
   }
 
   filterMenu() {
@@ -358,6 +366,8 @@ class Cashier extends React.Component {
   }
 
   render() {
+    if (!this.state.isSignedIn) return null;
+
     return (
       <View style={{
         flex: 1,

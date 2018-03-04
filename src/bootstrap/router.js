@@ -17,31 +17,31 @@ const router = (state = initialState, action) => {
       break;
     case "MAIN":
       nextState = Navigator.router.getStateForAction(
-        NavigationActions.navigate({ routeName: 'MAIN' }),
+        NavigationActions.navigate({ routeName: 'MAIN', params: { payload: action.payload } }),
         state
       );
       break;
     case "DASHBOARD":
       nextState = Navigator.router.getStateForAction(
-        NavigationActions.navigate({ routeName: 'DASHBOARD' }),
+        NavigationActions.navigate({ routeName: 'DASHBOARD', params: { payload: action.payload } }),
         state
       );
       break;
     case "CASHIER":
       nextState = Navigator.router.getStateForAction(
-        NavigationActions.navigate({ routeName: 'CASHIER' }),
+        NavigationActions.navigate({ routeName: 'CASHIER', params: { payload: action.payload } }),
         state
       );
       break;
     case "KITCHEN":
       nextState = Navigator.router.getStateForAction(
-        NavigationActions.navigate({ routeName: 'KITCHEN' }),
+        NavigationActions.navigate({ routeName: 'KITCHEN', params: { payload: action.payload } }),
         state
       );
       break;
     case "SETTINGS":
       nextState = Navigator.router.getStateForAction(
-        NavigationActions.navigate({ routeName: 'SETTINGS' }),
+        NavigationActions.navigate({ routeName: 'SETTINGS', params: { payload: action.payload } }),
         state
       );
       break;

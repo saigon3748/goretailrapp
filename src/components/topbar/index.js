@@ -20,8 +20,15 @@ const menu = (navigation) => {
 }
 
 const order = (navigation) => {
+  let tenantName = "";
+  if (navigation.state.params && navigation.state.params.payload) {
+    tenantName = navigation.state.params.payload.tenant.name;
+  }
+
   return (
-    <Text style={{color: '#F5F8F9', marginRight: 10}}>123</Text>
+    <Text style={{color: '#F5F8F9', marginRight: 10}}>
+      {(() => { return tenantName })()}
+    </Text>
   )
 }
 
