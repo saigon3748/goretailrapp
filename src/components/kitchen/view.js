@@ -10,7 +10,7 @@ import { Helper } from '../../utils';
 class Kitchen extends React.Component {
   constructor(props) {
     super(props);
-
+    this.intervalId;
     this.state = {
       isSignedIn: false,
       orders: []
@@ -33,22 +33,90 @@ class Kitchen extends React.Component {
           orders: result
         });
       })
+
+    this.intervalId = setInterval(() => {
+      KitchenApi.getToday()
+        .then(result => {
+          this.setState({
+            orders: result
+          });
+        })
+    }, 1000 * 60 * 5)      
+  }
+
+  componentWillUnmount() {
+    if (this.intervalId) {
+      clearInterval(this.intervalId)
+    }
   }
 
   onRefresh() {
-    
+    KitchenApi.getToday()
+      .then(result => {
+        this.setState({
+          orders: result
+        });
+      })    
   }
 
   onCompleteAll() {
-    
+    Alert.alert(
+      'Alert', 
+      'Do you want to mark completed all?',
+      [ { text: 'Cancel' }, 
+        { text: 'OK', onPress: () => {
+          let ids = this.state.orders.map(item => item._id);
+          KitchenApi.markCompleted(ids)
+            .then(result => {
+              this.setState({
+                orders: []
+              });
+
+              KitchenApi.getToday()
+                .then(result => {
+                  this.setState({
+                    orders: result
+                  });
+                })
+            })
+        }} ]
+    );
   }
 
-  onNote(item) {
-    
+  onComplete(id) {
+    KitchenApi.markCompleted([id])
+      .then(result => {
+        let orders = [...this.state.orders];
+        let order = _.find(orders, item => {
+          return item._id === id;
+        });
+
+        if (order) {
+          order.isCompleted = true;
+        }
+
+        this.setState({
+          orders: orders
+        });
+      })
   }
 
-  onComplete(item) {
-    KitchenApi.markCompleted(item._id)
+  onUncomplete(id) {
+    KitchenApi.markUncompleted([id])
+      .then(result => {
+        let orders = [...this.state.orders];
+        let order = _.find(orders, item => {
+          return item._id === id;
+        });
+
+        if (order) {
+          order.isCompleted = false;
+        }
+
+        this.setState({
+          orders: orders
+        });
+      })
   }
 
   render() {
@@ -76,7 +144,7 @@ class Kitchen extends React.Component {
           <ScrollView style={{flex: 1, flexDirection: 'column', marginLeft: 30, marginRight: 10}}>
             <List>
               {this.state.orders.map(item => (
-                <ListItem key={item._id} style={{height: 80}}>
+                <ListItem key={item._id} style={{height: 50}}>
                   <Body>
                     <View style={{flexDirection: "row"}}>
                       <Text style={{width: 50}}>#{item.orderRef}</Text>
@@ -88,12 +156,17 @@ class Kitchen extends React.Component {
                       </Text>
                       <View style={{width: 100, alignItems: 'center'}}>
                         <View style={{width: 80, alignItems: 'center'}}>
-                          <Button full small style={{backgroundColor: '#6c757d'}} onPress={() => {this.onNote(item)}}><Text> NOTE </Text></Button>                      
-                        </View>
-                      </View>
-                      <View style={{width: 100, alignItems: 'center'}}>
-                        <View style={{width: 80, alignItems: 'center'}}>
-                          <Button full small style={{backgroundColor: '#2177b4'}} onPress={() => {this.onComplete(item)}}><Text> DONE </Text></Button>                      
+                          {(() => {
+                            if (item.isCompleted) {
+                              return (
+                                <Button full small style={{backgroundColor: '#2177b4'}} onPress={() => {this.onUncomplete(item._id)}}><Text> UNDO </Text></Button>                      
+                              )
+                            } else {
+                              return (
+                                <Button full small style={{backgroundColor: '#2FA495'}} onPress={() => {this.onComplete(item._id)}}><Text> DONE </Text></Button>                      
+                              )
+                            }
+                          })()}
                         </View>
                       </View>
                     </View>

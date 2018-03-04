@@ -23,22 +23,19 @@ const getToday = () => {
   });
 }
 
-const markCompleted = (id) => {
+const markCompleted = (ids) => {
   return new Promise((resolve, reject) => {
     AsyncStorage.getItem('token', (err, token) => {
-      fetch(Config.API + `/kitchens/updateById/${id}`, {
+      fetch(Config.API + '/kitchens/markCompleted', {
         method: 'POST',
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json',
           'Authorization': 'JWT ' + token
         },
-        body: JSON.stringify({isCompleted: true})
+        body: JSON.stringify(ids)
       })
-      .then(response => response.json())
-      .then(result => {
-        resolve(result);
-      })
+      .then(response => resolve(response))
       .catch(error => {
         reject('Marked completed failed');
       });
@@ -46,7 +43,28 @@ const markCompleted = (id) => {
   });
 }
 
+const markUncompleted = (ids) => {
+  return new Promise((resolve, reject) => {
+    AsyncStorage.getItem('token', (err, token) => {
+      fetch(Config.API + '/kitchens/markUncompleted', {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'Authorization': 'JWT ' + token
+        },
+        body: JSON.stringify(ids)
+      })
+      .then(response => resolve(response))
+      .catch(error => {
+        reject('Marked uncompleted failed');
+      });
+    });
+  });
+}
+
 export default {
   getToday,
-  markCompleted
+  markCompleted,
+  markUncompleted
 }

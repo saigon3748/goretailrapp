@@ -337,28 +337,6 @@ class Dashboard extends React.Component {
                       </View>
                       <View style={{flex: 1}}></View>
                     </View>
-                    <View style={{width: 530, marginLeft: 170}}>
-                      <List style={{marginTop: 40}}>
-                        <ListItem icon>
-                          <Left>
-                          </Left>
-                          <Body>
-                            <Text>Select Printer</Text>
-                          </Body>
-                          <Right>
-                          </Right>
-                        </ListItem>
-                        <ListItem icon>
-                          <Left>
-                          </Left>
-                          <Body>
-                            <Text>TCP:F8:D0:27:2B:0F:93</Text>
-                          </Body>
-                          <Right>
-                          </Right>
-                        </ListItem>
-                      </List>
-                    </View>
                     <View style={{flex: 1}}></View>
                   </View>
                 )
@@ -374,28 +352,6 @@ class Dashboard extends React.Component {
                         <TextInput defaultValue={this.state.settings.kitchenPrinter} onChangeText={(text) => this.onKitchenPrinterChanged(text)} style={{height: 35, borderColor: '#d2d3d4', borderWidth: 1}}/>          
                       </View>
                       <View style={{flex: 1}}></View>
-                    </View>
-                    <View style={{width: 530, marginLeft: 170}}>
-                      <List style={{marginTop: 40}}>
-                        <ListItem icon>
-                          <Left>
-                          </Left>
-                          <Body>
-                            <Text>Select Printer</Text>
-                          </Body>
-                          <Right>
-                          </Right>
-                        </ListItem>
-                        <ListItem icon>
-                          <Left>
-                          </Left>
-                          <Body>
-                            <Text>TCP:F8:D0:27:2B:0F:93</Text>
-                          </Body>
-                          <Right>
-                          </Right>
-                        </ListItem>
-                      </List>
                     </View>
                     <View style={{flex: 1}}></View>
                   </View>
