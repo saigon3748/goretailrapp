@@ -4,31 +4,8 @@ import { NativeModules, AsyncStorage, Alert, ScrollView, View, TouchableOpacity,
 import { Container, Content, Card, CardItem, Form, Item, Header, Left, Body, Right, Button, Icon, Title, List, ListItem, Text, Thumbnail, Input, InputGroup, Label, Toast } from 'native-base';
 import { TextInputMask } from 'react-native-masked-text'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { MenuApi, OrderApi } from '../../api';
+import { MenuApi, OrderApi, TenantApi } from '../../api';
 import { Helper } from '../../utils';
-
-const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    padding: 30, 
-    margin: 10
-  },
-
-  logo: {
-    alignSelf: 'center',
-    color: 'black',
-    fontSize: 50
-  },
-
-  background: {
-    flex: 1,
-    width: null,
-    height: null,
-    resizeMode: 'cover',
-    backgroundColor: "#fff",
-    justifyContent: 'space-between'
-  }  
-});
 
 class Cashier extends React.Component {
   constructor(props) {
@@ -59,10 +36,16 @@ class Cashier extends React.Component {
   componentWillMount() {
     AsyncStorage.getItem('payload', (err, payload) => {
       if (!payload) return;
+      this.payload = JSON.parse(payload);
+
       this.setState({
-        isSignedIn: true,
-        payload: JSON.parse(payload)
+        isSignedIn: true
       });
+
+      TenantApi.getById(this.payload.tenant._id)
+        .then(result => {
+          this.tenant = result;
+        })
     });
   }
 
@@ -164,13 +147,14 @@ class Cashier extends React.Component {
       this.categoryStack = this.categoryStack.slice(0, this.categoryStack.length - 1)
     }
     
+    this.selectedCategory = null;
     this.setState({
       filteredMenu: this.filterMenu(),
       filteredCategories: this.filterCategories()
     });
   }
 
-  onDiscard() {
+  reset() {
     this.categoryStack = [];
     this.selectedCategory = null;
 
@@ -191,14 +175,27 @@ class Cashier extends React.Component {
     })
   }
 
+  onDiscard() {
+    this.reset();
+  }
+
   onConfirm() {
-    // this.onDiscard()
     OrderApi.create(this.state.order)
       .then(result => {
+        if (this.tenant.settings.confirmAndPrint) {
+          this.print(result);
+          this.onDiscard();
+          return;
+        }
+
         Alert.alert(
           `#${result.ref}`, 
           'Do you want to print receipt?',
-          [ {text: 'Cancel'}, {text: 'OK', onPress: () => this.print(result) } ]
+          [ { text: 'Cancel', onPress: () => this.reset() }, 
+            { text: 'OK', onPress: () => {
+              this.print(result);
+              this.onDiscard();
+            }} ]
         );
       })
       .catch(err => {
@@ -206,20 +203,28 @@ class Cashier extends React.Component {
       })
   }
 
-  onPrint() {
-    alert('print')
-  }
-
   print(order) {
+    if (!this.tenant || !this.tenant.settings || !this.tenant.settings.receiptTemplate) {
+      alert('No setting found')
+      return;
+    }
+
+    if (!this.tenant.settings.receiptPrinter || this.tenant.settings.receiptPrinter.trim() === "") {
+      alert('No setting found for receipt printer')
+      return;
+    }
+
     let setting = {
-      name: "TAX INVOICE",
-      receiptPrinter: "TCP:F8:D0:27:2B:0F:93",
-      header1: "NOODLE HOUSE",
-      header2: "The Original Noodle",
-      header3: "30 Elizabeth",
-      header4: "Phone 123",
-      header5: "ABN 456",
-      footer1: "Thank you!"
+      name: this.tenant.settings.receiptTemplate.receiptName,
+      receiptPrinter: this.tenant.settings.receiptPrinter,
+      header1: this.tenant.settings.receiptTemplate.header1,
+      header2: this.tenant.settings.receiptTemplate.header2,
+      header3: this.tenant.settings.receiptTemplate.header3,
+      header4: this.tenant.settings.receiptTemplate.header4,
+      header5: this.tenant.settings.receiptTemplate.header5,
+      footer1: this.tenant.settings.receiptTemplate.footer1,
+      footer2: this.tenant.settings.receiptTemplate.footer2,
+      footer3: this.tenant.settings.receiptTemplate.footer3
     }
 
     let data = {
@@ -237,14 +242,12 @@ class Cashier extends React.Component {
     let receipt = Helper.getReceiptPrint(setting, data);
     NativeModules.RNPrinter.print(receipt)
 
-    setTimeout(() => {
-      let kitchen = Helper.getKitchenPrint(setting, data);
-      NativeModules.RNPrinter.print(kitchen)
-    }, 2000)
-  }
-
-  onPress() {
-    alert('press')
+    if (this.tenant.settings.kitchenPrinter && this.tenant.settings.kitchenPrinter.trim() != "") {
+      setTimeout(() => {
+        let kitchen = Helper.getKitchenPrint(setting, data);
+        NativeModules.RNPrinter.print(kitchen)
+      }, 2000)
+    }
   }
 
   onEditNote() {

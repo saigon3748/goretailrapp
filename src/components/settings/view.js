@@ -1,37 +1,48 @@
+import _ from 'lodash';
 import React from 'react';
-import { ScrollView, View, TouchableOpacity, TouchableHighlight, StyleSheet, Image, ImageBackground, TextInput, FlatList } from 'react-native';
-import { Container, Content, Card, CardItem, Form, Item, Header, Left, Body, Right, Button, Icon, Title, List, ListItem, Text, Thumbnail, Input, InputGroup, Label, Switch } from 'native-base';
+import { NativeModules, AsyncStorage, Alert, ScrollView, View, TouchableOpacity, TouchableHighlight, StyleSheet, Image, ImageBackground, TextInput, FlatList } from 'react-native';
+import { Container, Content, Card, CardItem, Form, Item, Header, Left, Body, Right, Button, Icon, Title, List, ListItem, Text, Thumbnail, Input, InputGroup, Label, Toast, Switch } from 'native-base';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-
-const styles = StyleSheet.create({
-  container: {
-    alignItems: 'center',
-    padding: 30, 
-    margin: 10
-  },
-
-  logo: {
-    alignSelf: 'center',
-    color: 'black',
-    fontSize: 50
-  },
-
-  background: {
-    flex: 1,
-    width: null,
-    height: null,
-    resizeMode: 'cover',
-    backgroundColor: "#fff",
-    justifyContent: 'space-between'
-  }  
-});
+import { TenantApi } from '../../api';
+import { Helper } from '../../utils';
 
 class Dashboard extends React.Component {
   constructor(props) {
     super(props);
+    this.tenant = null;
+    this.payload = null;
     this.state = {
-      edit: null
+      isSignedIn: false,
+      edit: null,
+      settings: {
+        receiptTemplate: {}
+      }
     }
+  }
+
+  componentWillMount() {
+    AsyncStorage.getItem('payload', (err, payload) => {
+      if (!payload) return;
+      this.payload = JSON.parse(payload);
+
+      this.setState({
+        isSignedIn: true
+      });
+
+      TenantApi.getById(this.payload.tenant._id)
+        .then(result => {
+          this.tenant = result;
+          let settings = this.tenant.settings || {}
+          settings.receiptTemplate = settings.receiptTemplate || {}
+          
+          this.setState({
+            settings: settings
+          })
+        })
+    });
+  }
+
+  componentDidMount() {
   }
 
   onEdit(setting) {
@@ -47,16 +58,142 @@ class Dashboard extends React.Component {
   }
 
   onSave() {
-    this.setState({
-      edit: null
-    })    
+    let tenant = {...this.tenant}
+    tenant.settings = {...this.state.settings}
+
+    TenantApi.updateById(this.payload.tenant._id, tenant)
+      .then(result => {
+        this.setState({
+          edit: null
+        })    
+      })
+      .catch(err => {
+        alert(err)
+      })
   }
 
   onPress() {
     alert('press')
   }
 
+  onReceiptPrinterChanged(text) {
+    let settings = {...this.state.settings};
+    settings.receiptPrinter = text;
+
+    this.setState({
+      settings: settings
+    });    
+  }
+
+  onKitchenPrinterChanged(text) {
+    let settings = {...this.state.settings};
+    settings.kitchenPrinter = text;
+
+    this.setState({
+      settings: settings
+    });    
+  }
+
+  onReceiptNameChanged(text) {
+    let settings = {...this.state.settings};
+    settings.receiptTemplate.receiptName = text;
+
+    this.setState({
+      settings: settings
+    });    
+  }
+
+  onHeader1Changed(text) {
+    let settings = {...this.state.settings};
+    settings.receiptTemplate.header1 = text;
+
+    this.setState({
+      settings: settings
+    });    
+  }
+
+  onHeader2Changed(text) {
+    let settings = {...this.state.settings};
+    settings.receiptTemplate.header2 = text;
+
+    this.setState({
+      settings: settings
+    });    
+  }
+
+  onHeader3Changed(text) {
+    let settings = {...this.state.settings};
+    settings.receiptTemplate.header3 = text;
+
+    this.setState({
+      settings: settings
+    });    
+  }
+
+  onHeader4Changed(text) {
+    let settings = {...this.state.settings};
+    settings.receiptTemplate.header4 = text;
+
+    this.setState({
+      settings: settings
+    });    
+  }
+
+  onHeader5Changed(text) {
+    let settings = {...this.state.settings};
+    settings.receiptTemplate.header5 = text;
+
+    this.setState({
+      settings: settings
+    });    
+  }
+
+  onFooter1Changed(text) {
+    let settings = {...this.state.settings};
+    settings.receiptTemplate.footer1 = text;
+
+    this.setState({
+      settings: settings
+    });    
+  }
+
+  onFooter2Changed(text) {
+    let settings = {...this.state.settings};
+    settings.receiptTemplate.footer2 = text;
+
+    this.setState({
+      settings: settings
+    });    
+  }
+
+  onFooter3Changed(text) {
+    let settings = {...this.state.settings};
+    settings.receiptTemplate.footer3 = text;
+
+    this.setState({
+      settings: settings
+    });    
+  }
+
+  onConfirmAndPrintChanged(value) {
+    let tenant = {...this.tenant}
+    tenant.settings = {...this.state.settings}
+    tenant.settings.confirmAndPrint = value;
+
+    TenantApi.updateById(this.payload.tenant._id, tenant)
+      .then(result => {
+        this.setState({
+          settings: tenant.settings
+        });    
+      })
+      .catch(err => {
+        alert(err)
+      })
+  }
+
   render() {
+    if (!this.state.isSignedIn) return null;
+
     if (!this.state.edit) {
       return (
         <View style={{
@@ -83,7 +220,7 @@ class Dashboard extends React.Component {
                 <Text>Receipt Printer</Text>
               </Body>
               <Right>
-                <Text>TCP:F8:D0:27:2B:0F:93</Text>
+                <Text>{this.state.settings.receiptPrinter}</Text>
                 <TouchableOpacity activeOpacity={1.0} onPress={() => this.onEdit("RECEIPT_PRINTER")}>
                   <Icon name="arrow-forward" />
                 </TouchableOpacity>
@@ -96,7 +233,7 @@ class Dashboard extends React.Component {
                 <Text>Kitchen Printer</Text>
               </Body>
               <Right>
-                <Text>TCP:F8:D0:27:2B:0F:93</Text>
+                <Text>{this.state.settings.kitchenPrinter}</Text>
                 <TouchableOpacity activeOpacity={1.0} onPress={() => this.onEdit("KITCHEN_PRINTER")}>
                   <Icon name="arrow-forward" />
                 </TouchableOpacity>
@@ -109,7 +246,7 @@ class Dashboard extends React.Component {
                 <Text>Receipt Template</Text>
               </Body>
               <Right>
-                <Text></Text>
+                <Text>{this.state.settings.receiptTemplate.receiptName}</Text>
                 <TouchableOpacity activeOpacity={1.0} onPress={() => this.onEdit("RECEIPT_TEMPLATE")}>
                   <Icon name="arrow-forward" />
                 </TouchableOpacity>
@@ -122,7 +259,7 @@ class Dashboard extends React.Component {
                 <Text>Confirm & Print</Text>
               </Body>
               <Right>
-                <Switch value={true} />
+                <Switch value={this.state.settings.confirmAndPrint} onValueChange={(value) => this.onConfirmAndPrintChanged(value)} />
               </Right>
             </ListItem>
           </List>
@@ -145,7 +282,7 @@ class Dashboard extends React.Component {
                 return (
                   <ListItem icon>
                     <Left>
-                      <MaterialIcons name='print' color={'#2177b4'} size={20} />            
+                      <MaterialIcons name='print' color={'#6c757d'} size={20} />            
                     </Left>
                     <Body>
                       <Text>Receipt Printer</Text>
@@ -159,7 +296,7 @@ class Dashboard extends React.Component {
                 return (
                   <ListItem icon>
                     <Left>
-                      <MaterialIcons name='print' color={'#2177b4'} size={20} />            
+                      <MaterialIcons name='print' color={'#6c757d'} size={20} />            
                     </Left>
                     <Body>
                       <Text>Kitchen Printer</Text>
@@ -173,7 +310,7 @@ class Dashboard extends React.Component {
                 return (
                   <ListItem icon>
                     <Left>
-                      <MaterialIcons name='print' color={'#2177b4'} size={20} />            
+                      <MaterialIcons name='print' color={'#6c757d'} size={20} />            
                     </Left>
                     <Body>
                       <Text>Receipt Template</Text>
@@ -196,7 +333,7 @@ class Dashboard extends React.Component {
                         <Text>Receipt Printer</Text>
                       </View>
                       <View style={{width: 500}}>
-                        <TextInput value="TCP:F8:D0:27:2B:0F:93" style={{height: 35, borderColor: '#d2d3d4', borderWidth: 1}}/>          
+                        <TextInput defaultValue={this.state.settings.receiptPrinter} onChangeText={(text) => this.onReceiptPrinterChanged(text)} style={{height: 35, borderColor: '#d2d3d4', borderWidth: 1}}/>          
                       </View>
                       <View style={{flex: 1}}></View>
                     </View>
@@ -218,7 +355,6 @@ class Dashboard extends React.Component {
                             <Text>TCP:F8:D0:27:2B:0F:93</Text>
                           </Body>
                           <Right>
-                            <Switch value={true} />
                           </Right>
                         </ListItem>
                       </List>
@@ -235,7 +371,7 @@ class Dashboard extends React.Component {
                         <Text>Kitchen Printer</Text>
                       </View>
                       <View style={{width: 500}}>
-                        <TextInput value="TCP:F8:D0:27:2B:0F:93" style={{height: 35, borderColor: '#d2d3d4', borderWidth: 1}}/>          
+                        <TextInput defaultValue={this.state.settings.kitchenPrinter} onChangeText={(text) => this.onKitchenPrinterChanged(text)} style={{height: 35, borderColor: '#d2d3d4', borderWidth: 1}}/>          
                       </View>
                       <View style={{flex: 1}}></View>
                     </View>
@@ -257,7 +393,6 @@ class Dashboard extends React.Component {
                             <Text>TCP:F8:D0:27:2B:0F:93</Text>
                           </Body>
                           <Right>
-                            <Switch value={true} />
                           </Right>
                         </ListItem>
                       </List>
@@ -274,7 +409,7 @@ class Dashboard extends React.Component {
                         <Text>Receipt Name</Text>
                       </View>
                       <View style={{width: 500}}>
-                        <TextInput style={{height: 35, borderColor: '#d2d3d4', borderWidth: 1}}/>          
+                        <TextInput defaultValue={this.state.settings.receiptTemplate.receiptName} onChangeText={(text) => this.onReceiptNameChanged(text)} style={{height: 35, borderColor: '#d2d3d4', borderWidth: 1}}/>          
                       </View>
                       <View style={{flex: 1}}></View>
                     </View>
@@ -283,7 +418,7 @@ class Dashboard extends React.Component {
                         <Text>Header 1</Text>
                       </View>
                       <View style={{width: 500}}>
-                        <TextInput style={{height: 35, borderColor: '#d2d3d4', borderWidth: 1}}/>          
+                        <TextInput defaultValue={this.state.settings.receiptTemplate.header1} onChangeText={(text) => this.onHeader1Changed(text)} style={{height: 35, borderColor: '#d2d3d4', borderWidth: 1}}/>          
                       </View>
                       <View style={{flex: 1}}></View>
                     </View>
@@ -292,7 +427,7 @@ class Dashboard extends React.Component {
                         <Text>Header 2</Text>
                       </View>
                       <View style={{width: 500}}>
-                        <TextInput style={{height: 35, borderColor: '#d2d3d4', borderWidth: 1}}/>          
+                        <TextInput defaultValue={this.state.settings.receiptTemplate.header2} onChangeText={(text) => this.onHeader2Changed(text)} style={{height: 35, borderColor: '#d2d3d4', borderWidth: 1}}/>          
                       </View>
                       <View style={{flex: 1}}></View>
                     </View>
@@ -301,7 +436,7 @@ class Dashboard extends React.Component {
                         <Text>Header 3</Text>
                       </View>
                       <View style={{width: 500}}>
-                        <TextInput style={{height: 35, borderColor: '#d2d3d4', borderWidth: 1}}/>          
+                        <TextInput defaultValue={this.state.settings.receiptTemplate.header3} onChangeText={(text) => this.onHeader3Changed(text)} style={{height: 35, borderColor: '#d2d3d4', borderWidth: 1}}/>          
                       </View>
                       <View style={{flex: 1}}></View>
                     </View>
@@ -310,7 +445,7 @@ class Dashboard extends React.Component {
                         <Text>Header 4</Text>
                       </View>
                       <View style={{width: 500}}>
-                        <TextInput style={{height: 35, borderColor: '#d2d3d4', borderWidth: 1}}/>          
+                        <TextInput defaultValue={this.state.settings.receiptTemplate.header4} onChangeText={(text) => this.onHeader4Changed(text)} style={{height: 35, borderColor: '#d2d3d4', borderWidth: 1}}/>          
                       </View>
                       <View style={{flex: 1}}></View>
                     </View>
@@ -319,7 +454,7 @@ class Dashboard extends React.Component {
                         <Text>Header 5</Text>
                       </View>
                       <View style={{width: 500}}>
-                        <TextInput style={{height: 35, borderColor: '#d2d3d4', borderWidth: 1}}/>          
+                        <TextInput defaultValue={this.state.settings.receiptTemplate.header5} onChangeText={(text) => this.onHeader5Changed(text)} style={{height: 35, borderColor: '#d2d3d4', borderWidth: 1}}/>          
                       </View>
                       <View style={{flex: 1}}></View>
                     </View>
@@ -328,7 +463,7 @@ class Dashboard extends React.Component {
                         <Text>Footer 1</Text>
                       </View>
                       <View style={{width: 500}}>
-                        <TextInput style={{height: 35, borderColor: '#d2d3d4', borderWidth: 1}}/>          
+                        <TextInput defaultValue={this.state.settings.receiptTemplate.footer1} onChangeText={(text) => this.onFooter1Changed(text)} style={{height: 35, borderColor: '#d2d3d4', borderWidth: 1}}/>          
                       </View>
                       <View style={{flex: 1}}></View>
                     </View>
@@ -337,7 +472,7 @@ class Dashboard extends React.Component {
                         <Text>Footer 2</Text>
                       </View>
                       <View style={{width: 500}}>
-                        <TextInput style={{height: 35, borderColor: '#d2d3d4', borderWidth: 1}}/>          
+                        <TextInput defaultValue={this.state.settings.receiptTemplate.footer2} onChangeText={(text) => this.onFooter2Changed(text)} style={{height: 35, borderColor: '#d2d3d4', borderWidth: 1}}/>          
                       </View>
                       <View style={{flex: 1}}></View>
                     </View>
@@ -346,7 +481,7 @@ class Dashboard extends React.Component {
                         <Text>Footer 3</Text>
                       </View>
                       <View style={{width: 500}}>
-                        <TextInput style={{height: 35, borderColor: '#d2d3d4', borderWidth: 1}}/>          
+                        <TextInput defaultValue={this.state.settings.receiptTemplate.footer3} onChangeText={(text) => this.onFooter3Changed(text)} style={{height: 35, borderColor: '#d2d3d4', borderWidth: 1}}/>          
                       </View>
                       <View style={{flex: 1}}></View>
                     </View>
