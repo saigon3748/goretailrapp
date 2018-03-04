@@ -1,10 +1,10 @@
 import _ from 'lodash';
 import React from 'react';
-import { AsyncStorage, ScrollView, View, TouchableOpacity, TouchableHighlight, StyleSheet, Image, ImageBackground, TextInput, FlatList } from 'react-native';
+import { NativeModules, AsyncStorage, Alert, ScrollView, View, TouchableOpacity, TouchableHighlight, StyleSheet, Image, ImageBackground, TextInput, FlatList } from 'react-native';
 import { Container, Content, Card, CardItem, Form, Item, Header, Left, Body, Right, Button, Icon, Title, List, ListItem, Text, Thumbnail, Input, InputGroup, Label, Toast } from 'native-base';
 import { TextInputMask } from 'react-native-masked-text'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import { MenuApi } from '../../api';
+import { MenuApi, OrderApi } from '../../api';
 import { Helper } from '../../utils';
 
 const styles = StyleSheet.create({
@@ -192,11 +192,55 @@ class Cashier extends React.Component {
   }
 
   onConfirm() {
-    this.onDiscard()
+    // this.onDiscard()
+    OrderApi.create(this.state.order)
+      .then(result => {
+        Alert.alert(
+          `#${result.ref}`, 
+          'Do you want to print receipt?',
+          [ {text: 'Cancel'}, {text: 'OK', onPress: () => this.print(result) } ]
+        );
+      })
+      .catch(err => {
+        alert(err)
+      })
   }
 
   onPrint() {
     alert('print')
+  }
+
+  print(order) {
+    let setting = {
+      name: "TAX INVOICE",
+      receiptPrinter: "TCP:F8:D0:27:2B:0F:93",
+      header1: "NOODLE HOUSE",
+      header2: "The Original Noodle",
+      header3: "30 Elizabeth",
+      header4: "Phone 123",
+      header5: "ABN 456",
+      footer1: "Thank you!"
+    }
+
+    let data = {
+      code: order.ref,
+      createdAt: order.createdAt,
+      subtotal: order.subtotal,
+      discount: order.discountAmt,
+      tax: order.tax,
+      total: order.total,
+      cash: order.cash,
+      change: order.change,
+      items: order.items
+    };
+
+    let receipt = Helper.getReceiptPrint(setting, data);
+    NativeModules.RNPrinter.print(receipt)
+
+    setTimeout(() => {
+      let kitchen = Helper.getKitchenPrint(setting, data);
+      NativeModules.RNPrinter.print(kitchen)
+    }, 2000)
   }
 
   onPress() {

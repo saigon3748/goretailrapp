@@ -28,13 +28,6 @@ const login = (username, password) => {
   });
 }
 
-const logout = () => {
-  return new Promise((resolve, reject) => {
-    resolve(); 
-  });
-}
-
 export default {
-  login,
-  logout
+  login
 }

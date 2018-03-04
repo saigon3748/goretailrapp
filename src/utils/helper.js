@@ -1,6 +1,7 @@
 import moment from "moment";
 
 function formatCurrency(number) {
+  if (!number) return null;
   return number.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
 }
 
@@ -56,10 +57,13 @@ function getReceiptPrint(setting, order) {
     discount: padLine("DISCOUNT", formatCurrency(order.discount)),
     tax: padLine("TAX", formatCurrency(order.tax)),
     total: padLine("TOTAL", formatCurrency(order.total), 15),
-    cash: padLine("CASH", formatCurrency(order.cash)),
-    change: padLine("CHANGE", formatCurrency(order.change)),
     items: [] 
   };
+
+  if (order.cash) {
+    data.cash = padLine("CASH", formatCurrency(order.cash))
+    data.change = padLine("CHANGE", formatCurrency(order.change))
+  }
 
   order.items.forEach(item => {
     let quantity = "";
