@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React from 'react';
-import { NativeModules, AsyncStorage, Alert, ScrollView, View, TouchableOpacity, TouchableHighlight, StyleSheet, Image, ImageBackground, TextInput, FlatList } from 'react-native';
+import { Dimensions, NativeModules, AsyncStorage, Alert, ScrollView, View, TouchableOpacity, TouchableHighlight, StyleSheet, Image, ImageBackground, TextInput, FlatList } from 'react-native';
 import { Container, Content, Card, CardItem, Form, Item, Header, Left, Body, Right, Button, Icon, Title, List, ListItem, Text, Thumbnail, Input, InputGroup, Label, Toast, Switch } from 'native-base';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { TenantApi } from '../../api';
@@ -193,14 +193,18 @@ class Dashboard extends React.Component {
 
   render() {
     if (!this.state.isSignedIn) return null;
+const {height: screenHeight} = Dimensions.get('window');
 
     if (!this.state.edit) {
       return (
+  <Container style={{backgroundColor: '#fff'}}>
+    <Content>        
         <View style={{
           flex: 1,
           flexDirection: 'column',
           justifyContent: 'space-between',
-          backgroundColor: '#FFF'
+          backgroundColor: '#FFF',
+        height: screenHeight - 50
         }}>
           <List style={{marginTop: 40}}>
             <ListItem icon>
@@ -265,15 +269,20 @@ class Dashboard extends React.Component {
           </List>
 
           <View style={{flex: 1}} />
-        </View>      
+        </View>   
+    </Content>
+  </Container>                       
       );
     } else {
       return (
+  <Container style={{backgroundColor: '#fff'}}>
+    <Content>      
         <View style={{
           flex: 1,
           flexDirection: 'column',
           justifyContent: 'space-between',
-          backgroundColor: '#FFF'
+          backgroundColor: '#FFF',
+        height: screenHeight - 50
         }}>
           <List style={{marginTop: 40}}>
           {(() => {
@@ -459,7 +468,9 @@ class Dashboard extends React.Component {
             </View>
             <View style={{flex: 1}}></View>
           </View>
-        </View>      
+        </View>    
+    </Content>
+  </Container>                      
       );
     }
   }

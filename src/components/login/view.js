@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, View, TouchableOpacity, TouchableHighlight, StyleSheet, Image, ImageBackground, TextInput, FlatList } from 'react-native';
+import { Dimensions, ScrollView, View, TouchableOpacity, TouchableHighlight, StyleSheet, Image, ImageBackground, TextInput, FlatList } from 'react-native';
 import { Container, Content, Card, CardItem, Form, Item, Header, Left, Body, Right, Button, Icon, Title, List, ListItem, Text, Thumbnail, Input, InputGroup, Label } from 'native-base';
 
 const styles = StyleSheet.create({
@@ -36,11 +36,16 @@ class Login extends React.Component {
   }
 
   render() {
+const {height: screenHeight} = Dimensions.get('window');
+    
     return (
+  <Container style={{backgroundColor: '#fff'}}>
+    <Content>
       <View style={{
         flex: 1,
         flexDirection: 'row',
-        backgroundColor: '#fff'
+        backgroundColor: '#fff',
+        height: screenHeight
       }}>
         <View style={{flex: 1}}></View>
         <View style={{width: 280}}>
@@ -53,6 +58,8 @@ class Login extends React.Component {
         </View>
         <View style={{flex: 1}}></View>        
       </View>
+    </Content>
+  </Container>
     );
   }
 }

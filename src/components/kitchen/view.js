@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import moment from "moment";
 import React from 'react';
-import { NativeModules, AsyncStorage, Alert, ScrollView, View, TouchableOpacity, TouchableHighlight, StyleSheet, Image, ImageBackground, TextInput, FlatList } from 'react-native';
+import { Dimensions, NativeModules, AsyncStorage, Alert, ScrollView, View, TouchableOpacity, TouchableHighlight, StyleSheet, Image, ImageBackground, TextInput, FlatList } from 'react-native';
 import { Container, Content, Card, CardItem, Form, Item, Header, Left, Body, Right, Button, Icon, Title, List, ListItem, Text, Thumbnail, Input, InputGroup, Label, Toast } from 'native-base';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { MenuApi, OrderApi, TenantApi, KitchenApi } from '../../api';
@@ -120,12 +120,16 @@ class Kitchen extends React.Component {
   }
 
   render() {
+const {height: screenHeight} = Dimensions.get('window');
     return (
+  <Container style={{backgroundColor: '#fff'}}>
+    <Content>
       <View style={{
         flex: 1,
         flexDirection: 'column',
         justifyContent: 'space-between',
-        backgroundColor: '#fff'
+        backgroundColor: '#fff',
+        height: screenHeight - 50
       }}>
         <List style={{marginTop: 40}}>
           <ListItem icon>
@@ -189,6 +193,8 @@ class Kitchen extends React.Component {
           <View style={{flex: 1}}></View>
         </View>
       </View>      
+    </Content>
+  </Container>            
     );
   }
 }

@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import moment from "moment";
 import React from 'react';
-import { NativeModules, AsyncStorage, Alert, ScrollView, View, TouchableOpacity, TouchableHighlight, StyleSheet, Image, ImageBackground, TextInput, FlatList } from 'react-native';
+import { Dimensions, NativeModules, AsyncStorage, Alert, ScrollView, View, TouchableOpacity, TouchableHighlight, StyleSheet, Image, ImageBackground, TextInput, FlatList } from 'react-native';
 import { Container, Content, Card, CardItem, Form, Item, Header, Left, Body, Right, Button, Icon, Title, List, ListItem, Text, Thumbnail, Input, InputGroup, Label, Toast } from 'native-base';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { MenuApi, OrderApi, TenantApi } from '../../api';
@@ -131,13 +131,16 @@ class Dashboard extends React.Component {
 
   render() {
     if (!this.state.isSignedIn) return null;
-
+const {height: screenHeight} = Dimensions.get('window');
     return (
+  <Container style={{backgroundColor: '#fff'}}>
+    <Content>
       <View style={{
         flex: 1,
         flexDirection: 'column',
         justifyContent: 'space-between',
-        backgroundColor: '#fff'
+        backgroundColor: '#fff',
+        height: screenHeight - 50
       }}>
         <List style={{marginTop: 40}}>
           <ListItem icon>
@@ -219,22 +222,30 @@ class Dashboard extends React.Component {
                   <View style={{height: 90, marginTop: 30, marginLeft: 10, marginRight: 10}}>
                     <View style={{flex: 1, flexDirection: 'row'}}>
                       <Text style={{flex: 1}}>SUBTOTAL</Text>
-                      <Text style={{width: 200, textAlign: 'right'}}>${this.state.selectedOrder.subtotal}</Text>
+                      <Text style={{width: 200, textAlign: 'right'}}>
+                        {(() => { return Helper.formatCurrency(this.state.selectedOrder.subtotal) })()}
+                      </Text>
                     </View>
                     <View style={{flex: 1, flexDirection: 'row'}}>
                       <Text style={{flex: 1}}>DISCOUNT</Text>
-                      <Text style={{width: 200, textAlign: 'right'}}>${this.state.selectedOrder.discountAmt}</Text>
+                      <Text style={{width: 200, textAlign: 'right'}}>
+                        {(() => { return Helper.formatCurrency(this.state.selectedOrder.discountAmt) })()}
+                      </Text>
                     </View>
                     <View style={{flex: 1, flexDirection: 'row'}}>
                       <Text style={{flex: 1}}>TAX</Text>
-                      <Text style={{width: 200, textAlign: 'right'}}>${this.state.selectedOrder.tax}</Text>
+                      <Text style={{width: 200, textAlign: 'right'}}>
+                        {(() => { return Helper.formatCurrency(this.state.selectedOrder.tax) })()}
+                      </Text>
                     </View>
                   </View>
 
                   <View style={{height: 40, marginTop: 10, marginLeft: 10, marginRight: 10}}>
                     <View style={{flex: 1, flexDirection: 'row'}}>
                       <Text style={{flex: 1, fontSize: 30, color: 'rgb(70, 70, 70)'}}>TOTAL</Text>
-                      <Text style={{width: 200, textAlign: 'right', fontSize: 30, color: '#EE2738'}}>${this.state.selectedOrder.total}</Text>
+                      <Text style={{width: 200, textAlign: 'right', fontSize: 30, color: '#EE2738'}}>
+                        {(() => { return Helper.formatCurrency(this.state.selectedOrder.total) })()}
+                      </Text>
                     </View>
                   </View>
 
@@ -256,6 +267,8 @@ class Dashboard extends React.Component {
         <View style={{flex: 1}}>
         </View>
       </View>
+    </Content>
+  </Container>      
     );
   }
 }

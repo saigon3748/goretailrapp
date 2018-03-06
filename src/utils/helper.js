@@ -2,7 +2,9 @@ import moment from "moment";
 
 function formatCurrency(number) {
   if (!number) return null;
-  return number.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+  return "$" + number.toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, '$1,');
+  // return new Intl.NumberFormat('en-US', {style: 'currency', currency: 'USD'}).format(number);
+  // return number.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
 }
 
 function padLine(partOne, partTwo, columnsPerLine = 30, str = " ") {

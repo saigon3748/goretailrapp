@@ -69,7 +69,7 @@ class Sidebar extends React.Component {
             </Left>
             <Body>
               <TouchableOpacity onPress={this.props.gotoCashier}>
-                <Text>Cashier</Text>
+                <Text>Checkout</Text>
               </TouchableOpacity>
             </Body>
             <Right>

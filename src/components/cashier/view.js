@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React from 'react';
-import { NativeModules, AsyncStorage, Alert, ScrollView, View, TouchableOpacity, TouchableHighlight, StyleSheet, Image, ImageBackground, TextInput, FlatList } from 'react-native';
+import { Dimensions, NativeModules, AsyncStorage, Alert, ScrollView, View, TouchableOpacity, TouchableHighlight, StyleSheet, Image, ImageBackground, TextInput, FlatList } from 'react-native';
 import { Container, Content, Card, CardItem, Form, Item, Header, Left, Body, Right, Button, Icon, Title, List, ListItem, Text, Thumbnail, Input, InputGroup, Label, Toast } from 'native-base';
 import { TextInputMask } from 'react-native-masked-text'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -414,13 +414,16 @@ class Cashier extends React.Component {
 
   render() {
     if (!this.state.isSignedIn) return null;
-
+const {height: screenHeight} = Dimensions.get('window');
     return (
+  <Container style={{backgroundColor: '#fff'}}>
+    <Content>
       <View style={{
         flex: 1,
         flexDirection: 'column',
         justifyContent: 'space-between',
-        backgroundColor: '#fff'
+        backgroundColor: '#fff',
+        height: screenHeight - 50
       }}>
         <View style={{
           flex: 8, 
@@ -618,11 +621,11 @@ class Cashier extends React.Component {
                   {(() => {
                     if (this.selectedCategory && this.selectedCategory._id === category._id) {
                       return (
-                        <Button full large success onPress={() => this.onSelectCategory(category)} style={{backgroundColor: '#EE2738'}}><Text> {category.name} </Text></Button>
+                        <Button full large success onPress={() => this.onSelectCategory(category)} style={{backgroundColor: '#EE2738'}}><Text style={{fontSize: 18}}> {category.name} </Text></Button>
                       )
                     } else {
                       return (
-                        <Button full large success onPress={() => this.onSelectCategory(category)} style={{backgroundColor: '#2FA495'}}><Text> {category.name} </Text></Button>
+                        <Button full large success onPress={() => this.onSelectCategory(category)} style={{backgroundColor: '#2FA495'}}><Text style={{fontSize: 18}}> {category.name} </Text></Button>
                       )                      
                     }
                   })()}
@@ -632,6 +635,8 @@ class Cashier extends React.Component {
           </View>   
         </View>
       </View>
+    </Content>
+  </Container>            
     );
   }
 }
