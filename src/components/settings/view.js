@@ -1,12 +1,12 @@
 import _ from 'lodash';
 import React from 'react';
-import { Dimensions, NativeModules, AsyncStorage, Alert, ScrollView, View, TouchableOpacity, TouchableHighlight, StyleSheet, Image, ImageBackground, TextInput, FlatList } from 'react-native';
+import { NativeEventEmitter, Dimensions, NativeModules, AsyncStorage, Alert, ScrollView, View, TouchableOpacity, TouchableHighlight, StyleSheet, Image, ImageBackground, TextInput, FlatList } from 'react-native';
 import { Container, Content, Card, CardItem, Form, Item, Header, Left, Body, Right, Button, Icon, Title, List, ListItem, Text, Thumbnail, Input, InputGroup, Label, Toast, Switch } from 'native-base';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { TenantApi } from '../../api';
 import { Helper } from '../../utils';
 
-class Dashboard extends React.Component {
+class Settings extends React.Component {
   constructor(props) {
     super(props);
     this.tenant = null;
@@ -14,13 +14,28 @@ class Dashboard extends React.Component {
     this.state = {
       isSignedIn: false,
       edit: null,
+      printers: [],
       settings: {
         receiptTemplate: {}
       }
     }
+
+    this.emitter = new NativeEventEmitter(NativeModules.RNPrinterScanner);
+    this.listener = this.emitter.addListener(
+      'EventPrinterFound',
+      (printer) => {
+        let printers = [...this.state.printers]
+        printers.push(printer);
+        this.setState({
+          printers: printers
+        })         
+      }
+    );
   }
 
   componentWillMount() {
+    NativeModules.RNPrinterScanner.scan();
+
     AsyncStorage.getItem('payload', (err, payload) => {
       if (!payload) return;
       this.payload = JSON.parse(payload);
@@ -40,6 +55,10 @@ class Dashboard extends React.Component {
           })
         })
     });
+  }
+
+  componentWillUnmount() {
+    this.listener.remove();
   }
 
   componentDidMount() {
@@ -189,6 +208,24 @@ class Dashboard extends React.Component {
       .catch(err => {
         alert(err)
       })
+  }
+
+  onSelectReceiptPrinter(printer) {
+    let settings = {...this.state.settings};
+    settings.receiptPrinter = printer.target;
+
+    this.setState({
+      settings: settings
+    });    
+  }
+
+  onSelectKitchenPrinter(printer) {
+    let settings = {...this.state.settings};
+    settings.kitchenPrinter = printer.target;
+
+    this.setState({
+      settings: settings
+    });    
   }
 
   render() {
@@ -346,6 +383,31 @@ const {height: screenHeight} = Dimensions.get('window');
                       </View>
                       <View style={{flex: 1}}></View>
                     </View>
+                    <View style={{width: 530, marginLeft: 170}}> 
+                      <List style={{marginTop: 40}}> 
+                        <ListItem icon>  
+                          <Left> 
+                          </Left>  
+                          <Body> 
+                            <Text>Select Printer</Text>  
+                          </Body>  
+                          <Right>  
+                          </Right> 
+                        </ListItem>  
+                      {this.state.printers.map(item => (
+                        <ListItem key={item.target} onPress={() => this.onSelectReceiptPrinter(item)}>  
+                          <Left>
+                            <Text>{item.name}</Text>
+                          </Left>  
+                          <Body> 
+                            <Text>{item.target}</Text> 
+                          </Body>  
+                          <Right>  
+                          </Right> 
+                        </ListItem>
+                      ))}
+                      </List>  
+                    </View>                    
                     <View style={{flex: 1}}></View>
                   </View>
                 )
@@ -362,6 +424,31 @@ const {height: screenHeight} = Dimensions.get('window');
                       </View>
                       <View style={{flex: 1}}></View>
                     </View>
+                    <View style={{width: 530, marginLeft: 170}}> 
+                      <List style={{marginTop: 40}}> 
+                        <ListItem icon>  
+                          <Left> 
+                          </Left>  
+                          <Body> 
+                            <Text>Select Printer</Text>  
+                          </Body>  
+                          <Right>  
+                          </Right> 
+                        </ListItem>                        
+                      {this.state.printers.map(item => (
+                        <ListItem key={item.target} onPress={() => this.onSelectKitchenPrinter(item)}>  
+                          <Left>
+                            <Text>{item.name}</Text>
+                          </Left>  
+                          <Body> 
+                            <Text>{item.target}</Text> 
+                          </Body>  
+                          <Right>  
+                          </Right> 
+                        </ListItem>
+                      ))}
+                      </List>  
+                    </View>                      
                     <View style={{flex: 1}}></View>
                   </View>
                 )
@@ -476,8 +563,8 @@ const {height: screenHeight} = Dimensions.get('window');
   }
 }
 
-Dashboard.propTypes = {
+Settings.propTypes = {
 };
 
-export default Dashboard;
+export default Settings;
 

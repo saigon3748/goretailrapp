@@ -43,6 +43,7 @@
 		3DA7C863203C08FD00D92A63 /* RNPrinter.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DA7C862203C08FD00D92A63 /* RNPrinter.m */; };
 		3DA7C871203C098300D92A63 /* libxml2.2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DA7C870203C098300D92A63 /* libxml2.2.tbd */; };
 		3DA7C873203C098A00D92A63 /* ExternalAccessory.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DA7C872203C098A00D92A63 /* ExternalAccessory.framework */; };
+		3DE950002053E4D600BB7608 /* RNPrinterScanner.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DE94FFF2053E4D600BB7608 /* RNPrinterScanner.m */; };
 		4AD798D8D6A74FF1BEA56C38 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E30CB08896674F4F8CA1C8FA /* Octicons.ttf */; };
 		56958DC9C6B14B6686691877 /* EvilIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8CF29C890B494439912F32B6 /* EvilIcons.ttf */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
@@ -351,6 +352,8 @@
 		3DA7C862203C08FD00D92A63 /* RNPrinter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RNPrinter.m; path = goretailr/RNPrinter.m; sourceTree = "<group>"; };
 		3DA7C870203C098300D92A63 /* libxml2.2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libxml2.2.tbd; path = usr/lib/libxml2.2.tbd; sourceTree = SDKROOT; };
 		3DA7C872203C098A00D92A63 /* ExternalAccessory.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ExternalAccessory.framework; path = System/Library/Frameworks/ExternalAccessory.framework; sourceTree = SDKROOT; };
+		3DE94FFE2053E4D600BB7608 /* RNPrinterScanner.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RNPrinterScanner.h; sourceTree = "<group>"; };
+		3DE94FFF2053E4D600BB7608 /* RNPrinterScanner.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = RNPrinterScanner.m; sourceTree = "<group>"; };
 		3E357722E0EA4DBD8F384038 /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = "../node_modules/react-native-vector-icons/Fonts/EvilIcons.ttf"; sourceTree = "<group>"; };
 		415FD8E4B81D41D083316D39 /* Feather.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Feather.ttf; path = "../node_modules/react-native-vector-icons/Fonts/Feather.ttf"; sourceTree = "<group>"; };
 		4AE89325CE5A4564B2C01BD1 /* RNTextInputMask.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RNTextInputMask.xcodeproj; path = "../node_modules/react-native-text-input-mask/ios/RNTextInputMask/RNTextInputMask.xcodeproj"; sourceTree = "<group>"; };
@@ -528,6 +531,8 @@
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				13B07FB11A68108700A75B9A /* LaunchScreen.xib */,
 				13B07FB71A68108700A75B9A /* main.m */,
+				3DE94FFE2053E4D600BB7608 /* RNPrinterScanner.h */,
+				3DE94FFF2053E4D600BB7608 /* RNPrinterScanner.m */,
 			);
 			name = goretailr;
 			sourceTree = "<group>";
@@ -1221,6 +1226,7 @@
 				3DA7C863203C08FD00D92A63 /* RNPrinter.m in Sources */,
 				13B07FBC1A68108700A75B9A /* AppDelegate.m in Sources */,
 				13B07FC11A68108700A75B9A /* main.m in Sources */,
+				3DE950002053E4D600BB7608 /* RNPrinterScanner.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
