@@ -62,6 +62,7 @@ class Settings extends React.Component {
   }
 
   componentDidMount() {
+
   }
 
   onEdit(setting) {
@@ -71,9 +72,16 @@ class Settings extends React.Component {
   }
 
   onCancel() {
-    this.setState({
-      edit: null
-    })    
+    TenantApi.getById(this.payload.tenant._id)
+      .then(result => {
+        let settings = result.settings || {};
+        settings.receiptTemplate = settings.receiptTemplate || {}
+        
+        this.setState({
+          edit: null,
+          settings: settings
+        })
+      })
   }
 
   onSave() {
@@ -89,10 +97,6 @@ class Settings extends React.Component {
       .catch(err => {
         alert(err)
       })
-  }
-
-  onPress() {
-    alert('press')
   }
 
   onReceiptPrinterChanged(text) {
