@@ -41,7 +41,7 @@ class Kitchen extends React.Component {
             orders: result
           });
         })
-    }, 1000 * 60 * 5)      
+    }, 1000 * 60 * 5)
   }
 
   componentWillUnmount() {
@@ -84,21 +84,37 @@ class Kitchen extends React.Component {
   }
 
   onComplete(id) {
-    KitchenApi.markCompleted([id])
-      .then(result => {
-        let orders = [...this.state.orders];
-        let order = _.find(orders, item => {
-          return item._id === id;
-        });
+    let orders = [...this.state.orders];
+    let order = _.find(orders, item => {
+      return item._id === id;
+    });
 
-        if (order) {
-          order.isCompleted = true;
-        }
+    if (order) {
+      order.isCompleted = true;
+    }
 
-        this.setState({
-          orders: orders
-        });
-      })
+    this.setState({
+      orders: orders
+    });
+
+    setTimeout(() => {
+      let order = _.find(this.state.orders, item => {
+        return item._id === id;
+      });
+
+      if (!order.isCompleted) return;
+
+      KitchenApi.markCompleted([id])
+        .then(result => {
+          let orders = _.filter(this.state.orders, item => {
+            return item._id != id;
+          });
+
+          this.setState({
+            orders: orders
+          });
+        })
+    }, 1000 * 5)
   }
 
   onUncomplete(id) {

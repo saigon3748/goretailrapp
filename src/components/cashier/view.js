@@ -70,15 +70,15 @@ class Cashier extends React.Component {
   filterMenu() {
     let menu = this.menu || [];
 
+    if (this.selectedCategory) {
+      return _.filter(menu, item => {
+        return this.includesMenuItem(this.selectedCategory, item);
+      })
+    } 
+
     if (this.categoryStack.length === 0) {
       return menu;
     }
-
-    if (this.selectedCategory) {
-      return _.filter(menu, item => {
-        return item.category._id === this.selectedCategory._id;
-      })
-    } 
 
     let category = this.categoryStack[this.categoryStack.length - 1];
 
@@ -125,7 +125,7 @@ class Cashier extends React.Component {
 
   onSelectCategory(category) {
     this.categoryStack = this.categoryStack || [];
-    if (category.subs.length > 0) {
+    if (category.subs && category.subs.length > 0) {
       this.categoryStack.push(category);
     } else {
       if (this.selectedCategory && this.selectedCategory._id === category._id) {
@@ -176,15 +176,32 @@ class Cashier extends React.Component {
   }
 
   onDiscard() {
-    this.reset();
+    Alert.alert(
+      `Alert`, 
+      'Do you want to discard?',
+      [ { text: 'Cancel' }, 
+        { text: 'OK', onPress: () => {
+          this.reset();
+        }} ]
+    );    
   }
 
   onConfirm() {
+    if (!this.state.order || !this.state.order.items || this.state.order.items.length === 0) {
+      alert("Select items to create order");
+      return;
+    }
+
     OrderApi.create(this.state.order)
       .then(result => {
+        if (!this.tenant.settings) {
+          this.reset();
+          return;
+        }
+
         if (this.tenant.settings.confirmAndPrint) {
           this.print(result);
-          this.onDiscard();
+          this.reset();
           return;
         }
 
@@ -194,7 +211,7 @@ class Cashier extends React.Component {
           [ { text: 'Cancel', onPress: () => this.reset() }, 
             { text: 'OK', onPress: () => {
               this.print(result);
-              this.onDiscard();
+              this.reset();
             }} ]
         );
       })
@@ -447,17 +464,19 @@ const {height: screenHeight} = Dimensions.get('window');
                               <ImageBackground
                                 style={{width: 150, height: 150}}
                                 source={{uri: menuItem.image}}>
-                                <Text style={{backgroundColor: 'rgba(221, 226, 229, 0.8)'}}>
-                                  {menuItem.name}
-                                </Text>
-                                <Text style={{backgroundColor: 'rgba(221, 226, 229, 0.8)'}}>
-                                  {(() => { return Helper.formatCurrency(menuItem.unitPrice) })()}
-                                </Text>
+                                <View style={{backgroundColor: 'rgba(221, 226, 229, 0.85)'}}>
+                                  <Text style={{marginTop: 3, marginLeft: 3, marginRight: 3}}>
+                                    {menuItem.name}
+                                  </Text>
+                                  <Text style={{marginTop: 3, marginLeft: 3, marginRight: 3, marginBottom: 3}}>
+                                    {(() => { return Helper.formatCurrency(menuItem.unitPrice) })()}
+                                  </Text>
+                                </View>
                               </ImageBackground>
                             )
                           } else {
                             return (
-                              <View style={{backgroundColor: 'rgba(221, 226, 229, 0.7)'}}>
+                              <View style={{backgroundColor: 'rgba(221, 226, 229, 0.85)'}}>
                                 <Text style={{marginTop: 3, marginLeft: 3, marginRight: 3}}>
                                   {menuItem.name}
                                 </Text>
@@ -621,11 +640,11 @@ const {height: screenHeight} = Dimensions.get('window');
                   {(() => {
                     if (this.selectedCategory && this.selectedCategory._id === category._id) {
                       return (
-                        <Button full large success onPress={() => this.onSelectCategory(category)} style={{backgroundColor: '#EE2738'}}><Text style={{fontSize: 18}}> {category.name} </Text></Button>
+                        <Button full large success onPress={() => this.onSelectCategory(category)} style={{backgroundColor: '#EE2738'}}><Text style={{fontSize: 16}}> {category.name} </Text></Button>
                       )
                     } else {
                       return (
-                        <Button full large success onPress={() => this.onSelectCategory(category)} style={{backgroundColor: '#2FA495'}}><Text style={{fontSize: 18}}> {category.name} </Text></Button>
+                        <Button full large success onPress={() => this.onSelectCategory(category)} style={{backgroundColor: '#2FA495'}}><Text style={{fontSize: 16}}> {category.name} </Text></Button>
                       )                      
                     }
                   })()}
