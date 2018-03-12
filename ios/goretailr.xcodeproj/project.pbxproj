@@ -1361,7 +1361,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.saigon3748.goretailr;
+				PRODUCT_BUNDLE_IDENTIFIER = com.saigon3748.goretailr;
 				PRODUCT_NAME = goretailr;
 				TARGETED_DEVICE_FAMILY = 2;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1390,7 +1390,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = org.saigon3748.goretailr;
+				PRODUCT_BUNDLE_IDENTIFIER = com.saigon3748.goretailr;
 				PRODUCT_NAME = goretailr;
 				TARGETED_DEVICE_FAMILY = 2;
 				VERSIONING_SYSTEM = "apple-generic";
