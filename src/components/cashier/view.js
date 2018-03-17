@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React from 'react';
-import { Dimensions, NativeModules, AsyncStorage, Alert, ScrollView, View, TouchableOpacity, TouchableHighlight, StyleSheet, Image, ImageBackground, TextInput, FlatList } from 'react-native';
+import { Dimensions, NativeModules, AsyncStorage, Alert, ScrollView, View, TouchableOpacity, TouchableHighlight, StyleSheet, Image, ImageBackground, TextInput, FlatList, Modal } from 'react-native';
 import { Container, Content, Card, CardItem, Form, Item, Header, Left, Body, Right, Button, Icon, Title, List, ListItem, Text, Thumbnail, Input, InputGroup, Label, Toast } from 'native-base';
 import { TextInputMask } from 'react-native-masked-text'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -14,6 +14,7 @@ class Cashier extends React.Component {
     this.categories = [];
     this.categoryStack = [];
     this.selectedCategory = null;
+    this.cashList = [5, 10, 20, 50, 100, 200, 500];
 
     this.state = {
       isSignedIn: false,
@@ -192,6 +193,48 @@ class Cashier extends React.Component {
       return;
     }
 
+    if (!this.state.order.cash) {
+      Alert.alert(
+        `Alert`, 
+        'Do you want to collect cash?',
+        [ { text: 'Cancel', onPress: () => {
+            OrderApi.create(this.state.order)
+              .then(result => {
+                if (!this.tenant.settings) {
+                  this.reset();
+                  return;
+                }
+
+                if (this.tenant.settings.confirmAndPrint) {
+                  this.print(result);
+                  this.reset();
+                  return;
+                }
+
+                Alert.alert(
+                  `#${result.ref}`, 
+                  'Do you want to print?',
+                  [ { text: 'Cancel', onPress: () => this.reset() }, 
+                    { text: 'OK', onPress: () => {
+                      this.print(result);
+                      this.reset();
+                    }} ]
+                );
+              })
+              .catch(err => {
+                alert(err)
+              })
+          }}, 
+          { text: 'OK', onPress: () => {
+            this.setState({
+              isEdittingNote: true
+            })
+          }} ]
+      );
+
+      return;
+    }
+
     OrderApi.create(this.state.order)
       .then(result => {
         if (!this.tenant.settings) {
@@ -217,7 +260,7 @@ class Cashier extends React.Component {
       })
       .catch(err => {
         alert(err)
-      })
+      })    
   }
 
   print(order) {
@@ -341,6 +384,7 @@ class Cashier extends React.Component {
     });
     order.tax = _.round((order.subtotal - order.discountAmt) * 0.11, 2);
     order.total = _.round(order.subtotal - order.discountAmt + order.tax, 2);
+    order.change = order.cash ? _.round(order.cash - order.total, 2) : 0;
 
     this.setState({
       order: order
@@ -381,6 +425,7 @@ class Cashier extends React.Component {
     });
     order.tax = _.round((order.subtotal - order.discountAmt) * 0.11, 2);
     order.total = _.round(order.subtotal - order.discountAmt + order.tax, 2);
+    order.change = order.cash ? _.round(order.cash - order.total, 2) : 0;
 
     this.setState({
       order: order
@@ -395,6 +440,21 @@ class Cashier extends React.Component {
       order.discountAmt = _.round(discount, 2);
       order.tax = _.round((order.subtotal - order.discountAmt) * 0.11, 2);
       order.total = _.round(order.subtotal - order.discountAmt + order.tax, 2);
+      order.change = order.cash ? _.round(order.cash - order.total, 2) : 0;
+
+      this.setState({
+        order: order
+      });
+
+    }
+    catch(err) {}
+  }
+
+  onCashSelected(cash){
+    try {
+      let order = {...this.state.order};
+      order.cash = _.round(cash, 2);
+      order.change = _.round(order.cash - order.total, 2);
 
       this.setState({
         order: order
@@ -427,6 +487,10 @@ class Cashier extends React.Component {
     this.setState({
       order: order
     });
+  }
+
+  setModalVisible(visible) {
+    this.setState({modalVisible: visible});
   }
 
   render() {
@@ -518,11 +582,16 @@ const {height: screenHeight} = Dimensions.get('window');
               if (this.state.isEdittingNote) {
                 return (
                   <View style={{flex: 1, flexDirection: 'column', backgroundColor: '#f2f3f4', marginTop: 10, marginBottom: 10, marginLeft: 10, marginRight: 10}}>
-                    <Text style={{marginTop: 20}}>NOTE</Text>
-                    <TextInput defaultValue={this.state.order.note} onChangeText={(text) => this.onNoteChanged(text)} multiline = {true} style={{marginTop: 10, fontSize: 20, height: 85, backgroundColor: '#fff', borderColor: '#d2d3d4', borderWidth: 1}}/>
-                    <Text style={{marginTop: 10}}>DISCOUNT</Text>
-                    <TextInputMask type={'money'} options={{unit: '$', separator: '.', delimiter: ','}} selectTextOnFocus value={(() => { return Helper.formatCurrency(this.state.order.discountAmt) })()} onChangeText={(text) => this.onDiscountChanged(text)} style={{marginTop: 10, fontSize: 20, height: 35, backgroundColor: '#fff', borderColor: '#d2d3d4', borderWidth: 1, textAlign: 'right'}}/>          
-                    <Text style={{marginTop: 10}}>CASH</Text>
+                    <Text style={{marginTop: 20}}>CASH</Text>
+                    <View style={{flexDirection: 'row', marginTop: 10}}>
+                      <ScrollView horizontal={true} style={{flex: 1, flexDirection: 'row'}}>
+                        {this.cashList.map(cash => (
+                          <View style={{width: 80, marginRight: 10}}>
+                            <Button full onPress={() => this.onCashSelected(cash)} style={{backgroundColor: '#6c757d'}}><Text style={{fontSize: 16}}> ${cash} </Text></Button>
+                          </View>
+                        ))}
+                      </ScrollView>
+                    </View>
                     <TextInputMask type={'money'} options={{unit: '$', separator: '.', delimiter: ','}} selectTextOnFocus value={(() => { return Helper.formatCurrency(this.state.order.cash) })()} onChangeText={(text) => this.onCashChanged(text)} style={{marginTop: 10, fontSize: 20, height: 35, backgroundColor: '#fff', borderColor: '#d2d3d4', borderWidth: 1, textAlign: 'right'}}/>          
                     <View style={{flexDirection: 'row', marginTop: 20}}>
                       <Text style={{flex: 1}}>CHANGE</Text>
@@ -530,6 +599,10 @@ const {height: screenHeight} = Dimensions.get('window');
                         {(() => { return Helper.formatCurrency(this.state.order.change) })()}
                       </Text>
                     </View>
+                    <Text style={{marginTop: 10}}>NOTE</Text>
+                    <TextInput defaultValue={this.state.order.note} onChangeText={(text) => this.onNoteChanged(text)} multiline = {true} style={{marginTop: 10, fontSize: 20, height: 35, backgroundColor: '#fff', borderColor: '#d2d3d4', borderWidth: 1}}/>
+                    <Text style={{marginTop: 10}}>DISCOUNT</Text>
+                    <TextInputMask type={'money'} options={{unit: '$', separator: '.', delimiter: ','}} selectTextOnFocus value={(() => { return Helper.formatCurrency(this.state.order.discountAmt) })()} onChangeText={(text) => this.onDiscountChanged(text)} style={{marginTop: 10, fontSize: 20, height: 35, backgroundColor: '#fff', borderColor: '#d2d3d4', borderWidth: 1, textAlign: 'right'}}/>          
                     <View style={{flex: 1}}/>
                   </View>
                 )
