@@ -14,9 +14,9 @@ export default (dispatch) => {
         type: "DASHBOARD"
       })
     },
-    gotoCashier: () => {
+    gotoOrder: () => {
       dispatch({
-        type: "CASHIER"
+        type: "ORDER"
       })
     },
     gotoKitchen: () => {

@@ -169,6 +169,21 @@ const {height: screenHeight} = Dimensions.get('window');
                     <View style={{flexDirection: "row"}}>
                       <Text style={{width: 50}}>#{item.orderRef}</Text>
                       <Text style={{width: 50, textAlign: 'right'}}>{item.quantity}</Text>
+                      <View style={{width: 50}}>
+                        {(() => {
+                          if (item.isTakeaway) {
+                            return (
+                              <Button full small style={{backgroundColor: '#EE2738'}}>
+                                <MaterialIcons name='directions-walk' color={'#fff'} size={20} />
+                              </Button>
+                            )
+                          } else {
+                            return (
+                              <View/>
+                            )
+                          }
+                        })()}
+                      </View>
                       <Text style={{width: 200}}>{item.name}</Text>
                       <Text style={{flex: 1}}>{item.note}</Text>
                       <Text style={{width: 50}}>

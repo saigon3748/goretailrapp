@@ -68,8 +68,8 @@ class Sidebar extends React.Component {
               <MaterialIcons name='assignment' color={'#6c757d'} size={20} />
             </Left>
             <Body>
-              <TouchableOpacity onPress={this.props.gotoCashier}>
-                <Text>Checkout</Text>
+              <TouchableOpacity onPress={this.props.gotoOrder}>
+                <Text>Order</Text>
               </TouchableOpacity>
             </Body>
             <Right>

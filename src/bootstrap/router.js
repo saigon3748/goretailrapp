@@ -27,9 +27,9 @@ const router = (state = initialState, action) => {
         state
       );
       break;
-    case "CASHIER":
+    case "ORDER":
       nextState = Navigator.router.getStateForAction(
-        NavigationActions.navigate({ routeName: 'CASHIER', params: { payload: action.payload } }),
+        NavigationActions.navigate({ routeName: 'ORDER', params: { payload: action.payload } }),
         state
       );
       break;

@@ -6,7 +6,7 @@ import Login from '../components/login';
 import Topbar from '../components/topbar';
 import Sidebar from '../components/sidebar';
 import Dashboard from '../components/dashboard';
-import Cashier from '../components/cashier';
+import Order from '../components/order';
 import Kitchen from '../components/kitchen';
 import Settings from '../components/settings';
 
@@ -14,7 +14,7 @@ export default StackNavigator({
   LOGIN: { screen: Login },
   APP: { screen: StackNavigator({
     MAIN: { screen: DrawerNavigator({
-        CASHIER: { screen: Cashier },
+        ORDER: { screen: Order },
         DASHBOARD: { screen: Dashboard },
         KITCHEN: { screen: Kitchen },
         SETTINGS: { screen: Settings }
