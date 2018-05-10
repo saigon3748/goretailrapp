@@ -102,13 +102,13 @@ function getKitchenPrint(setting, order) {
     data.items.push(temp);
 
     if (item.isTakeaway) {
-      temp = padLine("takeaway");
+      temp = padLine("-", "takeaway");
       data.items.push(temp);      
     }
 
     if (item.note) {
-      temp = padLine("note - ", item.note);
-      data.items.push(temp);      
+      temp = padLine("-", item.note);
+      data.items.push(temp);
     }    
   })
 
