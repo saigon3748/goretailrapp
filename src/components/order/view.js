@@ -19,9 +19,11 @@ class Order extends React.Component {
     this.state = {
       isSignedIn: false,
       isConfirmModalVisible: false,
-      isOrdersModalVisible: false,
+      isExtraModalVisible: false,
       isEdittingNote: false,
+      selectedAddonItem: { extra: [] },
       cashList: [],
+      addonList: [],
       filteredMenu: [],
       filteredCategories: [],
       order: {
@@ -30,6 +32,7 @@ class Order extends React.Component {
         discountAmt: 0.00,
         tax: 0.00,
         total: 0.00,
+        extraTotal: 0.00,
         cash: 0.00,
         change: 0.00,
         items: []
@@ -74,6 +77,13 @@ class Order extends React.Component {
       .then(result => {
         this.setState({
           cashList: result
+        });
+      })
+
+    MenuApi.getAddonList()
+      .then(result => {
+        this.setState({
+          addonList: result
         });
       })
   }
@@ -171,6 +181,7 @@ class Order extends React.Component {
 
     this.setState({
       isEdittingNote: false,
+      selectedAddonItem: { extra: [] },
       filteredMenu: this.filterMenu(),
       filteredCategories: this.filterCategories(),      
       order: {
@@ -179,6 +190,7 @@ class Order extends React.Component {
         discountAmt: 0.00,
         tax: 0.00,
         total: 0.00,
+        extraTotal: 0.00,
         cash: 0.00,
         change: 0.00,
         items: []
@@ -206,10 +218,6 @@ class Order extends React.Component {
     }
 
     this.showConfirmModal(true);
-  }
-
-  onConfirmModalClose() {
-    this.showConfirmModal(false);
   }
 
   onSave() {
@@ -342,13 +350,15 @@ class Order extends React.Component {
       item = _.find(this.menu, item => {
         return item._id === id;
       });
-      item = {...item, quantity: 1};
+      item = {...item, quantity: 1, extra: []};
       order.items.push(item);
     }
 
+    order.extraTotal = 0.00;
     order.subtotal = 0.00;
     order.discount = 0.00;
     order.discountAmt = 0.00;
+
     order.items.forEach(item => {
       let subtotal = _.round(item.unitPrice * item.quantity, 2);
       let discount = 0.00;
@@ -361,12 +371,21 @@ class Order extends React.Component {
         }
       }
 
+      if (item.extra && item.extra.length > 0) {
+        item.extra.forEach(extra => {
+          extra.subtotal = extra.quantity * extra.unitPrice;
+          extra.total = extra.subtotal - (extra.discount || 0);
+          order.extraTotal += extra.total;
+        });
+      }
+
       order.subtotal += subtotal;
       order.discount += discount;
       order.discountAmt += discount;
     });
+
     order.tax = _.round((order.subtotal - order.discountAmt) * 0.11, 2);
-    order.total = _.round(order.subtotal - order.discountAmt + order.tax, 2);
+    order.total = _.round(order.subtotal - order.discountAmt + order.tax + order.extraTotal, 2);
     order.change = order.cash ? _.round(order.cash - order.total, 2) : 0;
 
     this.setState({
@@ -387,9 +406,11 @@ class Order extends React.Component {
       });
     }
 
+    order.extraTotal = 0.00;
     order.subtotal = 0.00;
     order.discount = 0.00;
     order.discountAmt = 0.00;
+
     order.items.forEach(item => {
       let subtotal = _.round(item.unitPrice * item.quantity, 2);
       let discount = 0.00;
@@ -402,12 +423,21 @@ class Order extends React.Component {
         }
       }
 
+      if (item.extra && item.extra.length > 0) {
+        item.extra.forEach(extra => {
+          extra.subtotal = extra.quantity * extra.unitPrice;
+          extra.total = extra.subtotal - (extra.discount || 0);
+          order.extraTotal += extra.total;
+        });
+      }
+
       order.subtotal += subtotal;
       order.discount += discount;
       order.discountAmt += discount;
     });
+
     order.tax = _.round((order.subtotal - order.discountAmt) * 0.11, 2);
-    order.total = _.round(order.subtotal - order.discountAmt + order.tax, 2);
+    order.total = _.round(order.subtotal - order.discountAmt + order.tax + order.extraTotal, 2);
     order.change = order.cash ? _.round(order.cash - order.total, 2) : 0;
 
     this.setState({
@@ -428,6 +458,134 @@ class Order extends React.Component {
     });
   }
 
+  onAddonItem(id) {
+    let order = {...this.state.order};
+    let item = _.find(order.items, item => {
+      return item._id === id;
+    });
+
+    this.setState({
+      selectedAddonItem: item
+    });
+
+    this.showExtraModal(true);
+  }
+
+  onAddExtra(id) {
+    let order = {...this.state.order};
+    let item = _.find(order.items, item => {
+      return item._id === this.state.selectedAddonItem._id;
+    });
+    let extra = _.find(item.extra, extra => {
+      return extra._id === id;
+    });
+
+    if (extra) {
+      extra.quantity++;
+    } else {
+      extra = _.find(this.state.addonList, extra => {
+        return extra._id === id;
+      });
+      extra = {...extra, quantity: 1};
+      item.extra.push(extra);
+    }
+
+    order.extraTotal = 0.00;
+    order.subtotal = 0.00;
+    order.discount = 0.00;
+    order.discountAmt = 0.00;
+
+    order.items.forEach(item => {
+      let subtotal = _.round(item.unitPrice * item.quantity, 2);
+      let discount = 0.00;
+
+      if (item.discount) {
+        if (item.isPercentDiscount) {
+          discount = _.round(subtotal * item.discount / 100, 2);
+        } else {
+          discount = _.round(subtotal - item.discount, 2);
+        }
+      }
+
+      if (item.extra && item.extra.length > 0) {
+        item.extra.forEach(extra => {
+          extra.subtotal = extra.quantity * extra.unitPrice;
+          extra.total = extra.subtotal - (extra.discount || 0);
+          order.extraTotal += extra.total;
+        });
+      }
+
+      order.subtotal += subtotal;
+      order.discount += discount;
+      order.discountAmt += discount;
+    });
+
+    order.tax = _.round((order.subtotal - order.discountAmt) * 0.11, 2);
+    order.total = _.round(order.subtotal - order.discountAmt + order.tax + order.extraTotal, 2);
+    order.change = order.cash ? _.round(order.cash - order.total, 2) : 0;
+
+    this.setState({
+      order: order,
+      selectedAddonItem: {...item}
+    })
+  }
+
+  onRemoveExtra(id) {
+    let order = {...this.state.order};
+    let item = _.find(order.items, item => {
+      return item._id === this.state.selectedAddonItem._id;
+    });
+    let extra = _.find(item.extra, extra => {
+      return extra._id === id;
+    });
+
+    extra.quantity--;
+    if (extra.quantity === 0) {
+      item.extra = _.filter(item.extra, extra => {
+        return extra._id != id;
+      });
+    }
+
+    order.extraTotal = 0.00;
+    order.subtotal = 0.00;
+    order.discount = 0.00;
+    order.discountAmt = 0.00;
+
+    order.items.forEach(item => {
+      let subtotal = _.round(item.unitPrice * item.quantity, 2);
+      let discount = 0.00;
+
+      if (item.discount) {
+        if (item.isPercentDiscount) {
+          discount = _.round(subtotal * item.discount / 100, 2);
+        } else {
+          discount = _.round(subtotal - item.discount, 2);
+        }
+      }
+
+      if (item.extra && item.extra.length > 0) {
+        item.extra.forEach(extra => {
+          extra.subtotal = extra.quantity * extra.unitPrice;
+          extra.total = extra.subtotal - (extra.discount || 0);
+          order.extraTotal += extra.total;
+        });
+      }
+
+      order.subtotal += subtotal;
+      order.discount += discount;
+      order.discountAmt += discount;
+    });
+
+    order.tax = _.round((order.subtotal - order.discountAmt) * 0.11, 2);
+    order.total = _.round(order.subtotal - order.discountAmt + order.tax + order.extraTotal, 2);
+    order.change = order.cash ? _.round(order.cash - order.total, 2) : 0;
+
+    this.setState({
+      order: order,
+      selectedAddonItem: {...item}
+    });
+  }
+
   onDiscountChanged(text){
     try {
       let discount = Number(text.replace(/[^0-9\.-]+/g,""));
@@ -435,7 +593,7 @@ class Order extends React.Component {
       let order = {...this.state.order};
       order.discountAmt = _.round(discount, 2);
       order.tax = _.round((order.subtotal - order.discountAmt) * 0.11, 2);
-      order.total = _.round(order.subtotal - order.discountAmt + order.tax, 2);
+      order.total = _.round(order.subtotal - order.discountAmt + order.tax + order.extraTotal, 2);
       order.change = order.cash ? _.round(order.cash - order.total, 2) : 0;
 
       this.setState({
@@ -489,8 +647,8 @@ class Order extends React.Component {
     this.setState({isConfirmModalVisible: visible});
   }
 
-  showOrdersModal(visible) {
-    this.setState({isOrdersModalVisible: visible});
+  showExtraModal(visible) {
+    this.setState({isExtraModalVisible: visible});
   }
 
   render() {
@@ -507,7 +665,7 @@ const {height: screenHeight} = Dimensions.get('window');
         height: screenHeight - 50
       }}>
         <Modal isVisible={this.state.isConfirmModalVisible}
-          onBackdropPress={() => this.onConfirmModalClose()}>
+          onBackdropPress={() => this.showConfirmModal(false)}>
           <View style={{
             flexDirection: 'column', 
             padding: 20,
@@ -517,7 +675,7 @@ const {height: screenHeight} = Dimensions.get('window');
             borderColor: "rgba(0, 0, 0, 0.1)"
           }}>
             <View style={{flexDirection: 'row', backgroundColor: '#f2f3f4'}}>
-              <View style={{width: 150, height: 72, marginTop: 10, marginLeft: 10}}>
+              <View style={{width: 150, height: 72, marginTop: 10, marginLeft: 10, marginRight: 10}}>
                 <Button full large style={{backgroundColor: '#2177b4'}}>
                   <Text>CASH</Text>
                 </Button>
@@ -525,7 +683,7 @@ const {height: screenHeight} = Dimensions.get('window');
               <View style={{flex: 1}}>
                 <ScrollView horizontal={true} style={{flex: 1, flexDirection: 'row'}}>
                   {this.state.cashList.map(cash => (
-                    <View key={cash._id} style={{width: 150, height: 72, marginTop: 10, marginLeft: 10}}>
+                    <View key={cash._id} style={{width: 150, height: 72, marginTop: 10, marginRight: 10}}>
                       <Button full large onPress={() => this.onCashSelected(cash.amount)} success style={{backgroundColor: '#2FA495'}}>
                         <Text style={{fontSize: 16}}>
                           {(() => { return Helper.formatCurrency(cash.amount) })()}
@@ -581,10 +739,86 @@ const {height: screenHeight} = Dimensions.get('window');
               <View style={{flexDirection: 'row', marginTop: 50, marginBottom: 10, marginLeft: 10, marginRight: 10}}>
                 <View style={{flex: 1}} />
                 <View style={{width: 170, marginRight: 10}}>
-                  <Button full onPress={() => this.onConfirmModalClose()} style={{backgroundColor: '#6c757d'}}><Text> CLOSE </Text></Button>
+                  <Button full onPress={() => this.showConfirmModal(false)} style={{backgroundColor: '#6c757d'}}><Text> CLOSE </Text></Button>
                 </View>
                 <View style={{width: 170}}>
                   <Button full onPress={() => this.onSave()} style={{backgroundColor: '#2177b4'}}><Text> SAVE </Text></Button>
+                </View>
+              </View>
+            </View>            
+          </View>
+        </Modal>
+
+        <Modal isVisible={this.state.isExtraModalVisible}
+          onBackdropPress={() => this.showExtraModal(false)}>
+          <View style={{
+            flexDirection: 'column', 
+            padding: 20,
+            height: 500,
+            borderRadius: 4,
+            backgroundColor: "white",
+            borderColor: "rgba(0, 0, 0, 0.1)"
+          }}>
+            <View style={{flexDirection: 'row', backgroundColor: '#f2f3f4'}}>
+              <View style={{width: 150, height: 72, marginTop: 10, marginLeft: 10, marginRight: 10}}>
+                <Button full large style={{backgroundColor: '#2177b4'}}>
+                  <Text>ADD-ONS</Text>
+                </Button>
+              </View>
+              <View style={{flex: 1}}>
+                <ScrollView horizontal={true} style={{flex: 1, flexDirection: 'row'}}>
+                  {this.state.addonList.map(addon => (
+                    <View key={addon._id} style={{width: 150, height: 72, marginTop: 10, marginRight: 10}}>
+                      <Button full large onPress={() => this.onAddExtra(addon._id)} success style={{backgroundColor: '#2FA495'}}>
+                        <Text style={{fontSize: 16}}>{addon.name}</Text>
+                      </Button>
+                    </View>
+                  ))}
+                </ScrollView>
+              </View>
+              <View style={{marginLeft: 10}}>
+              </View>
+            </View>
+            <View style={{flex: 1, flexDirection: 'column', backgroundColor: '#fff'}}>
+              <View style={{height: 40, marginTop: 30, marginLeft: 10, marginRight: 10}}>
+                <View style={{flex: 1, flexDirection: 'row'}}>
+                  <Text style={{flex: 1}}>{this.state.selectedAddonItem.name}</Text>
+                </View>
+              </View>
+
+              <ScrollView style={{flex: 1, flexDirection: 'column', marginLeft: 30, marginRight: 10}}>
+                <List>
+                  {this.state.selectedAddonItem.extra.map(extra => (
+                    <ListItem key={extra._id} style={{height: 50}}>
+                      <Body>
+                        <View style={{flexDirection: "row"}}>
+                          <Text style={{width: 200}}>{extra.name}</Text>
+                          <Text style={{width: 70, textAlign: 'right'}}>
+                            {(() => { return Helper.formatCurrency(extra.unitPrice) })()}
+                          </Text>
+                          <Text style={{width: 70, textAlign: 'right'}}>{extra.quantity}</Text>
+                          <Text style={{width: 70}}></Text>
+                          <View style={{width: 50}}>
+                            <Button full small style={{backgroundColor: '#2177b4'}} onPress={() => {this.onAddExtra(extra._id)}}>
+                              <MaterialIcons name='add' color={'#fff'} size={20} />
+                            </Button>
+                          </View>
+                          <View style={{width: 50}}>
+                            <Button full small style={{backgroundColor: '#6c757d'}} onPress={() => {this.onRemoveExtra(extra._id)}}>
+                              <MaterialIcons name='remove' color={'#fff'} size={20} />
+                            </Button>
+                          </View>                          
+                        </View>
+                      </Body>
+                    </ListItem>
+                  ))}
+                </List>
+              </ScrollView>
+
+              <View style={{flexDirection: 'row', marginTop: 50, marginBottom: 10, marginLeft: 10, marginRight: 10}}>
+                <View style={{flex: 1}} />
+                <View style={{width: 170, marginRight: 10}}>
+                  <Button full onPress={() => this.showExtraModal(false)} style={{backgroundColor: '#6c757d'}}><Text> CLOSE </Text></Button>
                 </View>
               </View>
             </View>            
@@ -689,9 +923,26 @@ const {height: screenHeight} = Dimensions.get('window');
                         })()}
                       </View>
                       <View style={{width: 50}}>
-                        <Button full small style={{backgroundColor: '#6c757d'}} onPress={() => {this.onEditNoteItem(item._id)}}>
+                        <Button full small style={{backgroundColor: '#2177b4'}} onPress={() => {this.onEditNoteItem(item._id)}}>
                           <MaterialIcons name='subject' color={'#fff'} size={20} />
                         </Button>
+                      </View>
+                      <View style={{width: 50}}>
+                        {(() => {
+                          if (item.extra && item.extra.length > 0) {
+                            return (
+                              <Button full small style={{backgroundColor: '#EE2738'}} onPress={() => {this.onAddonItem(item._id)}}>
+                                <MaterialIcons name='add-circle-outline' color={'#fff'} size={20} />
+                              </Button>
+                            )
+                          } else {
+                            return (
+                              <Button full small style={{backgroundColor: '#6c757d'}} onPress={() => {this.onAddonItem(item._id)}}>
+                                <MaterialIcons name='add-circle-outline' color={'#fff'} size={20} />
+                              </Button>
+                            )
+                          }
+                        })()}
                       </View>
                       <View style={{flex: 1}}/>
                       <Text style={{width: 70, textAlign: 'right', color: '#EE2738'}}>x{item.quantity}</Text>
@@ -755,7 +1006,7 @@ const {height: screenHeight} = Dimensions.get('window');
         </View>
 
         <View style={{flex: 1, flexDirection: 'row', backgroundColor: '#f2f3f4'}}>
-          <View style={{width: 150, height: 60, marginTop: 10, marginLeft: 10}}>
+          <View style={{width: 150, height: 60, marginTop: 10, marginLeft: 10, marginRight: 10}}>
             <Button full large onPress={() => this.onBackCategory()} style={{backgroundColor: '#2177b4'}}>
               <MaterialIcons name='subdirectory-arrow-left' color={'#fff'} size={20} />              
             </Button>
@@ -763,7 +1014,7 @@ const {height: screenHeight} = Dimensions.get('window');
           <View style={{flex: 1}}>
             <ScrollView horizontal={true} style={{flex: 1, flexDirection: 'row'}}>
               {this.state.filteredCategories.map(category => (
-                <View key={category._id} style={{width: 150, height: 60, marginTop: 10, marginLeft: 10}}>
+                <View key={category._id} style={{width: 150, height: 60, marginTop: 10, marginRight: 10}}>
                   {(() => {
                     if (this.selectedCategory && this.selectedCategory._id === category._id) {
                       return (

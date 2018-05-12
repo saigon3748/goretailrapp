@@ -135,6 +135,17 @@ class Kitchen extends React.Component {
       })
   }
 
+  getNote(item) {
+    let note = item.note || ''
+    if (item.extra && item.extra.length > 0) {
+      item.extra.forEach(extra => {
+        note += ` - x${extra.quantity} ${extra.name}`
+      })
+    }
+
+    return note;
+  }
+
   render() {
 const {height: screenHeight} = Dimensions.get('window');
     return (
@@ -185,7 +196,7 @@ const {height: screenHeight} = Dimensions.get('window');
                         })()}
                       </View>
                       <Text style={{width: 200}}>{item.name}</Text>
-                      <Text style={{flex: 1}}>{item.note}</Text>
+                      <Text style={{flex: 1}}>{this.getNote(item)}</Text>
                       <Text style={{width: 50}}>
                         {(() => { return moment(item.createdAt).format("HH:mm") })()}
                       </Text>
