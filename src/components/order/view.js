@@ -373,8 +373,8 @@ class Order extends React.Component {
 
       if (item.extra && item.extra.length > 0) {
         item.extra.forEach(extra => {
-          extra.subtotal = extra.quantity * extra.unitPrice;
-          extra.total = extra.subtotal - (extra.discount || 0);
+          extra.subtotal = _.round(extra.quantity * extra.unitPrice, 2);
+          extra.total = _.round(extra.subtotal - (extra.discount || 0), 2);
           order.extraTotal += extra.total;
         });
       }
@@ -384,8 +384,13 @@ class Order extends React.Component {
       order.discountAmt += discount;
     });
 
-    order.tax = _.round((order.subtotal - order.discountAmt) * 0.11, 2);
-    order.total = _.round(order.subtotal - order.discountAmt + order.tax + order.extraTotal, 2);
+    if (this.tenant.settings.isInclusiveGST) {
+      order.total = _.round(order.subtotal - order.discountAmt + order.extraTotal, 2);
+      order.tax = _.round(order.total * 0.11, 2);
+    } else {
+      order.tax = _.round((order.subtotal - order.discountAmt) * 0.11, 2);
+      order.total = _.round(order.subtotal - order.discountAmt + order.tax + order.extraTotal, 2);
+    }
     order.change = order.cash ? _.round(order.cash - order.total, 2) : 0;
 
     this.setState({
@@ -425,8 +430,8 @@ class Order extends React.Component {
 
       if (item.extra && item.extra.length > 0) {
         item.extra.forEach(extra => {
-          extra.subtotal = extra.quantity * extra.unitPrice;
-          extra.total = extra.subtotal - (extra.discount || 0);
+          extra.subtotal = _.round(extra.quantity * extra.unitPrice, 2);
+          extra.total = _.round(extra.subtotal - (extra.discount || 0), 2);
           order.extraTotal += extra.total;
         });
       }
@@ -436,8 +441,13 @@ class Order extends React.Component {
       order.discountAmt += discount;
     });
 
-    order.tax = _.round((order.subtotal - order.discountAmt) * 0.11, 2);
-    order.total = _.round(order.subtotal - order.discountAmt + order.tax + order.extraTotal, 2);
+    if (this.tenant.settings.isInclusiveGST) {
+      order.total = _.round(order.subtotal - order.discountAmt + order.extraTotal, 2);
+      order.tax = _.round(order.total * 0.11, 2);
+    } else {
+      order.tax = _.round((order.subtotal - order.discountAmt) * 0.11, 2);
+      order.total = _.round(order.subtotal - order.discountAmt + order.tax + order.extraTotal, 2);
+    }
     order.change = order.cash ? _.round(order.cash - order.total, 2) : 0;
 
     this.setState({
@@ -509,8 +519,8 @@ class Order extends React.Component {
 
       if (item.extra && item.extra.length > 0) {
         item.extra.forEach(extra => {
-          extra.subtotal = extra.quantity * extra.unitPrice;
-          extra.total = extra.subtotal - (extra.discount || 0);
+          extra.subtotal = _.round(extra.quantity * extra.unitPrice, 2);
+          extra.total = _.round(extra.subtotal - (extra.discount || 0), 2);
           order.extraTotal += extra.total;
         });
       }
@@ -520,8 +530,13 @@ class Order extends React.Component {
       order.discountAmt += discount;
     });
 
-    order.tax = _.round((order.subtotal - order.discountAmt) * 0.11, 2);
-    order.total = _.round(order.subtotal - order.discountAmt + order.tax + order.extraTotal, 2);
+    if (this.tenant.settings.isInclusiveGST) {
+      order.total = _.round(order.subtotal - order.discountAmt + order.extraTotal, 2);
+      order.tax = _.round(order.total * 0.11, 2);
+    } else {
+      order.tax = _.round((order.subtotal - order.discountAmt) * 0.11, 2);
+      order.total = _.round(order.subtotal - order.discountAmt + order.tax + order.extraTotal, 2);
+    }
     order.change = order.cash ? _.round(order.cash - order.total, 2) : 0;
 
     this.setState({
@@ -565,8 +580,8 @@ class Order extends React.Component {
 
       if (item.extra && item.extra.length > 0) {
         item.extra.forEach(extra => {
-          extra.subtotal = extra.quantity * extra.unitPrice;
-          extra.total = extra.subtotal - (extra.discount || 0);
+          extra.subtotal = _.round(extra.quantity * extra.unitPrice, 2);
+          extra.total = _.round(extra.subtotal - (extra.discount || 0), 2);
           order.extraTotal += extra.total;
         });
       }
@@ -576,8 +591,13 @@ class Order extends React.Component {
       order.discountAmt += discount;
     });
 
-    order.tax = _.round((order.subtotal - order.discountAmt) * 0.11, 2);
-    order.total = _.round(order.subtotal - order.discountAmt + order.tax + order.extraTotal, 2);
+    if (this.tenant.settings.isInclusiveGST) {
+      order.total = _.round(order.subtotal - order.discountAmt + order.extraTotal, 2);
+      order.tax = _.round(order.total * 0.11, 2);
+    } else {
+      order.tax = _.round((order.subtotal - order.discountAmt) * 0.11, 2);
+      order.total = _.round(order.subtotal - order.discountAmt + order.tax + order.extraTotal, 2);
+    }
     order.change = order.cash ? _.round(order.cash - order.total, 2) : 0;
 
     this.setState({

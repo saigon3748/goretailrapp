@@ -214,6 +214,22 @@ class Settings extends React.Component {
       })
   }
 
+  onInclusiveGSTChanged(value) {
+    let tenant = {...this.tenant}
+    tenant.settings = {...this.state.settings}
+    tenant.settings.isInclusiveGST = value;
+
+    TenantApi.updateById(this.payload.tenant._id, tenant)
+      .then(result => {
+        this.setState({
+          settings: tenant.settings
+        });    
+      })
+      .catch(err => {
+        alert(err)
+      })
+  }
+
   onSelectReceiptPrinter(printer) {
     let settings = {...this.state.settings};
     settings.receiptPrinter = printer.target;
@@ -305,6 +321,16 @@ const {height: screenHeight} = Dimensions.get('window');
               </Body>
               <Right>
                 <Switch value={this.state.settings.confirmAndPrint} onValueChange={(value) => this.onConfirmAndPrintChanged(value)} />
+              </Right>
+            </ListItem>
+            <ListItem icon>
+              <Left>
+              </Left>
+              <Body style={{marginLeft: 20}}>
+                <Text>Inclusive GST</Text>
+              </Body>
+              <Right>
+                <Switch value={this.state.settings.isInclusiveGST} onValueChange={(value) => this.onInclusiveGSTChanged(value)} />
               </Right>
             </ListItem>
           </List>
