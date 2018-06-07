@@ -32,7 +32,6 @@ class Order extends React.Component {
         discountAmt: 0.00,
         tax: 0.00,
         total: 0.00,
-        extraTotal: 0.00,
         cash: 0.00,
         change: 0.00,
         items: []
@@ -190,7 +189,6 @@ class Order extends React.Component {
         discountAmt: 0.00,
         tax: 0.00,
         total: 0.00,
-        extraTotal: 0.00,
         cash: 0.00,
         change: 0.00,
         items: []
@@ -255,12 +253,14 @@ class Order extends React.Component {
   }
 
   print(order) {
-    if (!this.tenant || !this.tenant.settings || !this.tenant.settings.receiptTemplate) {
+    if (!this.tenant || !this.tenant.settings) {
       alert('No setting found')
       return;
     }
 
-    if (!this.tenant.settings.receiptPrinter || this.tenant.settings.receiptPrinter.trim() === "") {
+    if (!this.tenant.settings.receiptTemplate 
+      || !this.tenant.settings.receiptPrinter 
+      || this.tenant.settings.receiptPrinter.trim() === "") {
       alert('No setting found for receipt printer')
       return;
     }
@@ -354,7 +354,6 @@ class Order extends React.Component {
       order.items.push(item);
     }
 
-    order.extraTotal = 0.00;
     order.subtotal = 0.00;
     order.discount = 0.00;
     order.discountAmt = 0.00;
@@ -375,7 +374,8 @@ class Order extends React.Component {
         item.extra.forEach(extra => {
           extra.subtotal = _.round(extra.quantity * extra.unitPrice, 2);
           extra.total = _.round(extra.subtotal - (extra.discount || 0), 2);
-          order.extraTotal += extra.total;
+          subtotal += extra.subtotal;
+          discount += extra.discount || 0;
         });
       }
 
@@ -385,11 +385,11 @@ class Order extends React.Component {
     });
 
     if (this.tenant.settings.isInclusiveGST) {
-      order.total = _.round(order.subtotal - order.discountAmt + order.extraTotal, 2);
+      order.total = _.round(order.subtotal - order.discountAmt, 2);
       order.tax = _.round(order.total * 0.11, 2);
     } else {
       order.tax = _.round((order.subtotal - order.discountAmt) * 0.11, 2);
-      order.total = _.round(order.subtotal - order.discountAmt + order.tax + order.extraTotal, 2);
+      order.total = _.round(order.subtotal - order.discountAmt + order.tax, 2);
     }
     order.change = order.cash ? _.round(order.cash - order.total, 2) : 0;
 
@@ -411,7 +411,6 @@ class Order extends React.Component {
       });
     }
 
-    order.extraTotal = 0.00;
     order.subtotal = 0.00;
     order.discount = 0.00;
     order.discountAmt = 0.00;
@@ -432,7 +431,8 @@ class Order extends React.Component {
         item.extra.forEach(extra => {
           extra.subtotal = _.round(extra.quantity * extra.unitPrice, 2);
           extra.total = _.round(extra.subtotal - (extra.discount || 0), 2);
-          order.extraTotal += extra.total;
+          subtotal += extra.subtotal;
+          discount += extra.discount || 0;
         });
       }
 
@@ -442,11 +442,11 @@ class Order extends React.Component {
     });
 
     if (this.tenant.settings.isInclusiveGST) {
-      order.total = _.round(order.subtotal - order.discountAmt + order.extraTotal, 2);
+      order.total = _.round(order.subtotal - order.discountAmt, 2);
       order.tax = _.round(order.total * 0.11, 2);
     } else {
       order.tax = _.round((order.subtotal - order.discountAmt) * 0.11, 2);
-      order.total = _.round(order.subtotal - order.discountAmt + order.tax + order.extraTotal, 2);
+      order.total = _.round(order.subtotal - order.discountAmt + order.tax, 2);
     }
     order.change = order.cash ? _.round(order.cash - order.total, 2) : 0;
 
@@ -500,7 +500,6 @@ class Order extends React.Component {
       item.extra.push(extra);
     }
 
-    order.extraTotal = 0.00;
     order.subtotal = 0.00;
     order.discount = 0.00;
     order.discountAmt = 0.00;
@@ -521,7 +520,8 @@ class Order extends React.Component {
         item.extra.forEach(extra => {
           extra.subtotal = _.round(extra.quantity * extra.unitPrice, 2);
           extra.total = _.round(extra.subtotal - (extra.discount || 0), 2);
-          order.extraTotal += extra.total;
+          subtotal += extra.subtotal;
+          discount += extra.discount || 0;
         });
       }
 
@@ -531,11 +531,11 @@ class Order extends React.Component {
     });
 
     if (this.tenant.settings.isInclusiveGST) {
-      order.total = _.round(order.subtotal - order.discountAmt + order.extraTotal, 2);
+      order.total = _.round(order.subtotal - order.discountAmt, 2);
       order.tax = _.round(order.total * 0.11, 2);
     } else {
       order.tax = _.round((order.subtotal - order.discountAmt) * 0.11, 2);
-      order.total = _.round(order.subtotal - order.discountAmt + order.tax + order.extraTotal, 2);
+      order.total = _.round(order.subtotal - order.discountAmt + order.tax, 2);
     }
     order.change = order.cash ? _.round(order.cash - order.total, 2) : 0;
 
@@ -561,7 +561,6 @@ class Order extends React.Component {
       });
     }
 
-    order.extraTotal = 0.00;
     order.subtotal = 0.00;
     order.discount = 0.00;
     order.discountAmt = 0.00;
@@ -582,7 +581,8 @@ class Order extends React.Component {
         item.extra.forEach(extra => {
           extra.subtotal = _.round(extra.quantity * extra.unitPrice, 2);
           extra.total = _.round(extra.subtotal - (extra.discount || 0), 2);
-          order.extraTotal += extra.total;
+          subtotal += extra.subtotal;
+          discount += extra.discount || 0;
         });
       }
 
@@ -592,11 +592,11 @@ class Order extends React.Component {
     });
 
     if (this.tenant.settings.isInclusiveGST) {
-      order.total = _.round(order.subtotal - order.discountAmt + order.extraTotal, 2);
+      order.total = _.round(order.subtotal - order.discountAmt, 2);
       order.tax = _.round(order.total * 0.11, 2);
     } else {
       order.tax = _.round((order.subtotal - order.discountAmt) * 0.11, 2);
-      order.total = _.round(order.subtotal - order.discountAmt + order.tax + order.extraTotal, 2);
+      order.total = _.round(order.subtotal - order.discountAmt + order.tax, 2);
     }
     order.change = order.cash ? _.round(order.cash - order.total, 2) : 0;
 
@@ -612,8 +612,13 @@ class Order extends React.Component {
 
       let order = {...this.state.order};
       order.discountAmt = _.round(discount, 2);
-      order.tax = _.round((order.subtotal - order.discountAmt) * 0.11, 2);
-      order.total = _.round(order.subtotal - order.discountAmt + order.tax + order.extraTotal, 2);
+      if (this.tenant.settings.isInclusiveGST) {
+        order.total = _.round(order.subtotal - order.discountAmt, 2);
+        order.tax = _.round(order.total * 0.11, 2);
+      } else {
+        order.tax = _.round((order.subtotal - order.discountAmt) * 0.11, 2);
+        order.total = _.round(order.subtotal - order.discountAmt + order.tax, 2);
+      }
       order.change = order.cash ? _.round(order.cash - order.total, 2) : 0;
 
       this.setState({
